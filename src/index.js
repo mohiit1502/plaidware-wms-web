@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import './index.css';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
 const loadingScreen = (
   <div
@@ -21,7 +22,9 @@ const loadingScreen = (
 ReactDOM.render(
   <React.StrictMode>
     <Suspense fallback={loadingScreen}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </Suspense>
   </React.StrictMode>,
   document.getElementById('root')
