@@ -1,0 +1,39 @@
+.dashboardGrid {
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 300px auto;
+}
+
+.navSidebar {
+  grid-column: 1;
+  background: #2d373c;
+  min-height: 100vh;
+  padding: 40px;
+}
+
+.sidebarBranding {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 44px;
+
+  color: #ffffff;
+}
+
+.mainContent {
+  grid-column: 2;
+  display: grid;
+  grid-template-rows: 100px 50px auto;
+}
+
+.topBar {
+  grid-row: 1;
+}
+
+.breadcrumbs {
+  grid-row: 2;
+}
+
+.content {
+  grid-row: 3;
+}
