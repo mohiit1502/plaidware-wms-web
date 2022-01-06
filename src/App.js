@@ -1,9 +1,9 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
-import Test from './components/Test';
 import AuthProvider, { useAuth } from './config/authProvider';
 import localizationInit from './config/localization';
 import Dashboard from './layouts/dashboard';
+import Login from './pages/login';
 
 localizationInit();
 
@@ -26,9 +26,19 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/login" element={<Test />} />
-        <Route path="/dashboard" element={<RequireAuth>This is secret</RequireAuth>} />
+        <Route path="/login" element={<Login />} />
+        {/* <Route path="/signup" element={<Test />} /> */}
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <Dashboard />
+            </RequireAuth>
+          }
+        >
+          <Route path="/" element={<div>This is content</div>} />
+        </Route>
+        <Route path="*" element={<p>This page does not exist</p>} />
       </Routes>
     </AuthProvider>
   );
