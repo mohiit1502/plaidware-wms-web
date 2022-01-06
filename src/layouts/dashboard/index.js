@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router-dom';
+import Breadcrumbs from '../../components/breadcrumbs';
+import Sidebar from '../../components/Sidebar';
+import TopBar from '../../components/topbar';
 import styles from './dashboard.module.css';
-import Sidebar from './Sidebar';
 
 export default function Dashboard() {
   return (
     <div className={styles.dashboardGrid}>
       <Sidebar />
       <div className={styles.mainContent}>
-        <div className={styles.topBar}>search comes here</div>
-        <div className={styles.breadcrumbs}>
-          breadcrumbs {'>'} are {'>'} here
-        </div>
+        <TopBar />
+        <Breadcrumbs />
         <div className={styles.content}>
           <Outlet />
         </div>
