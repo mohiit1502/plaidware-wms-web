@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Test from './components/Test';
 import AuthProvider, { useAuth } from './config/authProvider';
 import localizationInit from './config/localization';
+import Dashboard from './layouts/dashboard';
 
 localizationInit();
 
@@ -25,7 +26,7 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/" element={<>Hey there</>} />
+        <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<Test />} />
         <Route path="/dashboard" element={<RequireAuth>This is secret</RequireAuth>} />
       </Routes>
