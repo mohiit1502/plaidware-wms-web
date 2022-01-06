@@ -4,6 +4,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/system';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#dsad87"
+    }
+  },
+  typography: {
+    fontFamily: "Averta"
+  }
+});
 
 const loadingScreen = (
   <div
@@ -23,7 +35,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Suspense fallback={loadingScreen}>
       <BrowserRouter>
-        <App />
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </BrowserRouter>
     </Suspense>
   </React.StrictMode>,
