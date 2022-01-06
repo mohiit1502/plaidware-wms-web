@@ -1,8 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../config/authProvider';
 
-export default function Test() {
+import { useAuth } from '../../config/authProvider';
+
+export default function Login() {
   const { t } = useTranslation();
   let auth = useAuth();
   let navigate = useNavigate();
@@ -25,6 +26,7 @@ export default function Test() {
   return (
     <p>
       <h3>{t('app_title')}</h3>
+      This is the proposed module for the login page
       <div>{t('welcome_message')}</div>
       Welcome {auth.user}!{' '}
       <button
