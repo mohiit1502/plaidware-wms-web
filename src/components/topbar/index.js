@@ -12,7 +12,7 @@ export default function TopBar({ isMobileScreen, isSidebarOpen, setSidebarOpen }
       >
         {isSidebarOpen ? null : <HamburgerIcon color="#000" />}
       </div>
-      <div>Other icons here</div>
+      <div>Right side icons here</div>
     </div>
   );
 }
