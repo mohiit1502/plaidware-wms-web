@@ -24,7 +24,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "scp -Cvpr -i <keyfile> build/* ubuntu@ec2-13-59-140-102.us-east-2.compute.amazonaws.com:/home/ubuntu/web-wms/"
   },
   "eslintConfig": {
     "extends": [
