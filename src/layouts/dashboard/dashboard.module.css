@@ -1,7 +1,7 @@
 .dashboardGrid {
   width: 100vw;
   display: grid;
-  grid-template-columns: 300px auto;
+  grid-template-columns: max-content auto;
 }
 
 .mainContent {
@@ -10,7 +10,19 @@
   grid-template-rows: 108px 72px auto;
 }
 
+@media only screen and (max-width: 800px) {
+  .dashboardGrid {
+    grid-template-columns: auto;
+  }
+
+  .mainContent {
+    grid-column: 1;
+    grid-template-rows: 50px 50px auto;
+  }
+}
+
 .content {
   grid-row: 3;
   padding: 24px 48px;
+  min-height: 100%;
 }
