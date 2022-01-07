@@ -10,14 +10,10 @@
 } */
 
 .sidebarBrandingHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 40px 40px 30px 40px;
-}
-
-.closeIcon {
-  font-size: larger;
+  display: grid;
+  padding: 40px 0px 30px 40px;
+  grid-template-columns: auto 40px;
+  align-items: center;
 }
 
 .sidebarBranding {
@@ -30,10 +26,57 @@
 }
 
 .sidebarList {
+  width: 100%;
+}
+
+.sidebarGroup {
 }
 
 .sidebarMainItem {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 55px;
+  height: 48px;
+
+  /* background: #007aff; */
+}
+
+.mainItemContent {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 80px auto;
+  height: 100%;
+
+  color: white;
+}
+
+.mainItemIcon {
+  padding-left: 40px;
+  width: auto;
+}
+
+.dropdownIcon {
+  padding-left: 20px;
+  width: auto;
 }
 
 .sidebarSubItem {
+  width: 100%;
+  height: 46px;
+  display: grid;
+  align-items: center;
+  padding-left: 80px;
+
+  color: white;
+}
+
+.alink:visited,
+.alink:link {
+  text-decoration: none;
+}
+
+.subActive {
+  background: #1f282d;
+  color: #007aff !important;
 }

@@ -1,5 +1,8 @@
 import { NavLink } from 'react-router-dom';
+import SidebarDownIcon from '../../assets/icons/SidebarDown-icon';
+import HomeIcon from '../../assets/icons/Home-icon';
 import XIcon from '../../assets/icons/X-close-icon';
+import combineClasses from '../../utils/combineCssClasses';
 import styles from './sidebar.module.css';
 
 const items = {
@@ -11,7 +14,15 @@ const items = {
   subs: [
     {
       text: 'Sub links',
-      link: '/',
+      link: '/login',
+    },
+    {
+      text: 'Sub links',
+      link: '/login',
+    },
+    {
+      text: 'Sub links',
+      link: '/login',
     },
     {
       text: 'Sub links',
@@ -19,34 +30,31 @@ const items = {
     },
     {
       text: 'Sub links',
-      link: '/',
-    },
-    {
-      text: 'Sub links',
-      link: '/',
-    },
-    {
-      text: 'Sub links',
-      link: '/',
+      link: '/login',
     },
   ],
 };
 
-const NavGroupItems = ({ list }) => (
-  <div className={styles.sidebarGroup}>
-    <NavLink to={list.title.link}>
-      <div className={styles.sidebarMainItem}>
-        <XIcon />
-        {list.title.text}
+const NavGroupItems = ({ list }) => {
+  return (
+    <div className={styles.sidebarGroup}>
+      <div className={combineClasses(styles.sidebarMainItem)}>
+        <NavLink className={combineClasses(styles.alink, styles.mainItemContent)} to={list.title.link}>
+          <HomeIcon className={styles.mainItemIcon} />
+          <div>{list.title.text}</div>
+        </NavLink>
+        <SidebarDownIcon className={styles.dropdownIcon} />
       </div>
-    </NavLink>
-    {list.subs.map((subLink) => (
-      <NavLink to={subLink.link}>
-        <div className={styles.sidebarSubItem}>{subLink.text}</div>
-      </NavLink>
-    ))}
-  </div>
-);
+      {list.subs.map((subLink, idx) => (
+        <NavLink key={idx} className={styles.alink} to={subLink.link}>
+          {({ isActive }) => (
+            <div className={combineClasses(styles.sidebarSubItem, [isActive, styles.subActive])}>{subLink.text}</div>
+          )}
+        </NavLink>
+      ))}
+    </div>
+  );
+};
 
 export default function Sidebar({ isMobileScreen, isOpen, setOpen }) {
   if (!isMobileScreen && isOpen) {
