@@ -1,45 +1,31 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
+/**
+=========================================================
+* Material Dashboard 2 PRO React - v2.0.0
+=========================================================
 
-import './index.css';
-import App from './App';
-import { BrowserRouter } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/system';
+* Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#dsad87"
-    }
-  },
-  typography: {
-    fontFamily: "Averta"
-  }
-});
+Coded by www.creative-tim.com
 
-const loadingScreen = (
-  <div
-    style={{
-      display: 'flex',
-      width: '100vw',
-      height: '100vh',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-  >
-    <h3>Loading...</h3>
-  </div>
-);
+ =========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+*/
+
+import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter } from "react-router-dom";
+import App from "App";
+
+// Soft UI Context Provider
+import { MaterialUIControllerProvider } from "context";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Suspense fallback={loadingScreen}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <App />
-        </ThemeProvider>
-      </BrowserRouter>
-    </Suspense>
-  </React.StrictMode>,
-  document.getElementById('root')
+  <BrowserRouter>
+    <MaterialUIControllerProvider>
+      <App />
+    </MaterialUIControllerProvider>
+  </BrowserRouter>,
+  document.getElementById("root")
 );
