@@ -1,0 +1,44 @@
+.images {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+}
+
+.form {
+    display: grid;
+    background: white;
+    padding: 35px;
+    grid-template-columns: repeat(2, minmax(30%, auto));
+    grid-gap: 30px;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+.buttons button {
+    padding: 12px 50px;
+    border-radius: 4px;
+    border: none;
+    margin: 0 8px;
+    color: white;
+    margin-bottom: 50px;
+}
+
+.in {
+    background: #34c759;
+}
+
+.out {
+    background: #ff3b30;
+}
+
+.report {
+    background: #007aff;
+}
+
+.outer {
+    height: auto;
+    background: white;
+}

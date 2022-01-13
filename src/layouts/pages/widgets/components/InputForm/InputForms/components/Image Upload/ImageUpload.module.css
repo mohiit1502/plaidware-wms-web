@@ -1,0 +1,21 @@
+.border {
+    text-align: center;
+    border: 1px dashed #e8e8e8;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 15px;
+    padding: 45px 0;
+}
+
+.border svg {
+    margin-bottom: 5px;
+}
+.outerBorder {
+    border: 2px solid #e8e8e8;
+    padding: 12px;
+    border-radius: 5px;
+}
+
+.items {
+    padding-top: 15px;
+}
