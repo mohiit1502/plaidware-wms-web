@@ -23,6 +23,7 @@ export function* onRequestLogin({ payload }) {
       })
     );
   } else {
+    payload.onFailedLogin(response.data.error);
     yield put(
       AuthActions.loginFailure({
         loader: payload?.loader,

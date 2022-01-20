@@ -49,9 +49,12 @@ export const onLoginFailure = (state, { error }) =>
     error: { ...state.error, [error?.loader]: error?.error }
   });
 
+export const onLogout = () => INITIAL_STATE;
+
 /* ------------- Hookup Reducers To Types ------------- */
 export const authReducer = createReducer(INITIAL_STATE, {
   [Types.LOGIN_REQUEST]: onLoginRequest,
   [Types.LOGIN_SUCCESS]: onLoginSuccess,
-  [Types.LOGIN_FAILURE]: onLoginFailure
+  [Types.LOGIN_FAILURE]: onLoginFailure,
+  [Types.LOGOUT]: onLogout
 });
