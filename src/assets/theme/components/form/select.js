@@ -17,7 +17,7 @@ Coded by www.creative-tim.com
 import colors from 'assets/theme/base/colors';
 
 // Material Dashboard 2 PRO React helper functions
-import pxToRem from 'assets/theme/functions/pxToRem';
+// import pxToRem from 'assets/theme/functions/pxToRem';
 
 const { transparent } = colors;
 
@@ -26,7 +26,7 @@ export default {
     select: {
       display: 'grid',
       alignItems: 'center',
-      padding: `0 ${pxToRem(12)} !important`,
+      // padding: `0 ${pxToRem(12)} !important`,
 
       '& .Mui-selected': {
         backgroundColor: transparent.main
@@ -41,7 +41,11 @@ export default {
     },
 
     icon: {
-      display: 'none'
+      // display: 'none'
+      width: '2em',
+      height: '2em',
+      top: 'calc(50% - 0.9em)',
+      color: '#000'
     }
   }
 };

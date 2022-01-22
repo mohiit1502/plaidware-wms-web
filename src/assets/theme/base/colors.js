@@ -21,7 +21,7 @@ Coded by www.creative-tim.com
 
 export default {
   background: {
-    default: '#f0f2f5'
+    default: '#f9f9f9'
   },
 
   text: {
@@ -38,6 +38,10 @@ export default {
     focus: '#ffffff'
   },
 
+  sidenavcolor:{
+    main:'#2d373c'
+  },
+
   black: {
     light: '#000000',
     main: '#000000',
@@ -45,8 +49,8 @@ export default {
   },
 
   primary: {
-    main: '#e91e63',
-    focus: '#e91e63'
+    main: '#007aff',
+    focus: '#007aff'
   },
 
   secondary: {
@@ -60,8 +64,8 @@ export default {
   },
 
   success: {
-    main: '#4CAF50',
-    focus: '#67bb6a'
+    main: '#34C759',
+    focus: '#34C759'
   },
 
   warning: {
@@ -70,8 +74,8 @@ export default {
   },
 
   error: {
-    main: '#F44335',
-    focus: '#f65f53'
+    main: '#FF3B30',
+    focus: '#FF3B30'
   },
 
   light: {
@@ -251,6 +255,7 @@ export default {
     error: '#f44336',
     light: '#adb5bd',
     dark: '#404040'
+    
   },
 
   inputBorderColor: '#d2d6da',

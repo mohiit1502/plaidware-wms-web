@@ -15,13 +15,15 @@ Coded by www.creative-tim.com
 
 // Material Dashboard 2 PRO React base styles
 import colors from 'assets/theme/base/colors';
-import borders from 'assets/theme/base/borders';
+// import borders from 'assets/theme/base/borders';
 
 // Material Dashboard 2 PRO React helper functions
 import pxToRem from 'assets/theme/functions/pxToRem';
 
 const { white } = colors;
-const { borderRadius } = borders;
+// const { borderRadius } = borders;
+
+
 
 export default {
   styleOverrides: {
@@ -32,11 +34,11 @@ export default {
     },
 
     paper: {
-      width: pxToRem(250),
+      width: pxToRem(300),
       backgroundColor: white.main,
-      height: `calc(100vh - ${pxToRem(32)})`,
-      margin: pxToRem(16),
-      borderRadius: borderRadius.xl,
+      height: `calc(100vh - ${pxToRem(0)})`,
+      margin: pxToRem(0),
+      borderRadius: 'none',
       border: 'none'
     },
 

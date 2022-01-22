@@ -56,7 +56,7 @@ function SidenavItem({ color, name, active, nested, children, open, ...rest }) {
             })
           }
         >
-          <ListItemText primary={name} />
+          <ListItemText primary={name}  />
           {children && (
             <Icon
               component="i"

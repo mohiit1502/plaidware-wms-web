@@ -40,13 +40,13 @@ import DashboardScreen from 'pages/dashboard';
 import LoginScreen from 'pages/authentication';
 
 // Material Dashboard 2 PRO React components
-import MDAvatar from 'components/MDAvatar';
+// import MDAvatar from 'components/MDAvatar';
 
 // @mui icons
 import Icon from '@mui/material/Icon';
 
 // Images
-import profilePicture from 'assets/images/team-3.jpg';
+// import profilePicture from 'assets/images/team-3.jpg';
 
 const routes = [
   {
@@ -58,25 +58,25 @@ const routes = [
 ];
 
 const protectedRoutes = [
+  // {
+  //   type: 'collapse',
+  //   name: 'Brooklyn Alice',
+  //   key: 'brooklyn-alice',
+  //   icon: <MDAvatar src={profilePicture} alt="Brooklyn Alice" size="sm" />,
+  //   collapse: [
+  //     {
+  //       name: 'Logout',
+  //       key: 'logout',
+  //       route: '/authentication/sign-in/basic',
+  //       component: <LoginScreen />
+  //     }
+  //   ]
+  // },
+  // { type: 'divider', key: 'divider-0' },
   {
     type: 'collapse',
-    name: 'Brooklyn Alice',
-    key: 'brooklyn-alice',
-    icon: <MDAvatar src={profilePicture} alt="Brooklyn Alice" size="sm" />,
-    collapse: [
-      {
-        name: 'Logout',
-        key: 'logout',
-        route: '/authentication/sign-in/basic',
-        component: <LoginScreen />
-      }
-    ]
-  },
-  { type: 'divider', key: 'divider-0' },
-  {
-    type: 'collapse',
-    name: 'Dashboards',
-    key: 'dashboards',
+    name: 'Home',
+    key: 'Home',
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
       {
@@ -86,17 +86,17 @@ const protectedRoutes = [
         component: <DashboardScreen />
       }
     ]
-  },
-  { type: 'title', title: 'Pages', key: 'title-pages' },
-  {
-    type: 'collapse',
-    name: 'Change Log',
-    key: 'changelog',
-    href: 'https://github.com/creativetimofficial/ct-material-dashboard/-pro-material-ui/blob/main/CHANGELOG.md',
-    icon: <Icon fontSize="medium">receipt_long</Icon>,
-    noCollapse: true,
-    layout: '/app'
   }
+  // { type: 'title', title: 'Pages', key: 'title-pages' },
+  // {
+  //   type: 'collapse',
+  //   name: 'Change Log',
+  //   key: 'changelog',
+  //   href: 'https://github.com/creativetimofficial/ct-material-dashboard/-pro-material-ui/blob/main/CHANGELOG.md',
+  //   icon: <Icon fontSize="medium">receipt_long</Icon>,
+  //   noCollapse: true,
+  //   layout: '/app'
+  // }
 ];
 
 export { routes, protectedRoutes };

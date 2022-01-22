@@ -48,7 +48,7 @@ import {
   setWhiteSidenav
 } from 'context';
 
-function Sidenav({ color, brand, brandName, routes, ...rest }) {
+function Sidenav({ color, brandName, routes, ...rest }) {
   const [openCollapse, setOpenCollapse] = useState(false);
   const [openNestedCollapse, setOpenNestedCollapse] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
@@ -59,6 +59,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const items = pathname.split('/').slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
+  
 
   let textColor = 'white';
 
@@ -231,7 +232,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
       variant="permanent"
       ownerState={{ transparentSidenav, whiteSidenav, miniSidenav, darkMode }}
     >
-      <MDBox pt={3} pb={1} px={4} textAlign="center">
+      <MDBox pt={3} pb={3} px={2} textAlign="center">
         <MDBox
           display={{ xs: 'block', xl: 'none' }}
           position="absolute"
@@ -246,23 +247,22 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           </MDTypography>
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
-          {brand && <MDBox component="img" src={brand} alt="Brand" width="2rem" />}
           <MDBox
             width={!brandName && '100%'}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <MDTypography component="h6" variant="button" fontWeight="medium" color={textColor}>
+            <MDTypography fontSize="2rem"  component="h1" variant="button" fontWeight="bold"  color={textColor}>
               {brandName}
             </MDTypography>
           </MDBox>
         </MDBox>
       </MDBox>
-      <Divider
+      {/* <Divider
         light={
           (!darkMode && !whiteSidenav && !transparentSidenav) ||
           (darkMode && !transparentSidenav && whiteSidenav)
         }
-      />
+      /> */}
       <List>{renderRoutes}</List>
     </SidenavRoot>
   );

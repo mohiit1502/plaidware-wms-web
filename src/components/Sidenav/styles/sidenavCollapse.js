@@ -13,12 +13,12 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 function collapseItem(theme, ownerState) {
-  const { palette, transitions, breakpoints, boxShadows, borders, functions } = theme;
+  const { palette, transitions, breakpoints, boxShadows, functions } = theme;
   const { active, transparentSidenav, whiteSidenav, darkMode } = ownerState;
 
   const { white, transparent, dark, grey } = palette;
   const { md } = boxShadows;
-  const { borderRadius } = borders;
+  // const { borderRadius } = borders;
   const { pxToRem, rgba } = functions;
 
   return {
@@ -41,9 +41,9 @@ function collapseItem(theme, ownerState) {
     display: 'flex',
     alignItems: 'center',
     width: '100%',
-    padding: `${pxToRem(8)} ${pxToRem(16)}`,
-    margin: `${pxToRem(1.5)} ${pxToRem(16)}`,
-    borderRadius: borderRadius.md,
+    padding: `${pxToRem(1.6)} ${pxToRem(14)}`,
+    margin: `${pxToRem(1.5)} ${pxToRem(0)}`,
+    borderRadius:'none',
     cursor: 'pointer',
     userSelect: 'none',
     whiteSpace: 'nowrap',
@@ -96,9 +96,9 @@ const collapseIcon = ({ palette: { white, gradients } }, { active }) => ({
 
 function collapseText(theme, ownerState) {
   const { typography, transitions, breakpoints, functions } = theme;
-  const { miniSidenav, transparentSidenav, active } = ownerState;
+  const { miniSidenav, transparentSidenav } = ownerState;
 
-  const { size, fontWeightRegular, fontWeightLight } = typography;
+  const { size, fontWeightRegular } = typography;
   const { pxToRem } = functions;
 
   return {
@@ -115,7 +115,7 @@ function collapseText(theme, ownerState) {
     },
 
     '& span': {
-      fontWeight: active ? fontWeightRegular : fontWeightLight,
+      fontWeight: fontWeightRegular,
       fontSize: size.sm,
       lineHeight: 0
     }

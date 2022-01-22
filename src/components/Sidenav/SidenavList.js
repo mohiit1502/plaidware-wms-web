@@ -23,8 +23,9 @@ function SidenavList({ children }) {
   return (
     <List
       sx={{
-        px: 2,
-        my: 0.3
+        px: 0,
+        my: 0.3,
+        borderRadius: 'none'
       }}
     >
       {children}

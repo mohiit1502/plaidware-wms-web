@@ -75,15 +75,7 @@ function Breadcrumbs({ icon, title, route, light }) {
           {title.replace('-', ' ')}
         </MDTypography>
       </MuiBreadcrumbs>
-      <MDTypography
-        noWrap
-        fontWeight="bold"
-        textTransform="capitalize"
-        variant="h6"
-        color={light ? 'white' : 'dark'}
-      >
-        {title.replace('-', ' ')}
-      </MDTypography>
+
     </MDBox>
   );
 }

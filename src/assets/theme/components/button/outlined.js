@@ -51,9 +51,10 @@ export default {
   },
 
   large: {
-    minHeight: pxToRem(46),
-    padding: `${pxToRem(12)} ${pxToRem(64)}`,
+    minHeight: pxToRem(43),
+    padding: `${pxToRem(10)} ${pxToRem(70)}`,
     fontSize: size.sm,
+    minWidth:pxToRem(240),
 
     '& .material-icon, .material-icons-round, svg': {
       fontSize: `${pxToRem(22)} !important`

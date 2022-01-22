@@ -14,9 +14,11 @@ Coded by www.creative-tim.com
 */
 
 import { useState, useEffect } from 'react';
+// import Grid from '@mui/material/Grid';
+
 
 // react-router components
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 // prop-types is a library for typechecking of props.
 import PropTypes from 'prop-types';
@@ -30,20 +32,23 @@ import Icon from '@mui/material/Icon';
 
 // Material Dashboard 2 PRO React components
 import MDBox from 'components/MDBox';
-import MDInput from 'components/MDInput';
+// import MDInput from 'components/MDInput';
 import MDBadge from 'components/MDBadge';
 
 // Material Dashboard 2 PRO React example components
 import Breadcrumbs from 'components/Breadcrumbs';
 import NotificationItem from 'components/NotificationItem';
 
+// import InputAdornment from '@mui/material/InputAdornment';
+
+
 // Custom styles for DashboardNavbar
 import {
-  navbar,
-  navbarContainer,
+  // navbar,
+  // navbarContainer,
   navbarRow,
   navbarIconButton,
-  navbarDesktopMenu,
+  // navbarDesktopMenu,
   navbarMobileMenu
 } from 'components/Navbars/DashboardNavbar/styles';
 
@@ -54,6 +59,11 @@ import {
   setMiniSidenav,
   setOpenConfigurator
 } from 'context';
+import SearchBar from 'components/SearchBar';
+import { Box } from '@mui/material';
+
+
+
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -61,6 +71,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split('/').slice(1);
+  
 
   useEffect(() => {
     // Setting the navbar type
@@ -72,7 +83,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
     // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
-      setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) || !fixedNavbar);
+      setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) && !fixedNavbar);
     }
 
     /** 
@@ -124,71 +135,75 @@ function DashboardNavbar({ absolute, light, isMini }) {
       return colorValue;
     }
   });
-
+  
   return (
     <AppBar
       position={absolute ? 'absolute' : navbarType}
+      top={top ? '0' : navbarType}
       color="inherit"
-      sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
+      className="header"
+      // sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
-      <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
-          <IconButton disableRipple sx={navbarDesktopMenu} size="small" onClick={handleMiniSidenav}>
-            <Icon fontSize="medium" sx={iconsStyle}>
-              {miniSidenav ? 'menu_open' : 'menu'}
-            </Icon>
-          </IconButton>
-        </MDBox>
-        {isMini ? null : (
-          <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
-            <MDBox color={light ? 'white' : 'inherit'}>
-              <Link to="/authentication/sign-in/basic">
-                <IconButton disableRipple sx={navbarIconButton} size="small">
-                  <Icon sx={iconsStyle}>account_circle</Icon>
+      <Box 
+        sx={{
+          paddingTop: '8px',
+          paddingBottom: '8px',
+          marginBottom: '5px',
+          boxShadow: '0px 1px 4px rgb(0 0 0 / 8%)',
+          width: '100% !important'
+        }}>
+        <Toolbar className="custom-header" >
+          {isMini ? null : (
+          
+            <MDBox display="flex" width="100% !important" max-width="100% !important">
+              <MDBox sx={{ width:'100%',  maxWidth: '100%' }} pr={3}>
+                <SearchBar />
+              </MDBox>
+              <MDBox display="flex" color={light ? 'white' : 'inherit'}>
+                <IconButton
+                  disableRipple
+                  size="small"
+                  color="inherit"
+                  sx={navbarMobileMenu}
+                  onClick={handleMiniSidenav}
+                >
+                  <Icon sx={iconsStyle} fontSize="medium">
+                    {miniSidenav ? 'menu_open' : 'menu'}
+                  </Icon>
                 </IconButton>
-              </Link>
-              <IconButton
-                disableRipple
-                size="small"
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? 'menu_open' : 'menu'}
-                </Icon>
-              </IconButton>
-              <IconButton
-                disableRipple
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              <IconButton
-                disableRipple
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <MDBadge circular badgeContent={9} color="error" size="xs">
-                  <Icon sx={iconsStyle}>notifications</Icon>
-                </MDBadge>
-              </IconButton>
-              {renderMenu()}
+                <IconButton
+                  disableRipple
+                  size="small"
+                  color="inherit"
+                  sx={navbarIconButton}
+                  onClick={handleConfiguratorOpen}
+                >
+                  <Icon sx={iconsStyle}>settings</Icon>
+                </IconButton>
+                <IconButton
+                  disableRipple
+                  size="small"
+                  color="inherit"
+                  sx={navbarIconButton}
+                  aria-controls="notification-menu"
+                  aria-haspopup="true"
+                  variant="contained"
+                  onClick={handleOpenMenu}
+                >
+                  <MDBadge circular badgeContent={9} color="error" size="xs">
+                    <Icon sx={iconsStyle}>notifications</Icon>
+                  </MDBadge>
+                </IconButton>
+                {renderMenu()}
+              </MDBox>
             </MDBox>
-          </MDBox>
-        )}
+          )}
+        </Toolbar>
+      </Box> 
+      <Toolbar variant='dense'>
+        <MDBox color="inherit" mb={{ xs: 2, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
+          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+        </MDBox>
       </Toolbar>
     </AppBar>
   );
@@ -206,6 +221,7 @@ DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool
+  
 };
 
 export default DashboardNavbar;

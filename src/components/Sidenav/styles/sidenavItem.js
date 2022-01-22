@@ -15,19 +15,19 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 function item(theme, ownerState) {
-  const { palette, borders, functions, transitions } = theme;
+  const { palette, functions, transitions } = theme;
   const { active, color, transparentSidenav, whiteSidenav, darkMode } = ownerState;
 
   const { transparent, white, grey } = palette;
-  const { borderRadius } = borders;
+  // const { borderRadius } = borders;
   const { rgba } = functions;
 
   return {
-    pl: 3,
+    pl: 4.5,
     mt: 0.375,
     mb: 0.3,
     width: '100%',
-    borderRadius: borderRadius.md,
+    borderRadius: 'none',
     cursor: 'pointer',
     backgroundColor: () => {
       let backgroundValue = transparent.main;
@@ -73,8 +73,8 @@ function itemContent(theme, ownerState) {
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    padding: `${pxToRem(12)} ${pxToRem(16)}`,
-    marginLeft: pxToRem(18),
+    padding: `${pxToRem(7)} ${pxToRem(0)}`,
+    marginLeft: pxToRem(20),
     userSelect: 'none',
     position: 'relative',
 
@@ -104,9 +104,9 @@ function itemContent(theme, ownerState) {
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
-      left: pxToRem(-15),
+      left: pxToRem(-25),
       opacity: 1,
-      borderRadius: '50%',
+      borderRadius: 'none',
       fontSize: size.sm
     }
   };

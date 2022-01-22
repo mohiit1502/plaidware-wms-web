@@ -12,7 +12,7 @@ function DashboardScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox px={2} py={3}>
         <h1>Hello Dashboard</h1>
         <button onClick={handleLogout}>Logout</button>
       </MDBox>
@@ -20,5 +20,4 @@ function DashboardScreen() {
     </DashboardLayout>
   );
 }
-
 export default DashboardScreen;
