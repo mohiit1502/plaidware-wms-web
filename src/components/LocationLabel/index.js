@@ -1,5 +1,6 @@
 // import Box from '@mui/material/Box';
 import { makeStyles } from '@mui/styles';
+
 import PropTypes from 'prop-types';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
@@ -21,6 +22,7 @@ const useStyles = makeStyles({
   }
 });
 
+
 function LocationLabel({ area, row, bay, level, position }) {
   const classes = useStyles();
   return (
@@ -28,7 +30,6 @@ function LocationLabel({ area, row, bay, level, position }) {
       sx={{
         width: 381,
         height: 138,
-
         backgroundColor: ({ palette: { background } }) => background.default,
         padding: '32px 40px'
       }}
