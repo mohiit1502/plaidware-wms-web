@@ -2,14 +2,10 @@
 =========================================================
 * Material Dashboard 2 PRO React - v2.0.0
 =========================================================
-
 * Product Page: https://www.creative-tim.com/product/material-dashboard-pro-react
 * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-
 Coded by www.creative-tim.com
-
  =========================================================
-
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
@@ -21,36 +17,31 @@ import PropTypes from 'prop-types';
 
 // @mui material components
 import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
-import Icon from '@mui/material/Icon';
+import ArrowRight from 'assets/images/CarretArrowRightIcon';
 
 // Material Dashboard 2 PRO React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 
-function Breadcrumbs({ icon, title, route, light }) {
-  const routes = route.slice(0, -1);
-
+function Breadcrumbs({ title, route, light }) {
   return (
-    <MDBox mr={{ xs: 0, xl: 8 }}>
+    <MDBox
+      mr={{ xs: 0, xl: 8 }}
+      sx={{
+        padding: '12.5px 24px',
+        backgroundColor: '#fff'
+      }}
+    >
       <MuiBreadcrumbs
         sx={{
           '& .MuiBreadcrumbs-separator': {
-            color: ({ palette: { white, grey } }) => (light ? white.main : grey[600])
+            color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
+            padding: '0 8px'
           }
         }}
+        separator={<ArrowRight height={15} width={15} />}
       >
-        <Link to="/">
-          <MDTypography
-            component="span"
-            variant="body2"
-            color={light ? 'white' : 'dark'}
-            opacity={light ? 0.8 : 0.5}
-            sx={{ lineHeight: 0 }}
-          >
-            <Icon>{icon}</Icon>
-          </MDTypography>
-        </Link>
-        {routes.map((el) => (
+        {route.map((el) => (
           <Link to={`/${el}`} key={el}>
             <MDTypography
               component="span"
@@ -58,7 +49,6 @@ function Breadcrumbs({ icon, title, route, light }) {
               fontWeight="regular"
               textTransform="capitalize"
               color={light ? 'white' : 'dark'}
-              opacity={light ? 0.8 : 0.5}
               sx={{ lineHeight: 0 }}
             >
               {el}
@@ -75,7 +65,6 @@ function Breadcrumbs({ icon, title, route, light }) {
           {title.replace('-', ' ')}
         </MDTypography>
       </MuiBreadcrumbs>
-
     </MDBox>
   );
 }
@@ -87,7 +76,6 @@ Breadcrumbs.defaultProps = {
 
 // Typechecking props for the Breadcrumbs
 Breadcrumbs.propTypes = {
-  icon: PropTypes.node.isRequired,
   title: PropTypes.string.isRequired,
   route: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   light: PropTypes.bool
