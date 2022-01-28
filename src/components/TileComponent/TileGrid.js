@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import { makeStyles } from '@mui/styles';
 
-import SetupIcon from 'assets/images/SetupIcon';
 import Tile from './Tile';
 
 const useStyles = makeStyles({
@@ -20,11 +20,7 @@ const useStyles = makeStyles({
   }
 });
 
-
-// TODO: When using this component, please use props here instead.
-// The below code was left as a sample for testing.
-// Please also remove this comment when the above are complete
-export default function TileGrid() {
+export default function TileGrid({ tiles }) {
   const classes = useStyles();
   // to make the grid adjust its elemnts:
   const myContainer = useRef(null);
@@ -37,42 +33,22 @@ export default function TileGrid() {
   });
   return (
     <Box className={classes.menu} ref={myContainer}>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="50px" height="50px" />
-      </Tile>
-      <Tile data={{ name: 'Setup', path: '/' }}>
-        {' '}
-        <SetupIcon color="#007aff" width="40px" height="40px" />
-      </Tile>
+      {tiles &&
+        tiles.map((tile) => (
+          <Tile key={tile.name + tile.path} data={{ name: tile.name, path: tile.path }}>
+            {' '}
+            {tile.icon}
+          </Tile>
+        ))}
     </Box>
   );
 }
+
+TileGrid.propTypes = {
+  // tiles: PropTypes.object({
+  //   name: PropTypes.string.isRequired,
+  //   path: PropTypes.string.isRequired,
+  //   icon: PropTypes.any
+  // })
+  tiles: PropTypes.any
+};
