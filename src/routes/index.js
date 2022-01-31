@@ -45,6 +45,7 @@ import LoginScreen from 'pages/authentication';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import WarehouseScreen from 'pages/warehouse';
+import LabelingScreen from 'pages/labeling';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -85,7 +86,7 @@ const protectedRoutes = [
         key: 'dashboard',
         route: '/dashboard',
         component: <DashboardScreen />
-      }      
+      }
     ]
   },
   {
@@ -99,6 +100,26 @@ const protectedRoutes = [
         key: 'warehouse',
         route: '/warehouse',
         component: <WarehouseScreen />
+      }
+    ]
+  },
+  {
+    type: 'collapse',
+    name: 'Setup',
+    key: 'Setup',
+    icon: <Icon fontSize="medium">dashboard</Icon>,
+    collapse: [
+      {
+        name: 'Warehouse Design',
+        key: 'warehouse',
+        route: '/warehouse',
+        component: <WarehouseScreen />
+      },
+      {
+        name: 'Labeling',
+        key: 'labeling',
+        route: '/labeling',
+        component: <LabelingScreen />
       }
     ]
   }
