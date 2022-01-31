@@ -45,6 +45,7 @@ import LoginScreen from 'pages/authentication';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import WarehouseScreen from 'pages/warehouse';
+import SetupHome from 'pages/setup';
 import LabelingScreen from 'pages/labeling';
 
 // Images
@@ -95,6 +96,12 @@ const protectedRoutes = [
     key: 'Setup',
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
+      {
+        name: 'Setup Home',
+        key: 'warehouse-setup',
+        route: '/warehouse-setup',
+        component: <SetupHome />
+      },
       {
         name: 'Warehouse Design',
         key: 'warehouse',
