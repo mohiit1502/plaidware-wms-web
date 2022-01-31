@@ -100,20 +100,6 @@ const protectedRoutes = [
         key: 'warehouse',
         route: '/warehouse',
         component: <WarehouseScreen />
-      }
-    ]
-  },
-  {
-    type: 'collapse',
-    name: 'Setup',
-    key: 'Setup',
-    icon: <Icon fontSize="medium">dashboard</Icon>,
-    collapse: [
-      {
-        name: 'Warehouse Design',
-        key: 'warehouse',
-        route: '/warehouse',
-        component: <WarehouseScreen />
       },
       {
         name: 'Labeling',
