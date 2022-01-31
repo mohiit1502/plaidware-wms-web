@@ -45,6 +45,7 @@ import LoginScreen from 'pages/authentication';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import WarehouseScreen from 'pages/warehouse';
+import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
 import LabelingScreen from 'pages/labeling';
 
@@ -107,6 +108,12 @@ const protectedRoutes = [
         key: 'warehouse',
         route: '/warehouse',
         component: <WarehouseScreen />
+      },
+      {
+        name: 'New/Edit Warehouse Details',
+        key: 'warehouse-form',
+        route: '/warehouse-design-form',
+        component: <NewWarehouseDetails />
       },
       {
         name: 'Labeling',
