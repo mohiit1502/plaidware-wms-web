@@ -28,6 +28,7 @@ const row = (x, i, header) => (
     ))}
   </TableRow>
 );
+
 export default function BasicTable({ data, header, backgroundColor }) {
   const classes = useStyles();
   const TableContainer = styled('div')(

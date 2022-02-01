@@ -45,9 +45,10 @@ import LoginScreen from 'pages/authentication';
 // @mui icons
 import Icon from '@mui/material/Icon';
 import WarehouseScreen from 'pages/warehouse';
+import LabelingScreen from 'pages/labeling';
+import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
-import LabelingScreen from 'pages/labeling';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -110,16 +111,22 @@ const protectedRoutes = [
         component: <WarehouseScreen />
       },
       {
-        name: 'New/Edit Warehouse Details',
-        key: 'warehouse-form',
-        route: '/warehouse-design-form',
-        component: <NewWarehouseDetails />
-      },
-      {
         name: 'Labeling',
         key: 'labeling',
         route: '/labeling',
         component: <LabelingScreen />
+      },
+      {
+        name: 'Users & Access',
+        key: 'users&access',
+        route: '/users&access',
+        component: <UserAccessScreen />
+      },
+      {
+        name: 'New/Edit Warehouse Details',
+        key: 'warehouse-form',
+        route: '/warehouse-design-form',
+        component: <NewWarehouseDetails />
       }
     ]
   }
