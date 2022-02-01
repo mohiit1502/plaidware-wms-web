@@ -46,6 +46,7 @@ import LoginScreen from 'pages/authentication';
 import Icon from '@mui/material/Icon';
 import InventoryScreen from 'pages/inventory';
 import WarehouseScreen from 'pages/warehouse';
+import HomepageScreen from 'pages/homepage';
 import LabelingScreen from 'pages/labeling';
 import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
@@ -84,6 +85,20 @@ const protectedRoutes = [
     type: 'collapse',
     name: 'Home',
     key: 'Home',
+    icon: <Icon fontSize="medium">dashboard</Icon>,
+    collapse: [
+      {
+        name: 'Home',
+        key: 'home',
+        route: '/home',
+        component: <HomepageScreen />
+      }
+    ]
+  },
+  {
+    type: 'collapse',
+    name: 'Test',
+    key: 'Test',
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
       {
