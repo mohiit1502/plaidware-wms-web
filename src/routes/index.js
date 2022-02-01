@@ -44,6 +44,7 @@ import LoginScreen from 'pages/authentication';
 
 // @mui icons
 import Icon from '@mui/material/Icon';
+import InventoryScreen from 'pages/inventory';
 import WarehouseScreen from 'pages/warehouse';
 import LabelingScreen from 'pages/labeling';
 import UserAccessScreen from 'pages/useraccess';
@@ -98,6 +99,12 @@ const protectedRoutes = [
     key: 'Setup',
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
+      {
+        name: 'Inventory Definition',
+        key: 'inventory',
+        route: '/inventory',
+        component: <InventoryScreen />
+      },
       {
         name: 'Setup Home',
         key: 'warehouse-setup',

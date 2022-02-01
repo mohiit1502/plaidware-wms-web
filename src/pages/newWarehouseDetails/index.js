@@ -2,7 +2,7 @@ import { Box, Grid, TextField } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import ImageUpload from 'components/ImageUpload/Index';
+import ImageUpload from 'components/ImageUpload';
 import MDButton from 'components/Button';
 
 const useStyles = makeStyles({
@@ -13,6 +13,8 @@ const useStyles = makeStyles({
     marginBottom: '4px'
   }
 });
+
+const previewImg = [1, 2, 3];
 
 function NewWarehouseDetails() {
   const classes = useStyles();
@@ -62,7 +64,7 @@ function NewWarehouseDetails() {
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
                 <Box sx={{ marginTop: '30px' }}>
-                  <ImageUpload />
+                  <ImageUpload heading="Upload Warehouse Image" previewImg={previewImg} />
                 </Box>
               </Grid>
             </Grid>
