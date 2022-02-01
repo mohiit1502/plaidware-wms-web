@@ -50,6 +50,7 @@ import LabelingScreen from 'pages/labeling';
 import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
+import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -122,6 +123,12 @@ const protectedRoutes = [
         key: 'labeling',
         route: '/labeling',
         component: <LabelingScreen />
+      },
+      {
+        name: 'Warehouse Details Table',
+        key: 'warehouse-details-table',
+        route: '/warehouse-details-table',
+        component: <WarehouseDetailsTables />
       },
       {
         name: 'Users & Access',
