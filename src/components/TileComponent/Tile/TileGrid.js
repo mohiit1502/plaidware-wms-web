@@ -35,7 +35,7 @@ export default function TileGrid({ tiles }) {
     <Box className={classes.menu} ref={myContainer}>
       {tiles &&
         tiles.map((tile) => (
-          <Tile key={tile.name} data={{ name: tile.name, path: tile.path }} simple={tile.simple}>
+          <Tile key={tile.name + tile.path} data={{ name: tile.name, path: tile.path }}>
             {' '}
             {tile.icon}
           </Tile>
@@ -45,5 +45,10 @@ export default function TileGrid({ tiles }) {
 }
 
 TileGrid.propTypes = {
-  tiles: PropTypes.array
+  // tiles: PropTypes.object({
+  //   name: PropTypes.string.isRequired,
+  //   path: PropTypes.string.isRequired,
+  //   icon: PropTypes.any
+  // })
+  tiles: PropTypes.any
 };

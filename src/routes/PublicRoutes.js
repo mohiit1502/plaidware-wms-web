@@ -10,7 +10,7 @@ const PublicRoutes = ({ component }) => {
     return <>{component} </>;
   }
 
-  return <Navigate to="/dashboard" />;
+  return <Navigate to="/home" />;
 };
 
 PublicRoutes.propTypes = {

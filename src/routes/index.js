@@ -44,10 +44,14 @@ import LoginScreen from 'pages/authentication';
 
 // @mui icons
 import Icon from '@mui/material/Icon';
+import InventoryScreen from 'pages/inventory';
 import WarehouseScreen from 'pages/warehouse';
+import HomepageScreen from 'pages/homepage';
+import LabelingScreen from 'pages/labeling';
+import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
-import LabelingScreen from 'pages/labeling';
+import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -84,9 +88,25 @@ const protectedRoutes = [
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
       {
+        name: 'Home',
+        key: 'home',
+        route: '/home',
+        component: <HomepageScreen />
+      }
+    ]
+  },
+  {
+    type: 'collapse',
+    name: 'Test',
+    key: 'Test',
+    hide: true,
+    icon: <Icon fontSize="medium">dashboard</Icon>,
+    collapse: [
+      {
         name: 'Dashboard',
         key: 'dashboard',
         route: '/dashboard',
+        hide: true,
         component: <DashboardScreen />
       }
     ]
@@ -97,6 +117,12 @@ const protectedRoutes = [
     key: 'Setup',
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
+      {
+        name: 'Inventory Definition',
+        key: 'inventory',
+        route: '/inventory',
+        component: <InventoryScreen />
+      },
       {
         name: 'Setup Home',
         key: 'warehouse-setup',
@@ -110,16 +136,28 @@ const protectedRoutes = [
         component: <WarehouseScreen />
       },
       {
-        name: 'New/Edit Warehouse Details',
-        key: 'warehouse-form',
-        route: '/warehouse-design-form',
-        component: <NewWarehouseDetails />
-      },
-      {
         name: 'Labeling',
         key: 'labeling',
         route: '/labeling',
         component: <LabelingScreen />
+      },
+      {
+        name: 'Warehouse Details Table',
+        key: 'warehouse-details-table',
+        route: '/warehouse-details-table',
+        component: <WarehouseDetailsTables />
+      },
+      {
+        name: 'Users & Access',
+        key: 'users&access',
+        route: '/users&access',
+        component: <UserAccessScreen />
+      },
+      {
+        name: 'New/Edit Warehouse Details',
+        key: 'warehouse-form',
+        route: '/warehouse-design-form',
+        component: <NewWarehouseDetails />
       }
     ]
   }

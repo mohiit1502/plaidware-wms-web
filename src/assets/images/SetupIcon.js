@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const SetupIcon = ({ width = 25, height = 24, color = '#292D32', ...props }) => (
+const SetupIcon = ({ width = 96, height = 96, color = '#007aff', ...props }) => (
   <svg
     width={width}
     height={height}
