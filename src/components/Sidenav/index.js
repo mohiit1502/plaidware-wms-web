@@ -59,7 +59,6 @@ function Sidenav({ color, brandName, routes, ...rest }) {
   const items = pathname.split('/').slice(1);
   const itemParentName = items[1];
   const itemName = items[items.length - 1];
-  
 
   let textColor = 'white';
 
@@ -120,8 +119,10 @@ function Sidenav({ color, brandName, routes, ...rest }) {
   };
   // Render the all the collpases from the routes.js
   const renderCollapse = (collapses) =>
-    collapses.map(({ name, collapse, route, href, key }) => {
+    collapses.map(({ name, collapse, route, href, key, hide }) => {
       let returnValue;
+
+      if (hide) return null;
 
       if (collapse) {
         returnValue = (
@@ -162,8 +163,10 @@ function Sidenav({ color, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, collapse, noCollapse, key, href }) => {
+    ({ type, name, icon, title, collapse, noCollapse, key, href, hide }) => {
       let returnValue;
+
+      if (hide) return null;
 
       if (type === 'collapse') {
         returnValue = href ? (
@@ -251,7 +254,13 @@ function Sidenav({ color, brandName, routes, ...rest }) {
             width={!brandName && '100%'}
             sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
           >
-            <MDTypography fontSize="2rem"  component="h1" variant="button" fontWeight="bold"  color={textColor}>
+            <MDTypography
+              fontSize="2rem"
+              component="h1"
+              variant="button"
+              fontWeight="bold"
+              color={textColor}
+            >
               {brandName}
             </MDTypography>
           </MDBox>

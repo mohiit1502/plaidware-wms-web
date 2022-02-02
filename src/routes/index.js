@@ -99,12 +99,14 @@ const protectedRoutes = [
     type: 'collapse',
     name: 'Test',
     key: 'Test',
+    hide: true,
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
       {
         name: 'Dashboard',
         key: 'dashboard',
         route: '/dashboard',
+        hide: true,
         component: <DashboardScreen />
       }
     ]
