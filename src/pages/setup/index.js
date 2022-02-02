@@ -7,6 +7,7 @@ import WarehouseIcon from 'assets/images/WarehouseIcon';
 import InventoryIcon from 'assets/images/InventoryIcon';
 import ProfileCircleIcon from 'assets/images/ProfileCircleIcon';
 import LabelIcon from 'assets/images/LabelIcon';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
   iconSize: {
@@ -77,19 +78,21 @@ function SetupHome() {
           {data.map((items) => (
             <>
               <Grid item xs={12} sm={6} md={6}>
-                <MDBox
-                  key={items.name + items.path}
-                  data={{ name: items.name, path: items.path }}
-                  className={classes.centerContent}
-                  sx={{
-                    height: 230,
-                    backgroundColor: ({ palette: { white } }) => white.main,
-                    padding: '32px 40px'
-                  }}
-                >
-                  {items.icon}
-                  {items.name}
-                </MDBox>
+                <Link to={items.path}>
+                  <MDBox
+                    key={items.name + items.path}
+                    data={{ name: items.name, path: items.path }}
+                    className={classes.centerContent}
+                    sx={{
+                      height: 230,
+                      backgroundColor: ({ palette: { white } }) => white.main,
+                      padding: '32px 40px'
+                    }}
+                  >
+                    {items.icon}
+                    {items.name}
+                  </MDBox>
+                </Link>
               </Grid>
             </>
           ))}
