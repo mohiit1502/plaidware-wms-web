@@ -8,6 +8,7 @@ import WarehouseActions from 'redux/WarehouseRedux';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WarehouseSelectors } from 'redux/WarehouseRedux';
+import WarehouseIcon from 'assets/images/WarehouseIcon';
 
 function WarehouseScreen() {
   const dispatch = useDispatch();
@@ -27,7 +28,12 @@ function WarehouseScreen() {
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox px={2} py={3}>
-        <TileBasic tiles={warehouseData} />
+        <TileBasic
+          tiles={warehouseData.map((warehouse) => ({
+            ...warehouse,
+            icon: <WarehouseIcon height={96} width={96} />
+          }))}
+        />
       </MDBox>
       <Footer />
     </DashboardLayout>
