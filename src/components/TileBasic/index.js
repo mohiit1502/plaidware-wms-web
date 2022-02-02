@@ -31,30 +31,28 @@ export default function TileBasic({ tiles }) {
   const classes = useStyles();
   return (
     <>
-      <container>
-        <Grid container spacing={2}>
-          {tiles &&
-            tiles.map((tile) => (
-              <>
-                <Grid item xs={12} sm={6} md={tiles.length <= 4 ? undefined : 4}>
-                  <MDBox
-                    key={tile.name + tile.path}
-                    data={{ name: tile.name, path: tile.path }}
-                    className={classes.centerContent}
-                    sx={{
-                      height: 200,
-                      backgroundColor: ({ palette: { white } }) => white.main,
-                      padding: '32px 40px'
-                    }}
-                  >
-                    {tile.icon}
-                    {tile.name}
-                  </MDBox>
-                </Grid>
-              </>
-            ))}
-        </Grid>
-      </container>
+      <Grid container spacing={2}>
+        {tiles &&
+          tiles.map((tile) => (
+            <>
+              <Grid item xs={12} sm={6} md={tiles.length <= 4 ? undefined : 4}>
+                <MDBox
+                  key={tile.name + tile.path}
+                  data={{ name: tile.name, path: tile.path }}
+                  className={classes.centerContent}
+                  sx={{
+                    height: 200,
+                    backgroundColor: ({ palette: { white } }) => white.main,
+                    padding: '32px 40px'
+                  }}
+                >
+                  {tile.icon}
+                  {tile.name}
+                </MDBox>
+              </Grid>
+            </>
+          ))}
+      </Grid>
     </>
   );
 }
