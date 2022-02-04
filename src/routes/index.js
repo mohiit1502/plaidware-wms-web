@@ -47,11 +47,12 @@ import Icon from '@mui/material/Icon';
 import InventoryScreen from 'pages/inventory';
 import WarehouseScreen from 'pages/warehouse';
 import HomepageScreen from 'pages/homepage';
-import LabelingScreen from 'pages/labeling';
+import LocationLabelingScreen from 'pages/labeling';
 import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
 import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
+import LabelingHome from 'pages/labellingHome';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -118,16 +119,16 @@ const protectedRoutes = [
     icon: <Icon fontSize="medium">dashboard</Icon>,
     collapse: [
       {
+        name: 'Setup Home',
+        key: 'setup-home',
+        route: '/setup',
+        component: <SetupHome />
+      },
+      {
         name: 'Inventory Definition',
         key: 'inventory',
         route: '/inventory',
         component: <InventoryScreen />
-      },
-      {
-        name: 'Setup Home',
-        key: 'warehouse-setup',
-        route: '/warehouse-setup',
-        component: <SetupHome />
       },
       {
         name: 'Warehouse Design',
@@ -136,10 +137,17 @@ const protectedRoutes = [
         component: <WarehouseScreen />
       },
       {
+        name: 'Location Labeling',
+        key: 'Location labeling',
+        route: '/location-labeling',
+        component: <LocationLabelingScreen />
+      },
+      {
         name: 'Labeling',
         key: 'labeling',
+        hide: true,
         route: '/labeling',
-        component: <LabelingScreen />
+        component: <LabelingHome />
       },
       {
         name: 'Warehouse Details Table',

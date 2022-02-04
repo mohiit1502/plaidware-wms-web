@@ -1,4 +1,3 @@
-import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
 import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
@@ -27,14 +26,13 @@ function WarehouseScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox px={2} py={3}>
-        <TileBasic
-          tiles={warehouseData.map((warehouse) => ({
-            ...warehouse,
-            icon: <WarehouseIcon height={96} width={96} />
-          }))}
-        />
-      </MDBox>
+      <TileBasic
+        tiles={warehouseData.map((warehouse) => ({
+          ...warehouse,
+          icon: <WarehouseIcon height={96} width={96} />,
+          path: '/'
+        }))}
+      />
       <Footer />
     </DashboardLayout>
   );
