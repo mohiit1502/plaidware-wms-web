@@ -16,13 +16,13 @@ export default WarehouseActions;
 
 /* ------------- Initial State ------------- */
 export const INITIAL_STATE = Immutable({
-  warehouseDetail: null,
+  warehouseDetail: [],
   error: {}
 });
 
 /* ------------- Selectors ------------- */
 export const WarehouseSelectors = {
-  getWarehouseDetail: (state) => state.warehouse.warehouseDetail  
+  getWarehouseDetail: (state) => state.warehouse.warehouseDetail
 };
 
 /* ------------- Reducers ------------- */

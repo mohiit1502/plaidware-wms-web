@@ -48,27 +48,28 @@ export default function TileBasic({ tiles }) {
     <>
       <MDBox px={2} py={3}>
         <Grid container spacing={2}>
-          {tiles.map((items) => (
-            <>
-              <Grid item xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
-                <Link to={items.path}>
-                  <MDBox
-                    key={items.name + items.path}
-                    data={{ name: items.name, path: items.path }}
-                    className={classes.centerContent}
-                    sx={{
-                      height: 230,
-                      backgroundColor: ({ palette: { white } }) => white.main,
-                      padding: '32px 40px'
-                    }}
-                  >
-                    {items.icon}
-                    {items.name}
-                  </MDBox>
-                </Link>
-              </Grid>
-            </>
-          ))}
+          {tiles &&
+            tiles.map((items) => (
+              <>
+                <Grid item xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
+                  <Link to={items.path}>
+                    <MDBox
+                      key={items.name + items.path}
+                      data={{ name: items.name, path: items.path }}
+                      className={classes.centerContent}
+                      sx={{
+                        height: 230,
+                        backgroundColor: ({ palette: { white } }) => white.main,
+                        padding: '32px 40px'
+                      }}
+                    >
+                      {items.icon}
+                      {items.name}
+                    </MDBox>
+                  </Link>
+                </Grid>
+              </>
+            ))}
         </Grid>
       </MDBox>
     </>
