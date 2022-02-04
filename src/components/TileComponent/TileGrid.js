@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import { makeStyles } from '@mui/styles';
+import PropTypes from 'prop-types';
 
 import Tile from './Tile';
 
@@ -35,7 +36,7 @@ export default function TileGrid({ tiles }) {
     <Box className={classes.menu} ref={myContainer}>
       {tiles &&
         tiles.map((tile) => (
-          <Tile key={tile.name} data={{ name: tile.name, path: tile.path }} simple={tile.simple}>
+          <Tile key={tile.name} data={{ name: tile.name, path: tile.path }}>
             {' '}
             {tile.icon}
           </Tile>

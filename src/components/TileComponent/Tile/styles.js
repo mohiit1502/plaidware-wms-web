@@ -4,7 +4,8 @@ const useStyles = makeStyles({
   root: {
     backgroundColor: 'white',
     borderRadius: '8px',
-    boxShadow: '0px 4px 24px #0000000d'
+    boxShadow: '0px 4px 24px #0000000d',
+    height: '230px'
   },
   hoverChange: {
     '&:hover': {
