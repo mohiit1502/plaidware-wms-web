@@ -3,60 +3,60 @@ module.exports = {
   env: {
     browser: true,
     commonjs: true,
-    es6: true,
+    es6: true
   },
-  extends: ["eslint:recommended", "plugin:react/recommended"],
-  parser: "babel-eslint",
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
       modules: true,
-      experimentalObjectRestSpread: true,
+      experimentalObjectRestSpread: true
     },
     ecmaVersion: 2020,
-    sourceType: "module",
+    sourceType: 'module'
   },
-  plugins: ["react"],
+  plugins: ['react'],
   rules: {
     // general
-    indent: ["error", 2, { SwitchCase: 1, ignoredNodes: ["TemplateLiteral"] }],
-    "linebreak-style": ["error", "unix"],
-    quotes: ["error", "single"],
-    semi: ["error", "always"],
-    "comma-dangle": [
-      "error",
+    indent: ['error', 2, { SwitchCase: 1, ignoredNodes: ['TemplateLiteral'] }],
+    'linebreak-style': ['error', 'unix'],
+    quotes: ['error', 'single'],
+    semi: ['error', 'always'],
+    'comma-dangle': [
+      'error',
       {
-        arrays: "never",
-        objects: "never",
-        imports: "never",
-        exports: "never",
-        functions: "ignore",
-      },
+        arrays: 'never',
+        objects: 'never',
+        imports: 'never',
+        exports: 'never',
+        functions: 'ignore'
+      }
     ],
-    "object-curly-spacing": ["error", "always"],
-    "eol-last": ["error", "always"],
-    "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
-    complexity: ["error", { max: 20 }],
-    eqeqeq: ["error", "always"],
+    'object-curly-spacing': ['error', 'always'],
+    'eol-last': ['error', 'always'],
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    complexity: ['error', { max: 20 }],
+    eqeqeq: ['error', 'always'],
     // react
-    "react/no-unescaped-entities": ["error", { forbid: [">", '"', "}"] }],
-    "react/prop-types": [2, { ignore: ["action", "dispatch", "nav", "navigation"] }],
-    "react/jsx-boolean-value": 2,
-    "react/jsx-no-undef": 2,
-    "react/react-in-jsx-scope": "off",
+    'react/no-unescaped-entities': ['error', { forbid: ['>', '"', '}'] }],
+    'react/prop-types': [2, { ignore: ['action', 'dispatch', 'nav', 'navigation'] }],
+    'react/jsx-boolean-value': 2,
+    'react/jsx-no-undef': 2,
+    'react/react-in-jsx-scope': 'off',
     // allow jsx syntax in js files (for next.js project)
-    "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }], //should add ".ts" if typescript project
-    "react/jsx-sort-props": [
+    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }], //should add ".ts" if typescript project
+    'react/jsx-sort-props': [
       2,
       {
         callbacksLast: true,
         shorthandFirst: true,
         ignoreCase: true,
-        noSortAlphabetically: true,
-      },
+        noSortAlphabetically: true
+      }
     ],
-    "react/jsx-pascal-case": 2,
-    "react/display-name": [0, { ignoreTranspilerName: false }],
+    'react/jsx-pascal-case': 2,
+    'react/display-name': [0, { ignoreTranspilerName: false }]
   },
   // Map from global var to bool specifying if it can be redefined
   globals: {
@@ -91,11 +91,11 @@ module.exports = {
     setInterval: false,
     setTimeout: false,
     window: false,
-    XMLHttpRequest: false,
+    XMLHttpRequest: false
   },
   settings: {
     react: {
-      version: require("./package.json").dependencies.react,
-    },
-  },
+      version: require('./package.json').dependencies.react
+    }
+  }
 };
