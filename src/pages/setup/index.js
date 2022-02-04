@@ -16,7 +16,7 @@ function SetupHome() {
     },
     {
       name: 'Inventory',
-      path: '/',
+      path: '/inventory',
       icon: <InventoryIcon width={96} height={96} color="#007AFF" />
     },
     {

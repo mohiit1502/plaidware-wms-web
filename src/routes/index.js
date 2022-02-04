@@ -53,6 +53,7 @@ import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
 import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
 import LabelingHome from 'pages/labellingHome';
+import SetupInventory from 'pages/setupInventory';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -120,14 +121,21 @@ const protectedRoutes = [
     collapse: [
       {
         name: 'Setup Home',
-        key: 'setup-home',
+        key: 'setup',
         route: '/setup',
         component: <SetupHome />
       },
       {
-        name: 'Inventory Definition',
+        name: 'Inventory Home',
         key: 'inventory',
         route: '/inventory',
+        component: <SetupInventory />
+      },
+      {
+        name: 'Inventory Definition',
+        key: 'inventory-new',
+        hide: true,
+        route: '/inventory-new',
         component: <InventoryScreen />
       },
       {
@@ -138,7 +146,7 @@ const protectedRoutes = [
       },
       {
         name: 'Location Labeling',
-        key: 'Location labeling',
+        key: 'location-labeling',
         route: '/location-labeling',
         component: <LocationLabelingScreen />
       },
@@ -157,14 +165,14 @@ const protectedRoutes = [
       },
       {
         name: 'Users & Access',
-        key: 'users&access',
-        route: '/users&access',
+        key: 'users-access',
+        route: '/users-access',
         component: <UserAccessScreen />
       },
       {
         name: 'New/Edit Warehouse Details',
         key: 'warehouse-form',
-        route: '/warehouse-design-form',
+        route: '/warehouse-form',
         component: <NewWarehouseDetails />
       }
     ]

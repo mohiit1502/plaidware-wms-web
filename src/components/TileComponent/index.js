@@ -7,6 +7,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import useStyles from './styles';
 import LOGGER from 'services/Logger';
+import { Link } from 'react-router-dom';
 
 export default function Tile({ data, children }) {
   let [expand, setExpand] = useState(false);
@@ -28,43 +29,31 @@ export default function Tile({ data, children }) {
             expand ? null : classes.column
           }`}
         >
-          {children}{' '}
+          {children}
           <Box className={`${classes.name} ${expand ? null : classes.content}`}>{data.name}</Box>
         </Box>
       </AccordionSummary>
       <AccordionDetails className={`${classes.row2} ${expand ? null : classes.remove}`}>
-        <Box
-          className={classes.box}
-          onClick={() => {
-            console.log(data.path.update);
-          }}
-        >
-          Update {data.name} <ArrowRightIcon />{' '}
-        </Box>
-        <Box
-          className={`${classes.box} ${classes.boxEven}`}
-          onClick={() => {
-            console.log(data.path.addNew);
-          }}
-        >
-          Add New {data.name} <ArrowRightIcon />{' '}
-        </Box>
-        <Box
-          className={classes.box}
-          onClick={() => {
-            console.log(data.path.cycleCount);
-          }}
-        >
-          Cycle Count <ArrowRightIcon />{' '}
-        </Box>
-        <Box
-          className={`${classes.box} ${classes.boxEven}`}
-          onClick={() => {
-            console.log(data.path.list);
-          }}
-        >
-          {data.name} List <ArrowRightIcon />{' '}
-        </Box>
+        <Link to={data.path.update}>
+          <Box className={classes.box}>
+            Update {data.name} <ArrowRightIcon />
+          </Box>
+        </Link>
+        <Link to={data.path.addNew}>
+          <Box className={`${classes.box} ${classes.boxEven}`}>
+            Add New {data.name} <ArrowRightIcon />
+          </Box>
+        </Link>
+        <Link to={data.path.cycleCount}>
+          <Box className={classes.box}>
+            Cycle Count <ArrowRightIcon />
+          </Box>
+        </Link>
+        <Link to={data.path.list}>
+          <Box className={`${classes.box} ${classes.boxEven}`}>
+            {data.name} List <ArrowRightIcon />
+          </Box>
+        </Link>
       </AccordionDetails>
     </Accordion>
   );
