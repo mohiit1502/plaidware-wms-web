@@ -8,11 +8,13 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { WarehouseSelectors } from 'redux/WarehouseRedux';
 import WarehouseIcon from 'assets/images/WarehouseIcon';
+import MDButton from 'components/Button';
+import { useNavigate } from 'react-router-dom';
 
 function WarehouseScreen() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetail);
-
   useEffect(() => {
     dispatch(
       WarehouseActions.warehouseDataAction({
@@ -25,12 +27,16 @@ function WarehouseScreen() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar>
+        <MDButton sx={{ ml: 3 }} color="primary" onClick={() => navigate('/warehouse-form')}>
+          + Add new
+        </MDButton>
+      </DashboardNavbar>
       <TileBasic
         tiles={warehouseData.map((warehouse) => ({
           ...warehouse,
           icon: <WarehouseIcon height={96} width={96} />,
-          path: '/'
+          path: '/edit-warehouse-design-form'
         }))}
       />
       <Footer />

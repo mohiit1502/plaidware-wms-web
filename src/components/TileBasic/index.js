@@ -44,6 +44,7 @@ const useStyles = makeStyles({
 
 export default function TileBasic({ tiles }) {
   const classes = useStyles();
+
   return (
     <>
       <MDBox px={2} py={3}>
@@ -52,7 +53,10 @@ export default function TileBasic({ tiles }) {
             tiles.map((items) => (
               <>
                 <Grid item xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
-                  <Link to={items.path}>
+                  <Link
+                    to={items.path}
+                    state={{ name: items.name, address: items.address, id: items._id }}
+                  >
                     <MDBox
                       key={items.name + items.path}
                       data={{ name: items.name, path: items.path }}

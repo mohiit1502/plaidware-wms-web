@@ -35,7 +35,8 @@ function LoginScreen() {
       rememberMe: true
     },
     validationSchema: schema.login,
-    onSubmit: (values, { resetForm, setSubmitting }) => {
+    onSubmit: (values, { resetForm, setSubmitting }) =>
+    {
       const onFailedLogin = (errorMessage) => {
         resetForm();
         setSubmitting(false);

@@ -9,8 +9,8 @@ import MDButton from 'components/Button';
 import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
+import { useLocation } from 'react-router-dom';
 import WarehouseActions from 'redux/WarehouseRedux';
-import { API } from 'constant';
 import SnackBar from 'components/SnackBar';
 
 const useStyles = makeStyles({
@@ -37,11 +37,10 @@ const names = [
   'Kelly Snyder'
 ];
 
-function NewWarehouseDetails() {
+function EditWarehouseDetails() {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const location = useLocation();
   const [open, setOpen] = useState(false);
-
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -52,25 +51,26 @@ function NewWarehouseDetails() {
       }
     }
   };
+  const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
-      warehousename: '',
-      address: '',
+      warehousename: location.state.name,
+      address: location.state.address,
       inventorytype: '',
       attributes: ''
     },
     validationSchema: schema.warehouseForm,
     onSubmit: (values, onSubmitProps) => {
       dispatch(
-        WarehouseActions.createWarehouseAction({
+        WarehouseActions.editWarehouseAction({
           loader: 'loading-request',
-          slug: API.CREATE_WAREHOUSE,
-          method: 'post',
+          slug: `/warehouse/${location.state.id}`,
+          method: 'patch',
           data: {
             name: values.warehousename,
             address: values.address,
             specs: '',
-            company_id: '61cea5fd028432700a7f8601'
+            company_id: ''
           }
         })
       );
@@ -78,7 +78,6 @@ function NewWarehouseDetails() {
       setOpen(true);
     }
   });
-
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -112,9 +111,9 @@ function NewWarehouseDetails() {
                     </Box>
                     <MDInput
                       fullWidth
+                      name="warehousename"
                       type="text"
                       variant="outlined"
-                      name="warehousename"
                       value={formik.values.warehousename}
                       error={formik.touched.warehousename && Boolean(formik.errors.warehousename)}
                       helperText={formik.touched.warehousename && formik.errors.warehousename}
@@ -127,9 +126,9 @@ function NewWarehouseDetails() {
                     </Box>
                     <MDInput
                       fullWidth
-                      variant="outlined"
-                      type="text"
                       name="address"
+                      type="text"
+                      variant="outlined"
                       value={formik.values.address}
                       error={formik.touched.address && Boolean(formik.errors.address)}
                       helperText={formik.touched.address && formik.errors.address}
@@ -145,6 +144,8 @@ function NewWarehouseDetails() {
                       select
                       fullWidth
                       variant="outlined"
+                      labelId="demo-multiple-chip-label"
+                      id="demo-multiple-chip"
                       name="inventorytype"
                       input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
                       value={formik.values.inventorytype}
@@ -200,27 +201,20 @@ function NewWarehouseDetails() {
                   columnGap: '20px'
                 }}
               >
-                <MDButton size="medium" color="error" variant="outlined">
-                  CANCEL
+                {/* ---edit-- */}
+                <MDButton size="large" color="primary" variant="outlined" type="submit">
+                  EDIT DETAILS
                 </MDButton>
-                <MDButton size="medium" color="primary" variant="outlined" type="submit">
-                  SAVE
-                </MDButton>
-                <MDButton size="medium" color="primary" variant="contained">
-                  NEXT
+                <MDButton size="large" color="primary" variant="contained">
+                  SHOW DETAILS
                 </MDButton>
               </Box>
             </Box>
           </form>
         </Box>
       </DashboardLayout>
-      <SnackBar
-        open={open}
-        message="new warehouse created successfully"
-        handleClose={handleClose}
-      />
+      <SnackBar open={open} message="warehouse edit successful" handleClose={handleClose} />
     </>
   );
 }
-
-export default NewWarehouseDetails;
+export default EditWarehouseDetails;

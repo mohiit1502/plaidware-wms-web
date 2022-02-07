@@ -17,6 +17,13 @@ const schema = {
     password: Yup.string('Enter your password')
       .min(8, 'Password should be of minimum 8 characters length')
       .required('Password is required')
+  }),
+
+  warehouseForm: Yup.object({
+    warehousename: Yup.string('Enter warehouse name').required('warehouse name is required'),
+    address: Yup.string('Enter address').required('address is required'),
+    inventorytype: Yup.string('Enter inventory Type').required('inventory Type is required'),
+    attributes: Yup.string('Enter other attributes').required('attributes is required')
   })
 };
 

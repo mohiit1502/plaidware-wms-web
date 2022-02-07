@@ -52,6 +52,7 @@ import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
 import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
+import EditWarehouseDetails from 'pages/editWarehouseDetails';
 import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
 
@@ -170,10 +171,17 @@ const protectedRoutes = [
         component: <UserAccessScreen />
       },
       {
-        name: 'New/Edit Warehouse Details',
+        name: 'Add Warehouse Details',
         key: 'warehouse-form',
         route: '/warehouse-form',
         component: <NewWarehouseDetails />
+      },
+      {
+        name: 'Edit Warehouse Details',
+        key: 'warehouse-form',
+        route: '/edit-warehouse-design-form',
+        hide: true,
+        component: <EditWarehouseDetails />
       }
     ]
   }

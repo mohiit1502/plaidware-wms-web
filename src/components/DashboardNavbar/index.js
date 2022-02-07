@@ -16,7 +16,6 @@ Coded by www.creative-tim.com
 import { useState, useEffect } from 'react';
 // import Grid from '@mui/material/Grid';
 
-
 // react-router components
 import { useLocation } from 'react-router-dom';
 
@@ -41,7 +40,6 @@ import NotificationItem from 'components/NotificationItem';
 
 // import InputAdornment from '@mui/material/InputAdornment';
 
-
 // Custom styles for DashboardNavbar
 import {
   // navbar,
@@ -62,17 +60,12 @@ import {
 import SearchBar from 'components/SearchBar';
 import { Box } from '@mui/material';
 
-
-
-
-function DashboardNavbar({ absolute, light, isMini }) {
+function DashboardNavbar({ absolute, light, isMini, children }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split('/').slice(1);
-  
-
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -83,7 +76,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
 
     // A function that sets the transparent state of the navbar.
     function handleTransparentNavbar() {
-      setTransparentNavbar(dispatch, (fixedNavbar && window.scrollY === 0) && !fixedNavbar);
+      setTransparentNavbar(dispatch, fixedNavbar && window.scrollY === 0 && !fixedNavbar);
     }
 
     /** 
@@ -135,7 +128,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
       return colorValue;
     }
   });
-  
+
   return (
     <AppBar
       position={absolute ? 'absolute' : navbarType}
@@ -144,19 +137,19 @@ function DashboardNavbar({ absolute, light, isMini }) {
       className="header"
       // sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
-      <Box 
+      <Box
         sx={{
           paddingTop: '8px',
           paddingBottom: '8px',
           marginBottom: '5px',
           boxShadow: '0px 1px 4px rgb(0 0 0 / 8%)',
           width: '100% !important'
-        }}>
-        <Toolbar className="custom-header" >
+        }}
+      >
+        <Toolbar className="custom-header">
           {isMini ? null : (
-          
             <MDBox display="flex" width="100% !important" max-width="100% !important">
-              <MDBox sx={{ width:'100%',  maxWidth: '100%' }} pr={3}>
+              <MDBox sx={{ width: '100%', maxWidth: '100%' }} pr={3}>
                 <SearchBar />
               </MDBox>
               <MDBox display="flex" color={light ? 'white' : 'inherit'}>
@@ -199,10 +192,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
             </MDBox>
           )}
         </Toolbar>
-      </Box> 
-      <Toolbar variant='dense'>
+      </Box>
+      <Toolbar variant="dense">
         <MDBox color="inherit" mb={{ xs: 2, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light}>
+            {children}
+          </Breadcrumbs>
         </MDBox>
       </Toolbar>
     </AppBar>
@@ -220,8 +215,8 @@ DashboardNavbar.defaultProps = {
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
-  isMini: PropTypes.bool
-  
+  isMini: PropTypes.bool,
+  children: PropTypes.node
 };
 
 export default DashboardNavbar;

@@ -23,7 +23,7 @@ import ArrowRight from 'assets/images/CarretArrowRightIcon';
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 
-function Breadcrumbs({ title, route, light }) {
+function Breadcrumbs({ title, route, light, children }) {
   return (
     <MDBox
       mr={{ xs: 0, xl: 8 }}
@@ -64,6 +64,22 @@ function Breadcrumbs({ title, route, light }) {
         >
           {title.replace('-', ' ')}
         </MDTypography>
+        <MDTypography
+          component="span"
+          variant="button"
+          fontWeight="regular"
+          textTransform="capitalize"
+          color={light ? 'white' : 'dark'}
+          sx={{
+            lineHeight: 0,
+            position: 'absolute',
+            right: 0,
+            padding: '0px 20px',
+            marginTop: '-20px'
+          }}
+        >
+          {children}
+        </MDTypography>
       </MuiBreadcrumbs>
     </MDBox>
   );
@@ -78,7 +94,8 @@ Breadcrumbs.defaultProps = {
 Breadcrumbs.propTypes = {
   title: PropTypes.string.isRequired,
   route: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
-  light: PropTypes.bool
+  light: PropTypes.bool,
+  children: PropTypes.node
 };
 
 export default Breadcrumbs;
