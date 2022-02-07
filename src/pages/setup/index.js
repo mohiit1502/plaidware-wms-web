@@ -11,22 +11,22 @@ function SetupHome() {
   const data = [
     {
       name: 'Warehouse',
-      path: '/warehouse',
+      path: '/setup/warehouse',
       icon: <WarehouseIcon width={96} height={96} color="#007AFF" />
     },
     {
       name: 'Inventory',
-      path: '/inventory',
+      path: '/setup/inventory',
       icon: <InventoryIcon width={96} height={96} color="#007AFF" />
     },
     {
       name: 'User & Access',
-      path: '/',
+      path: '/setup/users-access',
       icon: <ProfileCircleIcon width={96} height={96} color="#007AFF" />
     },
     {
       name: 'Labeling',
-      path: '/labeling',
+      path: '/setup/labeling',
       icon: <LabelIcon width={96} height={96} color="#007AFF" />
     }
   ];

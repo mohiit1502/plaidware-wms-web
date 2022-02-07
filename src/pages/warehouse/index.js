@@ -28,7 +28,11 @@ function WarehouseScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar>
-        <MDButton sx={{ ml: 3 }} color="primary" onClick={() => navigate('/warehouse-form')}>
+        <MDButton
+          sx={{ ml: 3 }}
+          color="primary"
+          onClick={() => navigate('/setup/warehouse/add-warehouse')}
+        >
           + Add new
         </MDButton>
       </DashboardNavbar>
@@ -36,7 +40,7 @@ function WarehouseScreen() {
         tiles={warehouseData.map((warehouse) => ({
           ...warehouse,
           icon: <WarehouseIcon height={96} width={96} />,
-          path: '/edit-warehouse-design-form'
+          path: '/setup/warehouse/edit-warehouse'
         }))}
       />
       <Footer />

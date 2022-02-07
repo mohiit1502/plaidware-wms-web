@@ -9,12 +9,12 @@ function LabelingHome() {
   const data = [
     {
       name: 'Location Label',
-      path: '/location-labeling',
+      path: '/setup/labeling/location-labeling',
       icon: <LocationLabelIcon color="#007AFF" />
     },
     {
       name: 'Widget Label',
-      path: '/',
+      path: '/setup/labeling',
       icon: <WidgetLabelIcon color="#007AFF" />
     }
   ];

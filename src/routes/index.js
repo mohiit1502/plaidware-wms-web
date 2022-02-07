@@ -131,57 +131,59 @@ const protectedRoutes = [
       {
         name: 'Inventory Home',
         key: 'inventory',
-        route: '/inventory',
+        route: '/setup/inventory',
         component: <SetupInventory />
+      },
+      {
+        name: 'Warehouse Design',
+        key: 'warehouse',
+        route: '/setup/warehouse',
+        component: <WarehouseScreen />
       },
       {
         name: 'Inventory Definition',
         key: 'inventory-new',
         hide: true,
-        route: '/inventory-new',
+        route: '/setup/inventory/inventory-new',
         component: <InventoryScreen />
-      },
-      {
-        name: 'Warehouse Design',
-        key: 'warehouse',
-        route: '/warehouse',
-        component: <WarehouseScreen />
       },
       {
         name: 'Location Labeling',
         key: 'location-labeling',
-        route: '/location-labeling',
+        hide: true,
+        route: '/setup/labeling/location-labeling',
         component: <LocationLabelingScreen />
+      },
+      {
+        name: 'Users & Access',
+        key: 'users-access',
+        route: '/setup/users-access',
+        component: <UserAccessScreen />
       },
       {
         name: 'Labeling',
         key: 'labeling',
-        hide: true,
-        route: '/labeling',
+        route: '/setup/labeling',
         component: <LabelingHome />
       },
       {
         name: 'Warehouse Details Table',
         key: 'warehouse-details-table',
-        route: '/warehouse-details-table',
+        hide: true,
+        route: '/setup/warehouse/warehouse-details-table',
         component: <WarehouseDetailsTables />
       },
       {
-        name: 'Users & Access',
-        key: 'users-access',
-        route: '/users-access',
-        component: <UserAccessScreen />
-      },
-      {
-        name: 'Add Warehouse Details',
-        key: 'warehouse-form',
-        route: '/warehouse-form',
+        name: 'Add Warehouse',
+        key: 'add-warehouse',
+        hide: true,
+        route: '/setup/warehouse/add-warehouse',
         component: <NewWarehouseDetails />
       },
       {
-        name: 'Edit Warehouse Details',
-        key: 'warehouse-form',
-        route: '/edit-warehouse-design-form',
+        name: 'Edit Warehouse',
+        key: 'edit-warehouse',
+        route: '/setup/warehouse/edit-warehouse',
         hide: true,
         component: <EditWarehouseDetails />
       }
