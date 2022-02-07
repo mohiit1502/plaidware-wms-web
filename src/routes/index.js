@@ -55,6 +55,8 @@ import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
 import EditWarehouseDetails from 'pages/editWarehouseDetails';
 import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
+import HomeIcon from 'assets/images/HomeIcon';
+import SetupIcon from 'assets/images/SetupIcon';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -88,7 +90,7 @@ const protectedRoutes = [
     type: 'collapse',
     name: 'Home',
     key: 'Home',
-    icon: <Icon fontSize="medium">dashboard</Icon>,
+    icon: <HomeIcon width={24} height={24} color="white" />,
     collapse: [
       {
         name: 'Home',
@@ -118,7 +120,7 @@ const protectedRoutes = [
     type: 'collapse',
     name: 'Setup',
     key: 'Setup',
-    icon: <Icon fontSize="medium">dashboard</Icon>,
+    icon: <SetupIcon width={24} height={24} color="white" />,
     collapse: [
       {
         name: 'Setup Home',

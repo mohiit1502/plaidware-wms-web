@@ -16,12 +16,35 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui material components
-import { Breadcrumbs as MuiBreadcrumbs } from '@mui/material';
+import { Breadcrumbs as MuiBreadcrumbs, Grid } from '@mui/material';
 import ArrowRight from 'assets/images/CarretArrowRightIcon';
 
 // Material Dashboard 2 PRO React components
 import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
+
+const buildBreadcrumbs = (route, light) => {
+  if (route[0] === 'home') route = [];
+  else if (route.length === 1) route = ['home'];
+  else {
+    route = ['home', ...route];
+    route.pop();
+  }
+  return route.map((el) => (
+    <Link to={`/${el}`} key={el}>
+      <MDTypography
+        component="span"
+        variant="button"
+        fontWeight="regular"
+        textTransform="capitalize"
+        color={light ? 'white' : 'dark'}
+        sx={{ lineHeight: 0 }}
+      >
+        {el}
+      </MDTypography>
+    </Link>
+  ));
+};
 
 function Breadcrumbs({ title, route, light, children }) {
   return (
@@ -32,55 +55,33 @@ function Breadcrumbs({ title, route, light, children }) {
         backgroundColor: '#fff'
       }}
     >
-      <MuiBreadcrumbs
-        sx={{
-          '& .MuiBreadcrumbs-separator': {
-            color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
-            padding: '0 8px'
-          }
-        }}
-        separator={<ArrowRight height={15} width={15} />}
-      >
-        {route.map((el) => (
-          <Link to={`/${el}`} key={el}>
+      <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+        <Grid item>
+          <MuiBreadcrumbs
+            sx={{
+              '& .MuiBreadcrumbs-separator': {
+                color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
+                padding: '0 8px'
+              }
+            }}
+            separator={<ArrowRight height={15} width={15} />}
+          >
+            {buildBreadcrumbs(route, light)}
             <MDTypography
-              component="span"
               variant="button"
               fontWeight="regular"
               textTransform="capitalize"
               color={light ? 'white' : 'dark'}
               sx={{ lineHeight: 0 }}
             >
-              {el}
+              {title.replace('-', ' ')}
             </MDTypography>
-          </Link>
-        ))}
-        <MDTypography
-          variant="button"
-          fontWeight="regular"
-          textTransform="capitalize"
-          color={light ? 'white' : 'dark'}
-          sx={{ lineHeight: 0 }}
-        >
-          {title.replace('-', ' ')}
-        </MDTypography>
-        <MDTypography
-          component="span"
-          variant="button"
-          fontWeight="regular"
-          textTransform="capitalize"
-          color={light ? 'white' : 'dark'}
-          sx={{
-            lineHeight: 0,
-            position: 'absolute',
-            right: 0,
-            padding: '0px 20px',
-            marginTop: '-20px'
-          }}
-        >
+          </MuiBreadcrumbs>
+        </Grid>
+        <Grid item md={4}>
           {children}
-        </MDTypography>
-      </MuiBreadcrumbs>
+        </Grid>
+      </Grid>
     </MDBox>
   );
 }

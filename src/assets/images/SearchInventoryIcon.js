@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const SearchInventoryIcon = ({ width = '78', height = '86', color = '#007AFF', ...props }) => (
+const SearchInventoryIcon = ({ width = 78, height = 86, color = '#007AFF', ...props }) => (
   <svg
     width={width}
     height={height}

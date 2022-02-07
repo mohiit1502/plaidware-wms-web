@@ -62,7 +62,7 @@ function item(theme, ownerState) {
 
 function itemContent(theme, ownerState) {
   const { palette, typography, transitions, functions } = theme;
-  const { miniSidenav, name, active, transparentSidenav, whiteSidenav, darkMode } = ownerState;
+  const { miniSidenav, /*name,*/ active, transparentSidenav, whiteSidenav, darkMode } = ownerState;
 
   const { white, dark } = palette;
   const { size, fontWeightRegular, fontWeightLight } = typography;
@@ -93,7 +93,7 @@ function itemContent(theme, ownerState) {
     },
 
     '&::before': {
-      content: `"${name[0]}"`,
+      // content: `"${name[0]}"`,
       color:
         ((transparentSidenav && !darkMode) || whiteSidenav) && (active === 'isParent' || !active)
           ? dark.main
