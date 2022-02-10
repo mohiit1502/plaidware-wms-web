@@ -57,6 +57,7 @@ import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
 import HomeIcon from 'assets/images/HomeIcon';
 import SetupIcon from 'assets/images/SetupIcon';
+import AddNewProduct from '../pages/addNewProduct';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -146,6 +147,13 @@ const protectedRoutes = [
         hide: true,
         route: '/setup/inventory/inventory-new',
         component: <InventoryScreen />
+      },
+      {
+        name: 'Add New Product',
+        key: 'add-new-product',
+        hide: true,
+        route: '/setup/inventory/product/add-new-product',
+        component: <AddNewProduct />
       },
       {
         name: 'Location Labeling',
