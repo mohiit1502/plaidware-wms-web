@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Box, Grid, MenuItem, OutlinedInput, Chip } from '@mui/material';
+import { Box, Grid, MenuItem, OutlinedInput, Chip, Select } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
@@ -24,18 +24,7 @@ const useStyles = makeStyles({
 
 const previewImg = [1, 2, 3];
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder'
-];
+const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function NewWarehouseDetails() {
   const classes = useStyles();
@@ -56,7 +45,7 @@ function NewWarehouseDetails() {
     initialValues: {
       warehousename: '',
       address: '',
-      inventorytype: '',
+      inventorytype: [],
       attributes: ''
     },
     validationSchema: schema.warehouseForm,
@@ -140,13 +129,13 @@ function NewWarehouseDetails() {
                     <Box component="div" className={classes.labelSize}>
                       Types of inventories hosted
                     </Box>
-                    <MDInput
+                    <Select
                       multiple
                       select
                       fullWidth
                       variant="outlined"
                       name="inventorytype"
-                      input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+                      input={<OutlinedInput />}
                       value={formik.values.inventorytype}
                       error={formik.touched.inventorytype && Boolean(formik.errors.inventorytype)}
                       helperText={formik.touched.inventorytype && formik.errors.inventorytype}
@@ -158,17 +147,26 @@ function NewWarehouseDetails() {
                         </Box>
                       )}
                       MenuProps={MenuProps}
-                      onChange={formik.handleChange}
+                      onChange={(event) => {
+                        const {
+                          target: { value }
+                        } = event;
+                        formik.setFieldValue(
+                          'inventorytype',
+                          // On autofill we get a stringified value.
+                          typeof value === 'string' ? value.split(',') : value
+                        );
+                      }}
                     >
                       <MenuItem key={''} value={''}>
-                        No Selected // Or Empty
+                        None Selected
                       </MenuItem>
-                      {names.map((name) => (
+                      {inventoryTypes.map((name) => (
                         <MenuItem key={name} value={name}>
                           {name}
                         </MenuItem>
                       ))}
-                    </MDInput>
+                    </Select>
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
                     <Box component="div" className={classes.labelSize}>
