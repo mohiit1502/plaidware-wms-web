@@ -17,6 +17,7 @@ import UsersActions from 'redux/UsersRedux';
 import { API } from 'constant';
 import { useDispatch, useSelector } from 'react-redux';
 import { UsersSelectors } from 'redux/UsersRedux';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   iconSize: {
@@ -52,7 +53,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const headCells = [
   { id: 'fullName', label: 'Name' },
-  { id: 'role_name', label: 'Roles' }
+  { id: 'role_name', label: 'Roles' },
+  { id: 'updated_at', label: 'Updated at' },
+  { id: 'created_at', label: 'Created by and at' }
 ];
 
 function UserAccessScreen() {
@@ -134,6 +137,11 @@ function UserAccessScreen() {
                       </div>
                     </TableCell>
                     <TableCell>{item.role_name}</TableCell>
+                    <TableCell>{moment(item.updatedAt).format('D/M/YYYY h:m:s A')}</TableCell>
+                    <TableCell>
+                      {item.createdBy ? item.createdBy?.fullName + ' | ' : null}
+                      {moment(item.createdAt).format('D/M/YYYY h:m:s A')}
+                    </TableCell>
                   </StyledTableRow>
                 ))}
             </TableBody>
