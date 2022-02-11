@@ -22,8 +22,6 @@ const useStyles = makeStyles({
   }
 });
 
-const previewImg = [1, 2, 3];
-
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function EditWarehouseDetails() {
@@ -46,7 +44,8 @@ function EditWarehouseDetails() {
       warehousename: location.state.name,
       address: location.state.address,
       inventorytype: [],
-      attributes: ''
+      attributes: '',
+      images: []
     },
     validationSchema: schema.warehouseForm,
     onSubmit: (values, onSubmitProps) => {
@@ -185,7 +184,15 @@ function EditWarehouseDetails() {
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box sx={{ marginTop: '30px' }}>
-                    <ImageUpload heading="Upload Warehouse Image" previewImg={previewImg} />
+                    <ImageUpload
+                      multiple
+                      heading="Upload Warehouse Image"
+                      accept="image/*"
+                      images={formik.values.images}
+                      setImages={(images) => {
+                        formik.setFieldValue('images', images);
+                      }}
+                    />
                   </Box>
                 </Grid>
               </Grid>

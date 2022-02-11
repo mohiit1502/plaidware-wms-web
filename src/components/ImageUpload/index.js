@@ -3,11 +3,20 @@ import PropTypes from 'prop-types';
 import UploadIcon from 'assets/images/UploadIcon';
 import MDTypography from 'components/MDTypography';
 import pxToRem from 'assets/theme-dark/functions/pxToRem';
-import Placeholder from 'assets/images/placeholder.png';
 import { Button } from '@mui/material';
 import Close from 'assets/images/Close';
 
-function ImageUpload({ heading, previewImg }) {
+function ImageUpload({ heading, accept, multiple, images, setImages }) {
+  const addImage = (e) => {
+    setImages([
+      ...images,
+      { src: URL.createObjectURL(e.target.files[0]), file: e.target.files[0] }
+    ]);
+  };
+  const removeImage = (index) => {
+    setImages(images.filter((_val, idx) => idx !== index));
+  };
+
   return (
     <>
       <MDBox
@@ -32,9 +41,10 @@ function ImageUpload({ heading, previewImg }) {
           }}
         >
           <MDBox
-            multiple
             component="input"
             name="file"
+            disabled={!multiple && images.length}
+            accept={accept}
             type="file"
             sx={{
               width: '100%',
@@ -46,55 +56,60 @@ function ImageUpload({ heading, previewImg }) {
               right: '0',
               bottom: '0'
             }}
+            onChange={addImage}
           />
           <MDBox component="span">
-            <UploadIcon />
+            {!multiple && images.length ? null : <UploadIcon />}
             <MDTypography
               component="span"
               sx={{ color: '#000', letterSpacing: '0.01em', display: 'block' }}
             >
-              {heading}
+              {!multiple && images.length ? 'Cannot add more images' : heading}
             </MDTypography>
           </MDBox>
         </MDBox>
         {/* -----------img-preview----------- */}
         <MDBox sx={{ marginBottom: '-10px' }}>
-          {previewImg.map((item) => {
-            return (
-              <MDBox
-                key={item}
-                component="span"
-                sx={{
-                  width: '80px',
-                  height: '63px',
-                  marginRight: '16px',
-                  display: 'inline-block',
-                  borderRadius: '4px',
-                  position: 'relative'
-                }}
-              >
-                <img src={Placeholder} alt="placeholder" width="100%" />
-                <Button
+          {images &&
+            images.map((item, idx) => {
+              return (
+                <MDBox
+                  key={idx}
+                  component="span"
                   sx={{
-                    backgroundColor: '#fff !important',
-                    boxShadow: '0px 1px 1px rgb(0 0 0 / 25%)',
-                    padding: '0',
-                    minWidth: '20px',
-                    minHeight: '20px',
-                    borderRadius: '100%',
-                    position: 'absolute',
-                    right: '4px',
-                    top: '4px',
-                    '&:hover': {
-                      backgroundColor: 'red !important'
-                    }
+                    width: '80px',
+                    height: '63px',
+                    marginRight: '16px',
+                    display: 'inline-block',
+                    borderRadius: '4px',
+                    position: 'relative'
                   }}
                 >
-                  <Close />
-                </Button>
-              </MDBox>
-            );
-          })}
+                  <img src={item.src} alt="placeholder" width="100%" />
+                  <Button
+                    sx={{
+                      backgroundColor: '#fff !important',
+                      boxShadow: '0px 1px 1px rgb(0 0 0 / 25%)',
+                      padding: '0',
+                      minWidth: '20px',
+                      minHeight: '20px',
+                      borderRadius: '100%',
+                      position: 'absolute',
+                      right: '4px',
+                      top: '4px',
+                      '&:hover': {
+                        backgroundColor: 'red !important'
+                      }
+                    }}
+                    onClick={() => {
+                      removeImage(idx);
+                    }}
+                  >
+                    <Close />
+                  </Button>
+                </MDBox>
+              );
+            })}
         </MDBox>
       </MDBox>
     </>
@@ -103,6 +118,9 @@ function ImageUpload({ heading, previewImg }) {
 
 export default ImageUpload;
 ImageUpload.propTypes = {
-  previewImg: PropTypes.array,
-  heading: PropTypes.string
+  images: PropTypes.array,
+  heading: PropTypes.string,
+  multiple: PropTypes.bool,
+  accept: PropTypes.string,
+  setImages: PropTypes.func
 };
