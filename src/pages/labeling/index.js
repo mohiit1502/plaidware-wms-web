@@ -4,7 +4,7 @@ import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { makeStyles } from '@mui/styles';
 import Dropdown from 'components/Dropdown';
-import { Grid } from '@mui/material';
+import { Grid, TableBody, TableCell, TableRow } from '@mui/material';
 import BasicTable from 'components/BasicTable';
 import MDButton from 'components/Button';
 
@@ -24,6 +24,60 @@ const useStyles = makeStyles({
     height: '200px'
   }
 });
+
+const records = [
+  {
+    warehouse: 'Ipsum',
+    zone: 'Vivera',
+    area: 'Nisi',
+    row: 'Nulla',
+    label: 'Mauris',
+    bay: ''
+  },
+  {
+    warehouse: 'Ipsum',
+    zone: 'Vivera',
+    area: 'Nisi',
+    row: 'Nulla',
+    label: 'Mauris',
+    bay: ''
+  },
+  {
+    warehouse: 'Ipsum',
+    zone: 'Vivera',
+    area: 'Nisi',
+    row: 'Nulla',
+    label: 'Mauris',
+    bay: ''
+  }
+];
+
+const headCells = [
+  {
+    id: 'warehouse',
+    label: 'warehouse'
+  },
+  {
+    id: 'zone',
+    label: 'Zone'
+  },
+  {
+    id: 'area',
+    label: 'Area'
+  },
+  {
+    id: 'row',
+    label: 'Row'
+  },
+  {
+    id: 'Label',
+    label: 'label'
+  },
+  {
+    id: 'Bay',
+    label: 'bay'
+  }
+];
 
 function LabelingScreen() {
   const classes = useStyles();
@@ -71,59 +125,6 @@ function LabelingScreen() {
     }
   ];
 
-  const tableData = [
-    {
-      warehouse: 'Ipsum',
-      zone: 'Vivera',
-      area: 'Nisi',
-      row: 'Nulla',
-      label: 'Mauris',
-      bay: ''
-    },
-    {
-      warehouse: 'Ipsum',
-      zone: 'Vivera',
-      area: 'Nisi',
-      row: 'Nulla',
-      label: 'Mauris',
-      bay: ''
-    },
-    {
-      warehouse: 'Ipsum',
-      zone: 'Vivera',
-      area: 'Nisi',
-      row: 'Nulla',
-      label: 'Mauris',
-      bay: ''
-    }
-  ];
-
-  const header = [
-    {
-      name: 'Warehouse',
-      prop: 'warehouse'
-    },
-    {
-      name: 'Zone',
-      prop: 'zone'
-    },
-    {
-      name: 'Area',
-      prop: 'area'
-    },
-    {
-      name: 'Row',
-      prop: 'row'
-    },
-    {
-      name: 'Label',
-      prop: 'label'
-    },
-    {
-      name: 'Bay',
-      prop: 'bay'
-    }
-  ];
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -138,11 +139,25 @@ function LabelingScreen() {
         </Grid>
         <br />
         <BasicTable
-          className={classes.margin}
-          data={tableData}
-          header={header}
-          backgroundColor="gray"
-        />
+          headCells={headCells}
+          records={records}
+          backgroundColor="#F4F4F4"
+          color="#8D8D8D"
+        >
+          <TableBody>
+            {records &&
+              records.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>{item.warehouse}</TableCell>
+                  <TableCell>{item.zone}</TableCell>
+                  <TableCell>{item.area}</TableCell>
+                  <TableCell>{item.row}</TableCell>
+                  <TableCell>{item.label}</TableCell>
+                  <TableCell>{item.Bay}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </BasicTable>
         <Grid container spacing={2}>
           {data2 &&
             data2.map((item, index) => (

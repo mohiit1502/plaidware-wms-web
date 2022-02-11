@@ -1,7 +1,7 @@
 import DashboardNavbar from 'components/DashboardNavbar';
 import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
-import { Grid, InputLabel } from '@mui/material';
+import { Grid, InputLabel, TableBody, TableCell, TableRow } from '@mui/material';
 import MDInput from 'components/MDInput';
 import ImageUpload from 'components/ImageUpload';
 import Switch from 'components/Switch';
@@ -38,81 +38,82 @@ const useStyles = makeStyles({
   }
 });
 
+const stockBox = [
+  {
+    text: 'Stock Tracking'
+  },
+  {
+    text: 'Replenishment'
+  },
+  {
+    text: 'Alerting'
+  },
+  {
+    text: 'Check In/Out'
+  },
+  {
+    text: 'Maintenance'
+  },
+  {
+    text: 'Location'
+  }
+];
+
+const records = [
+  {
+    level1: 'Ipsum',
+    level2: 'Vivera'
+  },
+  {
+    level1: 'Ipsum',
+    level2: 'Vivera'
+  }
+];
+
+const headCells = [
+  {
+    id: 'level1',
+    label: 'Level 1'
+  },
+  {
+    id: 'level2',
+    label: 'Level 2'
+  }
+];
+
+const dropdownData = [
+  {
+    ID: '1',
+    displayname: 'Regular, full time'
+  },
+  {
+    ID: '2',
+    displayname: 'Regular, part time'
+  },
+  {
+    ID: '3',
+    displayname: 'Contractor- Arise Max'
+  }
+];
+
+const dataInventory = [
+  {
+    placeholder: 'Lorem Ipsum',
+    label: 'Inventory Type'
+  }
+];
+const dataLevel = [
+  {
+    placeholder: 'Lorem Ipsum',
+    label: 'Level 1'
+  },
+  {
+    placeholder: 'Lorem Ipsum',
+    label: 'Level 2'
+  }
+];
+
 function InventoryScreen() {
-  const stockBox = [
-    {
-      text: 'Stock Tracking'
-    },
-    {
-      text: 'Replenishment'
-    },
-    {
-      text: 'Alerting'
-    },
-    {
-      text: 'Check In/Out'
-    },
-    {
-      text: 'Maintenance'
-    },
-    {
-      text: 'Location'
-    }
-  ];
-
-  const tableData = [
-    {
-      level1: 'Ipsum',
-      level2: 'Vivera'
-    },
-    {
-      level1: 'Ipsum',
-      level2: 'Vivera'
-    }
-  ];
-
-  const header = [
-    {
-      name: 'Level 1',
-      prop: 'level1'
-    },
-    {
-      name: 'Level 2',
-      prop: 'level2'
-    }
-  ];
-
-  const dropdownData = [
-    {
-      ID: '1',
-      displayname: 'Regular, full time'
-    },
-    {
-      ID: '2',
-      displayname: 'Regular, part time'
-    },
-    {
-      ID: '3',
-      displayname: 'Contractor- Arise Max'
-    }
-  ];
-
-  const dataInventory = [
-    {
-      placeholder: 'Lorem Ipsum',
-      label: 'Inventory Type'
-    }
-  ];
-  const dataLevel = [
-    {
-      placeholder: 'Lorem Ipsum',
-      label: 'Level 1'
-    },
-    {
-      placeholder: 'Lorem Ipsum',
-      label: 'Level 2'
-    }
-  ];
   const previewImg = [1, 2, 3];
   const classes = useStyles();
   return (
@@ -203,18 +204,36 @@ function InventoryScreen() {
             <Grid item xs={12} sm={12} md={12}>
               <MDBox
                 sx={{
-                  backgroundColor: '#E5E5E5',
-                  width: '98%',
+                  // backgroundColor: '#E5E5E5',
+                  width: '100%',
                   padding: '9px'
                 }}
               >
-                <MDTypography>Widget hierarchy</MDTypography>
+                <MDTypography
+                  sx={{
+                    backgroundColor: '#E5E5E5',
+                    width: '100%',
+                    padding: '9px'
+                  }}
+                >
+                  Widget hierarchy
+                </MDTypography>
                 <BasicTable
-                  className={classes.margin}
-                  data={tableData}
-                  header={header}
+                  headCells={headCells}
+                  records={records}
                   backgroundColor="#E5E5E5"
-                />
+                  color="#343434"
+                >
+                  <TableBody>
+                    {records &&
+                      records.map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>{item.level1}</TableCell>
+                          <TableCell>{item.level2}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </BasicTable>
               </MDBox>
             </Grid>
             <MDBox sx={{ ml: 'auto', mr: 'auto', mt: 3 }}>

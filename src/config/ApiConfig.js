@@ -45,7 +45,7 @@ UnauthorizedAPI.addMonitor(APIMonitor);
 AuthorizedAPI.addAsyncRequestTransform(async (request) => {
   LOGGER.log('request', request);
   let token = localStorage.getItem('token');
-  request.headers.Authorization = `Bearer ${token}`;
+  request.headers.Authorization = token;
 });
 
 export { AuthorizedAPI, UnauthorizedAPI };

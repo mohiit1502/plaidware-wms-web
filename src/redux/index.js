@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 import { authReducer } from './AuthRedux';
 import { warehouseReducer } from './WarehouseRedux';
+import { usersReducer } from './UsersRedux';
 
 // Combine all reducers.
 const appReducer = combineReducers({
   auth: authReducer,
-  warehouse: warehouseReducer
+  warehouse: warehouseReducer,
+  users: usersReducer
 });
 
 const rootReducer = (state, action) => {
