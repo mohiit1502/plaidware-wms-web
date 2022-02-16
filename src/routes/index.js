@@ -58,6 +58,7 @@ import SetupInventory from 'pages/setupInventory';
 import HomeIcon from 'assets/images/HomeIcon';
 import SetupIcon from 'assets/images/SetupIcon';
 import AddNewProduct from '../pages/addNewProduct';
+import WidgetLabel from 'pages/widgetLabel';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -194,6 +195,13 @@ const protectedRoutes = [
         route: '/setup/warehouse/edit-warehouse',
         hide: true,
         component: <EditWarehouseDetails />
+      },
+      {
+        name: 'Widget Label',
+        key: 'widget-label',
+        route: '/setup/labeling/widget-label',
+        hide: true,
+        component: <WidgetLabel />
       }
     ]
   }

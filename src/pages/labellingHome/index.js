@@ -14,7 +14,7 @@ function LabelingHome() {
     },
     {
       name: 'Widget Label',
-      path: '/setup/labeling',
+      path: '/setup/labeling/widget-label',
       icon: <WidgetLabelIcon color="#007AFF" />
     }
   ];
