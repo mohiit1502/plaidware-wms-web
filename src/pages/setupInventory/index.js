@@ -18,7 +18,7 @@ function SetupInventory() {
     },
     {
       name: 'Products',
-      path: { update: '/', addNew: '/setup/inventory/inventory-new', cycleCount: '/', list: '/' },
+      path: { update: '/', addNew: '/setup/inventory/product/add-new-product', cycleCount: '/', list: '/' },
       icon: <ProductsIcon />
     },
     {

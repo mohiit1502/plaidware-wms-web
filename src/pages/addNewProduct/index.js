@@ -1,5 +1,6 @@
+/* eslint-disable complexity */
 import * as React from 'react';
-import { Grid, TextareaAutosize, TextField, Box } from '@mui/material';
+import { Grid, TextField, Box, FormHelperText, TextareaAutosize } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
@@ -11,6 +12,13 @@ import MDButton from 'components/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import CrossIcon from 'assets/images/CrossIcon';
+import { useFormik } from 'formik';
+import schema from 'services/ValidationServices';
+import MDInput from 'components/MDInput';
+import { useDispatch } from 'react-redux';
+import ProductActions from 'redux/ProductsRedux';
+import { API } from 'constant';
+import LOGGER from 'services/Logger';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -23,7 +31,7 @@ const useStyles = makeStyles({
   textAreaSize: {
     width: '100% !important',
     resize: 'none',
-    height: '208px !important',
+    height: '203px !important',
     boxSizing: 'border-box',
     border: '1px solid #C4C4C4',
     borderRadius: '4px',
@@ -33,11 +41,15 @@ const useStyles = makeStyles({
     cursor: 'pointer'
   }
 });
-const previewImg = [1, 2, 3];
+
+const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
+
 function AddNewProduct() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [Manufacturer, setManufacturer] = React.useState('');
   const [open, setOpen] = React.useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -49,262 +61,501 @@ function AddNewProduct() {
   const handleChange = (event) => {
     setManufacturer(event.target.value);
   };
+
+  const formik = useFormik({
+    initialValues: {
+      warehousename: '',
+      description: '',
+      manufacturer: '',
+      type: '',
+      unitofmaterial: '',
+      packagecount: '',
+      formalname: '',
+      size: '',
+      color: '',
+      unitcost: '',
+      countperpallet: '',
+      countperpalletpackage: '',
+      productfamilyassociation: '',
+      under: '',
+      over: '',
+      alert: '',
+      images: []
+    },
+    validationSchema: schema.addNewProduct,
+    onSubmit: (values, onSubmitProps) => {
+      LOGGER.log('values', values);
+      dispatch(
+        ProductActions.addProductAction({
+          loader: 'loading-request',
+          slug: API.ADD_PRODUCT,
+          method: 'post',
+          data: {
+            commonName: values.warehousename,
+            formalName: values.formalname,
+            description: values.description,
+            manufacturer: values.manufacturer,
+            size: values.size,
+            color: values.color,
+            type: values.type,
+            unitOfMaterial: values.unitofmaterial,
+            unitCost: values.unitcost,
+            packageCount: values.packagecount,
+            countPerPallet: values.countperpallet,
+            countPerPalletPackage: values.countperpalletpackage,
+            customAttributes: [
+              { fieldName: 'someName', fieldType: 'String', fieldValue: 'someValue' }
+            ],
+            widgetFamilyId: '61dcdd10699e8f55b44c606d'
+          }
+        })
+      );
+      onSubmitProps.resetForm();
+    }
+  });
+
   return (
     <>
       <DashboardLayout>
         <DashboardNavbar />
         <Box mx={3} my={3}>
-          <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
-            <Grid container spacing={5}>
-              <Grid item xs={12} sm={6} md={6}>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Warehouse name
+          <form onSubmit={formik.handleSubmit}>
+            <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
+              <Grid container spacing={5}>
+                <Grid item xs={12} sm={6} md={6}>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Warehouse name
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="warehousename"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.warehousename}
+                      error={formik.touched.warehousename && Boolean(formik.errors.warehousename)}
+                      helperText={formik.touched.warehousename && formik.errors.warehousename}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Description
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Description
+                    </Box>
+                    <TextareaAutosize
+                      variant="outlined"
+                      name="description"
+                      className={classes.textAreaSize}
+                      value={formik.values.description}
+                      error={formik.touched.description && Boolean(formik.errors.description)}
+                      onChange={formik.handleChange}
+                    />
+                    <FormHelperText>
+                      {formik.errors.description &&
+                        formik.touched.description &&
+                        formik.errors.description}
+                    </FormHelperText>
                   </Box>
-                  <TextareaAutosize className={classes.textAreaSize} />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Manufacturer
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Manufacturer
+                    </Box>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="manufacturer"
+                        value={formik.values.manufacturer}
+                        error={formik.touched.manufacturer && Boolean(formik.errors.manufacturer)}
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.manufacturer &&
+                          formik.touched.manufacturer &&
+                          formik.errors.manufacturer}
+                      </FormHelperText>
+                    </FormControl>
                   </Box>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Type
+                    </Box>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="type"
+                        value={formik.values.type}
+                        error={formik.touched.type && Boolean(formik.errors.type)}
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.type && formik.touched.type && formik.errors.type}
+                      </FormHelperText>
+                    </FormControl>
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Unit of Material
+                    </Box>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="unitofmaterial"
+                        value={formik.values.unitofmaterial}
+                        error={
+                          formik.touched.unitofmaterial && Boolean(formik.errors.unitofmaterial)
                         }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Type
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.unitofmaterial &&
+                          formik.touched.unitofmaterial &&
+                          formik.errors.unitofmaterial}
+                      </FormHelperText>
+                    </FormControl>
                   </Box>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Package Count
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="packagecount"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.packagecount}
+                      error={formik.touched.packagecount && Boolean(formik.errors.packagecount)}
+                      helperText={formik.touched.packagecount && formik.errors.packagecount}
+                      onChange={formik.handleChange}
+                    />
+                  </Box>
+                </Grid>
+                <Grid item xs={12} sm={6} md={6}>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Formal Name
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="formalname"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.formalname}
+                      error={formik.touched.formalname && Boolean(formik.errors.formalname)}
+                      helperText={formik.touched.formalname && formik.errors.formalname}
+                      onChange={formik.handleChange}
+                    />
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Size
+                    </Box>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="size"
+                        value={formik.values.size}
+                        error={formik.touched.size && Boolean(formik.errors.size)}
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.size && formik.touched.size && formik.errors.size}
+                      </FormHelperText>
+                    </FormControl>
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Color
+                    </Box>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="color"
+                        value={formik.values.color}
+                        error={formik.touched.color && Boolean(formik.errors.color)}
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.color && formik.touched.color && formik.errors.color}
+                      </FormHelperText>
+                    </FormControl>
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Unit Cost
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="unitcost"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.unitcost}
+                      error={formik.touched.unitcost && Boolean(formik.errors.unitcost)}
+                      helperText={formik.touched.unitcost && formik.errors.unitcost}
+                      onChange={formik.handleChange}
+                    />
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Count per Pallet
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="countperpallet"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.countperpallet}
+                      error={formik.touched.countperpallet && Boolean(formik.errors.countperpallet)}
+                      helperText={formik.touched.countperpallet && formik.errors.countperpallet}
+                      onChange={formik.handleChange}
+                    />
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Count per Pallet Package
+                    </Box>
+                    <MDInput
+                      fullWidth
+                      name="countperpalletpackage"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.countperpalletpackage}
+                      error={
+                        formik.touched.countperpalletpackage &&
+                        Boolean(formik.errors.countperpalletpackage)
+                      }
+                      helperText={
+                        formik.touched.countperpalletpackage && formik.errors.countperpalletpackage
+                      }
+                      onChange={formik.handleChange}
+                    />
+                  </Box>
+                  <Box component="div" sx={{ marginBottom: '24px' }}>
+                    <Box component="div" className={classes.labelSize}>
+                      Product Family Association
+                    </Box>
+                    <FormControl fullWidth sx={{ marginBottom: '32px' }}>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="productfamilyassociation"
+                        value={formik.values.productfamilyassociation}
+                        error={
+                          formik.touched.productfamilyassociation &&
+                          Boolean(formik.errors.productfamilyassociation)
                         }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Unit of Material
-                  </Box>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.productfamilyassociation &&
+                          formik.touched.productfamilyassociation &&
+                          formik.errors.productfamilyassociation}
+                      </FormHelperText>
+                    </FormControl>
+                    <FormControl fullWidth>
+                      <Select
+                        select
+                        fullWidth
+                        variant="outlined"
+                        name="productfamilyassociation"
+                        value={formik.values.productfamilyassociation}
+                        error={
+                          formik.touched.productfamilyassociation &&
+                          Boolean(formik.errors.productfamilyassociation)
                         }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Package Count
+                        onChange={formik.handleChange}
+                      >
+                        <MenuItem key={''} value={''}>
+                          None Selected
+                        </MenuItem>
+                        {inventoryTypes.map((name) => (
+                          <MenuItem key={name} value={name}>
+                            {name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>
+                        {formik.errors.productfamilyassociation &&
+                          formik.touched.productfamilyassociation &&
+                          formik.errors.productfamilyassociation}
+                      </FormHelperText>
+                    </FormControl>
                   </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
+                </Grid>
               </Grid>
-              <Grid item xs={12} sm={6} md={6}>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Formal Name
-                  </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Size
-                  </Box>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
-                        }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Color
-                  </Box>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
-                        }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Unit Cost
-                  </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Count per Pallet
-                  </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Count per Pallet Package
-                  </Box>
-                  <TextField fullWidth variant="outlined" />
-                </Box>
-                <Box component="div" sx={{ marginBottom: '24px' }}>
-                  <Box component="div" className={classes.labelSize}>
-                    Product Family Association
-                  </Box>
-                  <FormControl fullWidth sx={{ marginBottom: '32px' }}>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
-                        }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                  <FormControl fullWidth>
-                    <Select
-                      value={Manufacturer}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Placeholder</em>;
-                        }
-                      }}
-                      onChange={handleChange}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Box>
-              </Grid>
-            </Grid>
-            <Box>
-              <ImageUpload heading="Upload Warehouse Image" previewImg={previewImg} />
-            </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                columnGap: '20px',
-                marginTop: '30px',
-                marginBottom: '30px'
-              }}
-            >
-              <MDButton size="large" color="primary" variant="outlined" onClick={handleClickOpen}>
-                add custom fields
-              </MDButton>
-              <MDButton size="large" color="primary" variant="outlined">
-                import
-              </MDButton>
-            </Box>
-            <Box
-              component="div"
-              sx={{
-                marginBottom: '30px',
-                paddingBottom: '24px',
-                borderBottom: '1px solid #C2C2C2',
-                color: '#000'
-              }}
-            >
-              Stock Level Triggers
-            </Box>
-            <Box sx={{ display: 'flex', width: '50%', columnGap: '24px', marginBottom: '30px' }}>
               <Box>
-                <Box component="div" className={classes.labelSize}>
-                  Under
-                </Box>
-                <TextField fullWidth variant="outlined" type="number" />
+                <ImageUpload
+                  multiple
+                  heading="Upload Product Image"
+                  accept="image/*"
+                  images={formik.values.images}
+                  setImages={(images) => {
+                    formik.setFieldValue('images', images);
+                  }}
+                />
               </Box>
-              <Box>
-                <Box component="div" className={classes.labelSize}>
-                  Over
-                </Box>
-                <TextField fullWidth variant="outlined" type="number" />
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  columnGap: '20px',
+                  marginTop: '30px',
+                  marginBottom: '30px'
+                }}
+              >
+                <MDButton
+                  disabled
+                  size="large"
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleClickOpen}
+                >
+                  add custom fields
+                </MDButton>
+                <MDButton disabled size="large" color="primary" variant="outlined">
+                  import
+                </MDButton>
               </Box>
-              <Box>
-                <Box component="div" className={classes.labelSize}>
-                  Alert
+              <Box
+                component="div"
+                sx={{
+                  marginBottom: '30px',
+                  paddingBottom: '24px',
+                  borderBottom: '1px solid #C2C2C2',
+                  color: '#000'
+                }}
+              >
+                Stock Level Triggers
+              </Box>
+              <Box sx={{ display: 'flex', width: '50%', columnGap: '24px', marginBottom: '30px' }}>
+                <Box>
+                  <Box component="div" className={classes.labelSize}>
+                    Under
+                  </Box>
+                  <MDInput
+                    fullWidth
+                    name="under"
+                    type="number"
+                    variant="outlined"
+                    value={formik.values.under}
+                    error={formik.touched.under && Boolean(formik.errors.under)}
+                    helperText={formik.touched.under && formik.errors.under}
+                    onChange={formik.handleChange}
+                  />
                 </Box>
-                <TextField fullWidth variant="outlined" type="number" />
+                <Box>
+                  <Box component="div" className={classes.labelSize}>
+                    Over
+                  </Box>
+                  <MDInput
+                    fullWidth
+                    name="over"
+                    type="number"
+                    variant="outlined"
+                    value={formik.values.over}
+                    error={formik.touched.over && Boolean(formik.errors.over)}
+                    helperText={formik.touched.over && formik.errors.over}
+                    onChange={formik.handleChange}
+                  />
+                </Box>
+                <Box>
+                  <Box component="div" className={classes.labelSize}>
+                    Alert
+                  </Box>
+                  <MDInput
+                    fullWidth
+                    name="alert"
+                    type="number"
+                    variant="outlined"
+                    value={formik.values.alert}
+                    error={formik.touched.alert && Boolean(formik.errors.alert)}
+                    helperText={formik.touched.alert && formik.errors.alert}
+                    onChange={formik.handleChange}
+                  />
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  columnGap: '20px',
+                  marginTop: '72px',
+                  marginBottom: '30px'
+                }}
+              >
+                <MDButton size="medium" color="error" variant="outlined">
+                  cancel
+                </MDButton>
+                <MDButton size="medium" color="primary" variant="contained" type="submit">
+                  add ITem
+                </MDButton>
               </Box>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                columnGap: '20px',
-                marginTop: '72px',
-                marginBottom: '30px'
-              }}
-            >
-              <MDButton size="medium" color="error" variant="outlined">
-                cancel
-              </MDButton>
-              <MDButton size="medium" color="primary" variant="contained">
-                add ITem
-              </MDButton>
-            </Box>
-          </Box>
+          </form>
         </Box>
       </DashboardLayout>
 
