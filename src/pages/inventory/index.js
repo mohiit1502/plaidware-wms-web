@@ -1,5 +1,4 @@
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { Grid, InputLabel, TableBody, TableCell, TableRow } from '@mui/material';
 import MDInput from 'components/MDInput';
@@ -250,7 +249,6 @@ function InventoryScreen() {
           </Grid>
         </MDBox>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

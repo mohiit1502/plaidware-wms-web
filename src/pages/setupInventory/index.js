@@ -1,6 +1,5 @@
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import EquipmentIcon from 'assets/images/EquimpmentIcon';
 import ProductsIcon from 'assets/images/ProductsIcon';
@@ -18,7 +17,12 @@ function SetupInventory() {
     },
     {
       name: 'Products',
-      path: { update: '/', addNew: '/setup/inventory/product/add-new-product', cycleCount: '/', list: '/' },
+      path: {
+        update: '/',
+        addNew: '/setup/inventory/product/add-new-product',
+        cycleCount: '/',
+        list: '/'
+      },
       icon: <ProductsIcon />
     },
     {
@@ -45,7 +49,6 @@ function SetupInventory() {
             ))}
         </Grid>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

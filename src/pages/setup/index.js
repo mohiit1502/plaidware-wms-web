@@ -5,7 +5,6 @@ import InventoryIcon from 'assets/images/InventoryIcon';
 import ProfileCircleIcon from 'assets/images/ProfileCircleIcon';
 import LabelIcon from 'assets/images/LabelIcon';
 import TileBasic from 'components/TileBasic';
-import Footer from 'components/Footer';
 
 function SetupHome() {
   const data = [
@@ -34,7 +33,6 @@ function SetupHome() {
     <DashboardLayout>
       <DashboardNavbar />
       <TileBasic tiles={data} />
-      <Footer />
     </DashboardLayout>
   );
 }

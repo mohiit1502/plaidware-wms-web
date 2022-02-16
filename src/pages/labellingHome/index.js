@@ -1,5 +1,4 @@
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import LocationLabelIcon from 'assets/images/LocationLabelIcon';
 import WidgetLabelIcon from 'assets/images/WidgetLabelIcon';
@@ -23,7 +22,6 @@ function LabelingHome() {
     <DashboardLayout>
       <DashboardNavbar />
       <TileBasic tiles={data} />
-      <Footer />
     </DashboardLayout>
   );
 }

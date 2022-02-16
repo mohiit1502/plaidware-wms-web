@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux';
 
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import AuthActions from 'redux/AuthRedux';
 
@@ -16,7 +15,6 @@ function DashboardScreen() {
         <h1>Hello Dashboard</h1>
         <button onClick={handleLogout}>Logout</button>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

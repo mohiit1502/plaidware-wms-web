@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { styled } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
@@ -215,7 +214,6 @@ function UserAccessScreen() {
           </BasicTable>
         </TabPanel>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

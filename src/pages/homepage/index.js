@@ -1,5 +1,4 @@
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import SetupIcon from 'assets/images/SetupIcon';
 import SearchInventoryIcon from 'assets/images/SearchInventoryIcon';
@@ -35,7 +34,6 @@ function HomepageScreen() {
     <DashboardLayout>
       <DashboardNavbar />
       <TileBasic tiles={data} />
-      <Footer />
     </DashboardLayout>
   );
 }

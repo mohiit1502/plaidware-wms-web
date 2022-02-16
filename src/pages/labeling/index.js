@@ -1,6 +1,5 @@
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { makeStyles } from '@mui/styles';
 import Dropdown from 'components/Dropdown';
@@ -170,7 +169,6 @@ function LabelingScreen() {
           <MDButton color="primary">{'Print Labels'}</MDButton>
         </div>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }

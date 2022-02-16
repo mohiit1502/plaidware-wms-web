@@ -57,7 +57,7 @@ import {
   setMiniSidenav,
   setOpenConfigurator
 } from 'context';
-import SearchBar from 'components/SearchBar';
+// import SearchBar from 'components/SearchBar';
 import { Box } from '@mui/material';
 
 function DashboardNavbar({ absolute, light, isMini, children }) {
@@ -150,7 +150,7 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
           {isMini ? null : (
             <MDBox display="flex" width="100% !important" max-width="100% !important">
               <MDBox sx={{ width: '100%', maxWidth: '100%' }} pr={3}>
-                <SearchBar />
+                Company Name
               </MDBox>
               <MDBox display="flex" color={light ? 'white' : 'inherit'}>
                 <IconButton

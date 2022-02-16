@@ -1,5 +1,4 @@
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import TileBasic from 'components/TileBasic';
 import { API } from 'constant';
@@ -43,7 +42,6 @@ function WarehouseScreen() {
           path: '/setup/warehouse/edit-warehouse'
         }))}
       />
-      <Footer />
     </DashboardLayout>
   );
 }
