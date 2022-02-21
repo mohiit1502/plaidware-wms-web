@@ -17,6 +17,7 @@ import RolesActions, { RolesSelectors } from 'redux/RolesRedux';
 import { API } from 'constant';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   iconSize: {
@@ -80,6 +81,7 @@ function UserAccessScreen() {
   const rolesData = useSelector(RolesSelectors.getRolesDetail);
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
+  const navigate = useNavigate();
 
   const usersHandler = () => {
     dispatch(
@@ -156,7 +158,7 @@ function UserAccessScreen() {
             <SearchBar />
           </Grid>
           <Grid item xs={12} sm={4} md={2}>
-            <MDButton color="primary" size="medium">
+            <MDButton color="primary" size="medium" onClick={() => navigate('/setup/users-access/create-role')}>
               {'+ CREATE USER'}
             </MDButton>
           </Grid>

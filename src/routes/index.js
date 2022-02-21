@@ -58,6 +58,7 @@ import SetupInventory from 'pages/setupInventory';
 import HomeIcon from 'assets/images/HomeIcon';
 import SetupIcon from 'assets/images/SetupIcon';
 import AddNewProduct from '../pages/addNewProduct';
+import CreateUserRole from 'pages/createUserRole';
 import WidgetLabel from 'pages/widgetLabel';
 
 // Images
@@ -202,6 +203,13 @@ const protectedRoutes = [
         route: '/setup/labeling/widget-label',
         hide: true,
         component: <WidgetLabel />
+      },
+      {
+        name: 'Create Role',
+        key: 'create-role',
+        route: '/setup/users-access/create-role',
+        hide: true,
+        component: <CreateUserRole />
       }
     ]
   }

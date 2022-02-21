@@ -5,7 +5,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import MDBox from 'components/MDBox';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -15,26 +14,26 @@ import { makeStyles } from '@mui/styles';
 const useStyles = makeStyles({
   boxStyling: {
     boxShadow: 'none',
-	borderRadius: '5px',
-	border: '1px solid #c2c2c2',
-	padding:'8px'
+    borderRadius: '5px',
+    border: '1px solid #c2c2c2',
+    padding: '8px'
   },
   label: {
-	'& .MuiTypography-root': {
-	fontSize: '12px'
-	}
+    '& .MuiTypography-root': {
+      fontSize: '12px'
+    }
   },
   line: {
-	backgroundImage: 'none',
-	margin:'0 -8px',
-	width: 'calc(100% + 16px)',
-	backgroundColor: '#c2c2c2'
+    backgroundImage: 'none',
+    margin: '0 -8px',
+    width: 'calc(100% + 16px)',
+    backgroundColor: '#c2c2c2'
   },
   unsetwidth: {
-	minWidth: 'unset',
-	'& .MuiCheckbox-root': {
-	paddingLeft: '0px'
-	}
+    minWidth: 'unset',
+    '& .MuiCheckbox-root': {
+      paddingLeft: '0px'
+    }
   }
 });
 
@@ -47,7 +46,6 @@ function intersection(a, b) {
 }
 
 export default function TransferList() {
-	
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
   const [left, setLeft] = React.useState([0, 1, 2, 3]);
@@ -92,62 +90,58 @@ export default function TransferList() {
   };
 
   const customList = (items) => (
-      <List component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
+    <List component="div" role="list">
+      {items.map((value) => {
+        const labelId = `transfer-list-item-${value}-label`;
 
-          return (
-            <ListItem 
-              button
-              key={value}
-              role="listitem"
-              onClick={handleToggle(value)}
-            >
-			  <ListItemIcon className={classes.unsetwidth}>
-                <Checkbox
-                  disableRipple
-                  checked={checked.indexOf(value) !== -1}
-                  tabIndex={-1}
-                  inputProps={{
-                    'aria-labelledby': labelId
-                  }}
-                />
-              </ListItemIcon>
-			  
-              <ListItemText id={labelId} className={classes.label} primary={`Warehouse ${value + 1}`} />
-            </ListItem>
-          );
-        })}
-        <ListItem />
-      </List>
+        return (
+          <ListItem button key={value} role="listitem" onClick={handleToggle(value)}>
+            <ListItemIcon className={classes.unsetwidth}>
+              <Checkbox
+                disableRipple
+                checked={checked.indexOf(value) !== -1}
+                tabIndex={-1}
+                inputProps={{
+                  'aria-labelledby': labelId
+                }}
+              />
+            </ListItemIcon>
+
+            <ListItemText
+              id={labelId}
+              className={classes.label}
+              primary={`Warehouse ${value + 1}`}
+            />
+          </ListItem>
+        );
+      })}
+      <ListItem />
+    </List>
   );
 
   return (
-        <MDBox sx={{ backgroundColor: '#fff', border:'1px solid #c2c2c2', borderTop: '3px solid #007aff', display: 'inline-block', padding:'12px', borderRadius:'4px', width: '40%' }}>
-		 <Typography gutterBottom variant="h6" component="div">
-        Warehouse
-      </Typography>
     <Grid container>
-      <Grid item md={5} className={classes.boxStyling} >
-	<Typography gutterBottom variant="caption" component="div">
-        Unassigned
-    </Typography>	  
-	  <Divider className={classes.line} />
-	  {customList(left)}</Grid>
+      <Grid item md={5} className={classes.boxStyling}>
+        <Typography gutterBottom variant="caption" component="div">
+          Unassigned
+        </Typography>
+        <Divider className={classes.line} />
+        {customList(left)}
+      </Grid>
       <Grid item md={2}>
-	  <Grid container direction="column" alignItems="center">
+        <Grid container direction="column" alignItems="center">
           <IconButton
-            sx={{ my: 0.5, color:'#000' }}
+            sx={{ my: 0.5, color: '#000' }}
             variant="outlined"
-            size="small"		
+            size="small"
             disabled={left.length === 0}
             aria-label="move all right"
-			onClick={handleAllRight}
+            onClick={handleAllRight}
           >
             &gt;&gt;
           </IconButton>
           <IconButton
-            sx={{ my: 0.5, color:'#000' }}
+            sx={{ my: 0.5, color: '#000' }}
             variant="outlined"
             size="small"
             disabled={leftChecked.length === 0}
@@ -157,7 +151,7 @@ export default function TransferList() {
             &gt;
           </IconButton>
           <IconButton
-            sx={{ my: 0.5, color:'#000'  }}
+            sx={{ my: 0.5, color: '#000' }}
             variant="outlined"
             size="small"
             disabled={rightChecked.length === 0}
@@ -167,7 +161,7 @@ export default function TransferList() {
             &lt;
           </IconButton>
           <IconButton
-            sx={{ my: 0.5, color:'#000'  }}
+            sx={{ my: 0.5, color: '#000' }}
             variant="outlined"
             size="small"
             disabled={right.length === 0}
@@ -176,15 +170,15 @@ export default function TransferList() {
           >
             &lt;&lt;
           </IconButton>
-		  </Grid>
+        </Grid>
       </Grid>
       <Grid item md={5} className={classes.boxStyling}>
-	  <Typography gutterBottom variant="caption" component="div">
-        Assigned
-      </Typography>
-	  <Divider className={classes.line}/>
-	  {customList(right)}</Grid>
+        <Typography gutterBottom variant="caption" component="div">
+          Assigned
+        </Typography>
+        <Divider className={classes.line} />
+        {customList(right)}
+      </Grid>
     </Grid>
-	      </MDBox>
   );
 }
