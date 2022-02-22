@@ -7,8 +7,13 @@ import FleetIcon from 'assets/images/FleetIcon';
 import RawMaterialIcon from 'assets/images/RawMaterialIcon';
 import { Grid } from '@mui/material';
 import Tile from 'components/TileComponent';
+import MDButton from 'components/Button';
+import { useNavigate } from 'react-router-dom';
 
-function SetupInventory() {
+function SetupInventory()
+{
+  const navigate = useNavigate();
+
   const tiles = [
     {
       name: 'Raw Material',
@@ -38,7 +43,11 @@ function SetupInventory() {
   ];
   return (
     <DashboardLayout>
-      <DashboardNavbar />
+      <DashboardNavbar>
+        <MDButton sx={{ ml: 3 }} color="primary" onClick={() => navigate('/setup/inventory/inventory-new')}>
+          + Add new
+        </MDButton>
+      </DashboardNavbar>
       <MDBox px={2} py={3}>
         <Grid container spacing={2}>
           {tiles &&

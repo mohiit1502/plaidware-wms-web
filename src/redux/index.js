@@ -3,6 +3,7 @@ import { authReducer } from './AuthRedux';
 import { warehouseReducer } from './WarehouseRedux';
 import { usersReducer } from './UsersRedux';
 import { productReducer } from './ProductsRedux';
+import { inventoryReducer } from './InventoryRedux';
 import { rolesReducer } from './RolesRedux';
 
 // Combine all reducers.
@@ -11,6 +12,7 @@ const appReducer = combineReducers({
   warehouse: warehouseReducer,
   users: usersReducer,
   product: productReducer,
+  inventory: inventoryReducer,
   roles: rolesReducer
 });
 

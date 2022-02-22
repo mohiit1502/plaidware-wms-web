@@ -4,5 +4,6 @@ export default {
   CREATE_WAREHOUSE: '/warehouse/',
   GET_USERS_DATA: '/user/all?page=0&perPage=10',
   ADD_PRODUCT: '/item/',
+  ADD_INVENTORY: '/inventory',
   GET_ROLES_DATA: '/user-role/all?page=0&perPage=10'
 };

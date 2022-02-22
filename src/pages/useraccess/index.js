@@ -158,7 +158,11 @@ function UserAccessScreen() {
             <SearchBar />
           </Grid>
           <Grid item xs={12} sm={4} md={2}>
-            <MDButton color="primary" size="medium" onClick={() => navigate('/setup/users-access/create-role')}>
+            <MDButton
+              color="primary"
+              size="medium"
+              onClick={() => navigate('/setup/users-access/create-role')}
+            >
               {'+ CREATE USER'}
             </MDButton>
           </Grid>

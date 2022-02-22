@@ -49,6 +49,12 @@ const schema = {
     under: Yup.number().required('required'),
     over: Yup.number().required('required'),
     alert: Yup.number().required('required')
+  }),
+
+  addInventory: Yup.object({
+    inventoryname: Yup.string('Enter Inventory name').required('Inventory name is required'),
+    inventorytype: Yup.string('Enter inventory Type').required('inventory Type is required'),
+    widgetname: Yup.string('Enter Widget Name').required('Widget Name is required')
   })
 };
 
