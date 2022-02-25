@@ -177,10 +177,10 @@ const protectedRoutes = [
         component: <LabelingHome />
       },
       {
-        name: 'Warehouse Details Table',
-        key: 'warehouse-details-table',
+        name: 'Warehouse Details',
+        key: 'warehouse-details',
         hide: true,
-        route: '/setup/warehouse/warehouse-details-table',
+        route: '/setup/warehouse/warehouse-details/:warehouseId',
         component: <WarehouseDetailsTables />
       },
       {

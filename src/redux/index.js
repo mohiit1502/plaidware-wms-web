@@ -5,15 +5,17 @@ import { usersReducer } from './UsersRedux';
 import { productReducer } from './ProductsRedux';
 import { inventoryReducer } from './InventoryRedux';
 import { rolesReducer } from './RolesRedux';
+import { WarehouseLocationsReducer } from './WarehouseLocationsRedux';
 
 // Combine all reducers.
 const appReducer = combineReducers({
   auth: authReducer,
   warehouse: warehouseReducer,
   users: usersReducer,
+  roles: rolesReducer,
+  warehouseLocations: WarehouseLocationsReducer,
   product: productReducer,
-  inventory: inventoryReducer,
-  roles: rolesReducer
+  inventory: inventoryReducer
 });
 
 const rootReducer = (state, action) => {

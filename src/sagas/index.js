@@ -5,6 +5,7 @@ import UsersSaga from './Users';
 import ProductSaga from './Product';
 import InventorySaga from './Inventory';
 import RolesSaga from './Roles';
+import WarehouseLocationsSaga from './WarehouseLocations';
 
 export default function* rootSaga() {
   yield all([...AuthSaga]);
@@ -13,4 +14,5 @@ export default function* rootSaga() {
   yield all([...ProductSaga]);
   yield all([...InventorySaga]);
   yield all([...RolesSaga]);
+  yield all([...WarehouseLocationsSaga]);
 }

@@ -12,6 +12,7 @@ import MDInput from 'components/MDInput';
 import { useLocation } from 'react-router-dom';
 import WarehouseActions from 'redux/WarehouseRedux';
 import SnackBar from 'components/SnackBar';
+import { useNavigate } from 'react-router-dom';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles({
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function EditWarehouseDetails() {
+  const navigate = useNavigate();
   const classes = useStyles();
   const location = useLocation();
   const [open, setOpen] = useState(false);
@@ -208,7 +210,14 @@ function EditWarehouseDetails() {
                 <MDButton size="large" color="primary" variant="outlined" type="submit">
                   EDIT DETAILS
                 </MDButton>
-                <MDButton size="large" color="primary" variant="contained">
+                <MDButton
+                  size="large"
+                  color="primary"
+                  variant="contained"
+                  onClick={() => {
+                    navigate(`/setup/warehouse/warehouse-details/${location.state.id}`);
+                  }}
+                >
                   SHOW DETAILS
                 </MDButton>
               </Box>
