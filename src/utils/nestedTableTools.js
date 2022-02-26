@@ -62,7 +62,7 @@ export const getPropertiesOfLocationType = (locationType) => {
       return ['name', 'type', 'number', 'specs'];
 
     case 'level':
-      return ['name', 'type', 'specs'];
+      return ['name', 'number', 'specs'];
 
     case 'sublevel':
       return ['name', 'specs'];
