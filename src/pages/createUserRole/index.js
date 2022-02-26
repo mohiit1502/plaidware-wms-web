@@ -1,7 +1,6 @@
 import React from 'react';
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
-import Footer from 'components/Footer';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { makeStyles } from '@mui/styles';
 import { Box, Grid } from '@mui/material';
@@ -360,7 +359,6 @@ function CreateUserRole() {
           </MDButton>
         </MDBox>
       </MDBox>
-      <Footer />
     </DashboardLayout>
   );
 }
