@@ -56,7 +56,11 @@ function SidenavItem({ color, name, active, nested, children, open, icon, ...res
             })
           }
         >
-          {icon && <MDBox sx={{ marginLeft: '-1.8em', marginRight: '0.6em' }}>{icon}</MDBox>}
+          {icon && (
+            <MDBox sx={{ display: 'grid', marginLeft: '-1.8em', marginRight: '0.6em' }}>
+              {icon}
+            </MDBox>
+          )}
           <ListItemText primary={name} />
           {children && (
             <Icon
