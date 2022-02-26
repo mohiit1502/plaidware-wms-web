@@ -37,7 +37,7 @@ import Avatar from '@mui/material/Avatar';
 // Material Dashboard 2 PRO React components
 import MDBox from 'components/MDBox';
 // import MDInput from 'components/MDInput';
-import MDBadge from 'components/MDBadge';
+// import MDBadge from 'components/MDBadge';
 
 // Material Dashboard 2 PRO React example components
 import Breadcrumbs from 'components/Breadcrumbs';
@@ -59,8 +59,8 @@ import {
 import {
   useMaterialUIController,
   setTransparentNavbar,
-  setMiniSidenav,
-  setOpenConfigurator
+  setMiniSidenav
+  // setOpenConfigurator
 } from 'context';
 // import SearchBar from 'components/SearchBar';
 import { Box, Typography } from '@mui/material';
@@ -84,8 +84,9 @@ const useStyles = makeStyles(() => ({
 function DashboardNavbar({ absolute, light, isMini, children }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
-  const [openMenu, setOpenMenu] = useState(false);
+  const { miniSidenav, transparentNavbar, fixedNavbar, /*openConfigurator,*/ darkMode } =
+    controller;
+  // const [openMenu, setOpenMenu] = useState(false);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const route = useLocation().pathname.split('/').slice(1);
   const dispatchLogout = useDispatch();
@@ -118,40 +119,40 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
   }, [dispatch, fixedNavbar]);
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const handleOpenMenu = (event) => {
-    handleCloseMenu();
-    setOpenMenu(event.currentTarget);
-  };
+  // const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  // const handleOpenMenu = (event) => {
+  //   handleCloseMenu();
+  //   setOpenMenu(event.currentTarget);
+  // };
   const handleCloseMenu = () => {
-    setOpenMenu(false);
+    // setOpenMenu(false);
     setOpenProfileMenu(null);
   };
 
   const showProfileMenu = (event) => {
-    setOpenMenu(false);
+    // setOpenMenu(false);
     setOpenProfileMenu(event.currentTarget);
   };
 
-  // Render the notifications menu
-  const renderMenu = () => (
-    <Menu
-      anchorEl={openMenu}
-      anchorReference={null}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'left'
-      }}
-      className={classes.overlayStyle}
-      open={Boolean(openMenu)}
-      sx={{ mt: 2 }}
-      onClose={handleCloseMenu}
-    >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
-    </Menu>
-  );
+  // // Render the notifications menu
+  // const renderMenu = () => (
+  //   <Menu
+  //     anchorEl={openMenu}
+  //     anchorReference={null}
+  //     anchorOrigin={{
+  //       vertical: 'bottom',
+  //       horizontal: 'left'
+  //     }}
+  //     className={classes.overlayStyle}
+  //     open={Boolean(openMenu)}
+  //     sx={{ mt: 2 }}
+  //     onClose={handleCloseMenu}
+  //   >
+  //     <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
+  //     <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
+  //     <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+  //   </Menu>
+  // );
 
   // Render the profile menu
   const renderProfileMenu = () => (
@@ -227,7 +228,7 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
                     {miniSidenav ? 'menu_open' : 'menu'}
                   </Icon>
                 </IconButton>
-                <IconButton
+                {/* <IconButton
                   disableRipple
                   size="small"
                   color="inherit"
@@ -235,8 +236,8 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
                   onClick={handleConfiguratorOpen}
                 >
                   <Icon sx={iconsStyle}>settings</Icon>
-                </IconButton>
-                <IconButton
+                </IconButton> */}
+                {/* <IconButton
                   disableRipple
                   size="small"
                   color="inherit"
@@ -249,8 +250,8 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
                   <MDBadge circular badgeContent={9} color="error" size="xs">
                     <Icon sx={iconsStyle}>notifications</Icon>
                   </MDBadge>
-                </IconButton>
-                {renderMenu()}
+                </IconButton> */}
+                {/* {renderMenu()} */}
                 <IconButton
                   disableRipple
                   size="small"
