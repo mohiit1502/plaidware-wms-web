@@ -19,6 +19,9 @@ import { useState, useEffect } from 'react';
 // react-router components
 import { useLocation } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import AuthActions from 'redux/AuthRedux';
+
 // prop-types is a library for typechecking of props.
 import PropTypes from 'prop-types';
 
@@ -28,6 +31,8 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import Icon from '@mui/material/Icon';
+import { makeStyles } from '@mui/styles';
+import Avatar from '@mui/material/Avatar';
 
 // Material Dashboard 2 PRO React components
 import MDBox from 'components/MDBox';
@@ -60,12 +65,30 @@ import {
 // import SearchBar from 'components/SearchBar';
 import { Box } from '@mui/material';
 
+const useStyles = makeStyles(() => ({
+  overlayStyle: {
+    position: 'absolute',
+    top: '80px',
+    marginTop: '0px',
+    '& .MuiBackdrop-root': {
+      top: '60px'
+    },
+    '& .MuiPaper-root': {
+      top: '-16px !important'
+    }
+  }
+}));
+
 function DashboardNavbar({ absolute, light, isMini, children }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
+  const [openProfileMenu, setOpenProfileMenu] = useState(false);
   const route = useLocation().pathname.split('/').slice(1);
+  const dispatchLogout = useDispatch();
+  const handleLogout = () => dispatchLogout(AuthActions.logout());
+  const classes = useStyles();
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -94,8 +117,19 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
 
   const handleMiniSidenav = () => setMiniSidenav(dispatch, !miniSidenav);
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
-  const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
-  const handleCloseMenu = () => setOpenMenu(false);
+  const handleOpenMenu = (event) => {
+    handleCloseMenu();
+    setOpenMenu(event.currentTarget);
+  };
+  const handleCloseMenu = () => {
+    setOpenMenu(false);
+    setOpenProfileMenu(null);
+  };
+
+  const showProfileMenu = (event) => {
+    setOpenMenu(false);
+    setOpenProfileMenu(event.currentTarget);
+  };
 
   // Render the notifications menu
   const renderMenu = () => (
@@ -106,6 +140,7 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
         vertical: 'bottom',
         horizontal: 'left'
       }}
+      className={classes.overlayStyle}
       open={Boolean(openMenu)}
       sx={{ mt: 2 }}
       onClose={handleCloseMenu}
@@ -113,6 +148,24 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
       <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
       <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
       <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+    </Menu>
+  );
+
+  // Render the profile menu
+  const renderProfileMenu = () => (
+    <Menu
+      anchorEl={openProfileMenu}
+      anchorReference={null}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'left'
+      }}
+      className={classes.overlayStyle}
+      open={Boolean(openProfileMenu)}
+      sx={{ mt: 2 }}
+      onClose={handleCloseMenu}
+    >
+      <NotificationItem icon={<Icon>logout</Icon>} title="Logout" onClick={handleLogout} />
     </Menu>
   );
 
@@ -188,6 +241,16 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
                   </MDBadge>
                 </IconButton>
                 {renderMenu()}
+                <IconButton
+                  disableRipple
+                  size="small"
+                  color="inherit"
+                  sx={navbarIconButton}
+                  onClick={showProfileMenu}
+                >
+                  <Avatar alt="user name" src="/images/avatar.jpg" sx={{ width: 24, height: 24 }} />
+                </IconButton>
+                {renderProfileMenu()}
               </MDBox>
             </MDBox>
           )}
