@@ -90,18 +90,12 @@ const protectedRoutes = [
   // },
   // { type: 'divider', key: 'divider-0' },
   {
-    type: 'collapse',
     name: 'Home',
-    key: 'Home',
+    key: 'home',
     icon: <HomeIcon width={24} height={24} color="white" />,
-    collapse: [
-      {
-        name: 'Home',
-        key: 'home',
-        route: '/home',
-        component: <HomepageScreen />
-      }
-    ]
+    route: '/home',
+    type: 'single',
+    component: <HomepageScreen />
   },
   {
     type: 'collapse',

@@ -31,7 +31,7 @@ import { item, itemContent, itemArrow } from 'components/Sidenav/styles/sidenavI
 // Material Dashboard 2 PRO React contexts
 import { useMaterialUIController } from 'context';
 
-function SidenavItem({ color, name, active, nested, children, open, ...rest }) {
+function SidenavItem({ color, name, active, nested, children, open, icon, ...rest }) {
   const [controller] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode } = controller;
 
@@ -56,6 +56,7 @@ function SidenavItem({ color, name, active, nested, children, open, ...rest }) {
             })
           }
         >
+          {icon && <MDBox sx={{ marginLeft: '-1.8em', marginRight: '0.6em' }}>{icon}</MDBox>}
           <ListItemText primary={name} />
           {children && (
             <Icon
@@ -94,7 +95,8 @@ SidenavItem.propTypes = {
   active: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
   nested: PropTypes.bool,
   children: PropTypes.node,
-  open: PropTypes.bool
+  open: PropTypes.bool,
+  icon: PropTypes.any
 };
 
 export default SidenavItem;

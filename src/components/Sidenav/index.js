@@ -163,7 +163,7 @@ function Sidenav({ color, brandName, routes, ...rest }) {
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
   const renderRoutes = routes.map(
-    ({ type, name, icon, title, collapse, noCollapse, key, href, hide }) => {
+    ({ type, name, icon, title, collapse, noCollapse, key, href, hide, route }) => {
       let returnValue;
 
       if (hide) return null;
@@ -222,6 +222,12 @@ function Sidenav({ color, brandName, routes, ...rest }) {
               (darkMode && !transparentSidenav && whiteSidenav)
             }
           />
+        );
+      } else if (type === 'single') {
+        returnValue = (
+          <NavLink to={route} key={key} sx={{ textDecoration: 'none' }}>
+            <SidenavItem color={color} name={name} active={key === itemName} icon={icon} />
+          </NavLink>
         );
       }
 
