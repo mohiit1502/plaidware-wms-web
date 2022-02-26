@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   margin: {
     marginBottom: '20px'
   },
-  centerContent: {
+  tileContent: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -39,6 +39,22 @@ const useStyles = makeStyles({
         }
       }
     }
+  },
+  disabledTileContent: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    marginLeft: '20px',
+    boxShadow: '0px 4px 24px rgba(0, 0, 0, 0.05)',
+    borderRadius: '8px',
+    marginBottom: '20px',
+    opacity: '0.5',
+    '& svg': {
+      '&path': {
+        stroke: '#007AFF !important'
+      }
+    }
   }
 });
 
@@ -50,27 +66,43 @@ export default function TileBasic({ tiles }) {
       <MDBox px={2} py={3}>
         <Grid container spacing={2}>
           {tiles &&
-            tiles.map((items) => (
+            tiles.map((item) => (
               <>
                 <Grid item xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
-                  <Link
-                    to={items.path}
-                    state={{ name: items.name, address: items.address, id: items._id }}
-                  >
+                  {item.disabled ? (
                     <MDBox
-                      key={items.name + items.path}
-                      data={{ name: items.name, path: items.path }}
-                      className={classes.centerContent}
+                      key={item.name + item.path}
+                      data={{ name: item.name, path: item.path }}
+                      className={classes.disabledTileContent}
                       sx={{
                         height: 230,
                         backgroundColor: ({ palette: { white } }) => white.main,
                         padding: '32px 40px'
                       }}
                     >
-                      {items.icon}
-                      {items.name}
+                      {item.icon}
+                      {item.name}
                     </MDBox>
-                  </Link>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      state={{ name: item.name, address: item.address, id: item._id }}
+                    >
+                      <MDBox
+                        key={item.name + item.path}
+                        data={{ name: item.name, path: item.path }}
+                        className={classes.tileContent}
+                        sx={{
+                          height: 230,
+                          backgroundColor: ({ palette: { white } }) => white.main,
+                          padding: '32px 40px'
+                        }}
+                      >
+                        {item.icon}
+                        {item.name}
+                      </MDBox>
+                    </Link>
+                  )}
                 </Grid>
               </>
             ))}

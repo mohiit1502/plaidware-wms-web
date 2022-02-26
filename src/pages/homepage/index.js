@@ -11,11 +11,13 @@ function HomepageScreen() {
     {
       name: 'Search Inventory',
       path: '/',
+      disabled: true,
       icon: <SearchInventoryIcon color="#007AFF" />
     },
     {
       name: 'Scan',
       path: '/',
+      disabled: true,
       icon: <ScanIcon color="#007AFF" />
     },
     {
@@ -26,6 +28,7 @@ function HomepageScreen() {
     {
       name: 'Reports',
       path: '/',
+      disabled: true,
       icon: <ReportsIcon color="#007AFF" />
     }
   ];
