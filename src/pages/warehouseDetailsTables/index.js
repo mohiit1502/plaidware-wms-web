@@ -38,7 +38,7 @@ const bottomButtonStyling = {
 
 const AddForm = ({ addFormOpen, setAddFormOpen, selected, warehouseId }) => {
   const dispatch = useDispatch();
-  const data = addFormOpen !== 'zone' ? selected : { location: 'warehouse', parentId: warehouseId };
+  const data = addFormOpen !== 'zone' ? selected : { location: 'warehouse', id: warehouseId };
 
   const childLocationType = getChildLocationType(data.location);
   const fields = getPropertiesOfLocationType(childLocationType);
