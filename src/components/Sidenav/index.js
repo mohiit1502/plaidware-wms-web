@@ -38,7 +38,9 @@ import SidenavItem from 'components/Sidenav/SidenavItem';
 
 // Custom styles for the Sidenav
 import SidenavRoot from 'components/Sidenav/SidenavRoot';
-import sidenavLogoLabel from 'components/Sidenav/styles/sidenav';
+// import sidenavLogoLabel from 'components/Sidenav/styles/sidenav';
+import Logo from 'assets/images/logo-white-1.png';
+import FSRServicesLogo from 'assets/images/fsrServicesLogo.png';
 
 // Material Dashboard 2 PRO React context
 import {
@@ -47,8 +49,9 @@ import {
   setTransparentSidenav,
   setWhiteSidenav
 } from 'context';
+import { Typography } from '@mui/material';
 
-function Sidenav({ color, brandName, routes, ...rest }) {
+function Sidenav({ color, routes, ...rest }) {
   const [openCollapse, setOpenCollapse] = useState(false);
   const [openNestedCollapse, setOpenNestedCollapse] = useState(false);
   const [controller, dispatch] = useMaterialUIController();
@@ -257,18 +260,14 @@ function Sidenav({ color, brandName, routes, ...rest }) {
         </MDBox>
         <MDBox component={NavLink} to="/" display="flex" alignItems="center">
           <MDBox
-            width={!brandName && '100%'}
-            sx={(theme) => sidenavLogoLabel(theme, { miniSidenav })}
+            sx={{
+              textAlign: 'center'
+            }}
           >
-            <MDTypography
-              fontSize="2rem"
-              component="h1"
-              variant="button"
-              fontWeight="bold"
-              color={textColor}
-            >
-              {brandName}
-            </MDTypography>
+            <img src={FSRServicesLogo} all="logo" width="100%" />
+            <Typography sx={{ color: '#fff', marginLeft: '0px', fontSize: '16px' }}>
+              We Know Roofing
+            </Typography>
           </MDBox>
         </MDBox>
       </MDBox>
@@ -278,7 +277,32 @@ function Sidenav({ color, brandName, routes, ...rest }) {
           (darkMode && !transparentSidenav && whiteSidenav)
         }
       /> */}
-      <List>{renderRoutes}</List>
+      <List sx={{ marginBottom: '30px' }}>{renderRoutes}</List>
+      <MDBox
+        component={NavLink}
+        to="/"
+        display="flex"
+        alignItems="center"
+        sx={{ display: 'inline-block', marginTop: 'auto', textAlign: 'center' }}
+      >
+        <MDBox>
+          {/* <MDTypography
+              fontSize="2rem"
+              component="h1"
+              variant="button"
+              fontWeight="bold"
+              color={textColor}
+            >
+              {brandName}
+            </MDTypography> */}
+          <img
+            src={Logo}
+            all="logo"
+            width="60%"
+            style={{ marginLeft: '-15px', marginBottom: '15px' }}
+          />
+        </MDBox>
+      </MDBox>
     </SidenavRoot>
   );
 }

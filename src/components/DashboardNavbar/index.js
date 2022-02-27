@@ -63,9 +63,10 @@ import {
   // setOpenConfigurator
 } from 'context';
 // import SearchBar from 'components/SearchBar';
-import { Box, Typography } from '@mui/material';
+// import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
-import FSRServicesLogo from 'assets/images/fsrServicesLogo.png';
+// import FSRServicesLogo from 'assets/images/fsrServicesLogo.png';
 
 const useStyles = makeStyles(() => ({
   overlayStyle: {
@@ -199,8 +200,8 @@ function DashboardNavbar({ absolute, light, isMini /*, children*/ }) {
           paddingBottom: '8px',
           marginBottom: '5px',
           boxShadow: '0px 1px 4px rgb(0 0 0 / 8%)',
-          width: '100% !important',
-          background: 'linear-gradient(90deg, #2d373c 1%, #ffffff 100%)'
+          width: '100% !important'
+          // background: 'linear-gradient(90deg, #2d373c 1%, #ffffff 100%)'
         }}
       >
         <Toolbar className="custom-header">
@@ -210,14 +211,14 @@ function DashboardNavbar({ absolute, light, isMini /*, children*/ }) {
                 sx={{ width: '100%', maxWidth: '100%', display: 'flex', alignItems: 'center' }}
                 pr={3}
               >
-                <img
+                {/* <img
                   src={FSRServicesLogo}
                   alt="FSR services logo"
                   style={{
                     height: '2.3em'
                   }}
                 />
-                <Typography sx={{ color: '#fff', marginLeft: '60px' }}>We Know Roofing</Typography>
+                <Typography sx={{ color: '#fff', marginLeft: '60px' }}>We Know Roofing</Typography> */}
               </MDBox>
               <MDBox display="flex" color={light ? 'white' : 'inherit'}>
                 <IconButton

@@ -1,4 +1,4 @@
-import { Box, Grid, TableBody, TableCell, TableRow } from '@mui/material';
+import { Box, TableBody, TableCell, TableRow } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { makeStyles } from '@mui/styles';
@@ -10,6 +10,9 @@ import SearchBar from 'components/SearchBar';
 import BasicTable from 'components/BasicTable';
 import Barcodeimage from 'assets/images/barcode-number.png';
 import MDButton from 'components/Button';
+import Checkbox from '@mui/material/Checkbox';
+
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles({
@@ -175,8 +178,14 @@ function WidgetLabel() {
           ]}
         />
         <Box mx={3} my={3}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={3} md={3}>
+          <Box
+            sx ={{
+              display: 'grid',
+              gridTemplateColumns: ' repeat(5, 1fr)',
+              gridColumnGap :'20px'
+            }}
+          >
+            <Box>
               <Box component="div" className={classes.labelSize}>
                 Select Inventory
               </Box>
@@ -205,8 +214,8 @@ function WidgetLabel() {
                   <MenuItem>Lorem Ipsum</MenuItem>
                 </Select>
               </Box>
-            </Grid>
-            <Grid item xs={12} sm={3} md={3}>
+            </Box>
+            <Box>
               <Box component="div" className={classes.labelSize}>
                 Select Family
               </Box>
@@ -235,8 +244,8 @@ function WidgetLabel() {
                   <MenuItem>Lorem Ipsum</MenuItem>
                 </Select>
               </Box>
-            </Grid>
-            <Grid item xs={12} sm={3} md={3}>
+            </Box>
+            <Box>
               <Box component="div" className={classes.labelSize}>
                 Select Sub Family
               </Box>
@@ -265,16 +274,19 @@ function WidgetLabel() {
                   <MenuItem>Lorem Ipsum</MenuItem>
                 </Select>
               </Box>
-            </Grid>
-            <Grid item xs={12} sm={3} md={3}>
+            </Box>
+            <Box>
               <Box component="div" className={classes.labelSize}>
                 Search Keyword
               </Box>
               <Box className={classes.customLabel}>
                 <SearchBar />
               </Box>
-            </Grid>
-          </Grid>
+            </Box>
+            <Box>
+              <MDButton color="primary" sx={{ minWidth:'100%', marginTop:'30px', padding:'13px 40px' }} >{'Filter'}</MDButton>
+            </Box>
+          </Box>
           <Box sx={{ marginTop: '24px', backgroundColor: '#FFFFFF' }}>
             <BasicTable
               headCells={headCells}
@@ -286,7 +298,7 @@ function WidgetLabel() {
                 {records &&
                   records.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.warehouse}</TableCell>
+                      <TableCell><Checkbox {...label} sx={{ marginRight:'2px' }} /> {item.warehouse}</TableCell>
                       <TableCell>{item.zone}</TableCell>
                       <TableCell>{item.area}</TableCell>
                       <TableCell>{item.row}</TableCell>
