@@ -29,6 +29,7 @@ import { getColorOfLocationType } from 'utils/nestedTableTools';
 import { toTitleCase } from 'utils/nestedTableTools';
 import WarehouseLocationsActions from 'redux/WarehouseLocationsRedux';
 import { getAPIslugOfLocationType } from 'utils/nestedTableTools';
+import { API } from 'constant';
 
 function NestedDataTable({ data, selected, setSelected, populateChildren }) {
   const dispatch = useDispatch();
@@ -136,6 +137,35 @@ function NestedDataTable({ data, selected, setSelected, populateChildren }) {
             ) : null}
             <Grid item xs>
               {data.specs}
+            </Grid>
+            <Grid item xs={1}>
+              <MDButton
+                size="small"
+                variant="contained"
+                color="error"
+                sx={{
+                  textTransform: 'capitalize',
+                  minWidth: '45px',
+                  minHeight: '28px',
+                  marginLeft: '5px',
+                  marginRight: '20px',
+                  boxShadow: 'none',
+                  fontWeight: '500',
+                  padding: '0 6'
+                }}
+                onClick={() => {
+                  dispatch(
+                    WarehouseLocationsActions.deleteLocationRequest({
+                      loader: 'location-request',
+                      slug: API.LOCATION_DELETE,
+                      method: 'post',
+                      data: { type: data.location, id: data.id }
+                    })
+                  );
+                }}
+              >
+                DELETE
+              </MDButton>
             </Grid>
           </Grid>
         </Grid>

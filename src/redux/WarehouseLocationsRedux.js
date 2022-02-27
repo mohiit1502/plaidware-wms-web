@@ -11,7 +11,8 @@ const { Types, Creators } = createActions({
   locationSuccess: ['data'],
   locationFailure: ['error'],
   addLocationRequest: ['payload'],
-  editLocationRequest: ['payload']
+  editLocationRequest: ['payload'],
+  deleteLocationRequest: ['payload']
 });
 
 export const WarehouseLocationsTypes = Types;
@@ -53,7 +54,7 @@ const mapResponseToNestedTable = (stateData, childData) => {
       location: childData.child.type,
       parentId: childData.child.parentId
     }));
-  } else {
+  } else if (!childData.deleted) {
     // created
     newChildren = childData?.childrenData.map((child) => ({
       ...child,
@@ -63,11 +64,15 @@ const mapResponseToNestedTable = (stateData, childData) => {
     }));
   }
 
-  const idsInNewChildren = newChildren.map((st) => st.id);
+  if (childData.deleted) {
+    return stateData.filter((x) => x.id !== childData?.deleted?.id);
+  } else {
+    const idsInNewChildren = newChildren.map((st) => st.id);
 
-  const newState = stateData.filter((st) => !idsInNewChildren.includes(st.id));
+    const newState = stateData.filter((st) => !idsInNewChildren.includes(st.id));
 
-  return [...newState, ...newChildren];
+    return [...newState, ...newChildren];
+  }
 };
 
 export const onLocationSuccess = (state, { data }) => {
@@ -96,86 +101,18 @@ export const onEditLocationRequest = (state, { payload }) =>
     error: getErrorValue(state?.error, payload?.loader)
   });
 
+export const onDeleteLocationRequest = (state, { payload }) =>
+  state.merge({
+    fetching: _.uniq([...state.fetching, payload?.loader]),
+    error: getErrorValue(state?.error, payload?.loader)
+  });
+
 /* ------------- Hookup Reducers To Types ------------- */
 export const WarehouseLocationsReducer = createReducer(INITIAL_STATE, {
   [Types.LOCATION_REQUEST]: onLocationRequest,
   [Types.LOCATION_SUCCESS]: onLocationSuccess,
   [Types.LOCATION_FAILURE]: onLocationFailure,
   [Types.ADD_LOCATION_REQUEST]: onAddLocationRequest,
-  [Types.EDIT_LOCATION_REQUEST]: onEditLocationRequest
+  [Types.EDIT_LOCATION_REQUEST]: onEditLocationRequest,
+  [Types.DELETE_LOCATION_REQUEST]: onDeleteLocationRequest
 });
-
-// const sampleState = [
-//   {
-//     parentId: '61cea720ccc4b530015164f0',
-//     id: 132,
-//     location: 'Zone',
-//     name: 'Zone 1',
-//     type: 'Type 1',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 132,
-//     id: 154,
-//     location: 'Area',
-//     name: 'Area 1',
-//     type: 'Type 1',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 154,
-//     id: 254,
-//     location: 'Row',
-//     name: 'Row 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 154,
-//     id: 233,
-//     location: 'Row',
-//     name: 'Row 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 233,
-//     id: 254,
-//     location: 'Bay',
-//     name: 'Bay 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 233,
-//     id: 954,
-//     location: 'Bay',
-//     name: 'Bay 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 954,
-//     id: 4687,
-//     location: 'Level',
-//     name: 'Level 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 954,
-//     id: 1264,
-//     location: 'Level',
-//     name: 'Level 2',
-//     type: 'Type 2',
-//     specifications: 'something really long, idk'
-//   },
-//   {
-//     parentId: 132,
-//     id: 133,
-//     location: 'Area',
-//     name: 'Area 1',
-//     type: 'Type 1',
-//     specifications: 'something really long, idk'
-//   }
-// ];

@@ -62,6 +62,32 @@ export function* onAddRequestLocation({ payload }) {
   }
 }
 
+export function* onDeleteRequestLocation({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug,
+    payload?.data
+  );
+  LOGGER.log('delete response', response.data);
+  if (response?.status === 200) {
+    yield put(
+      WarehouseLocationsActions.locationSuccess({
+        loader: payload?.loader,
+        childData: { deleted: true, ...response?.data?.data }
+      })
+    );
+  } else {
+    payload.onFailedLocation(response.data.error);
+    yield put(
+      WarehouseLocationsActions.locationFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
 export function* onEditRequestLocation({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
@@ -95,5 +121,6 @@ export function* onEditRequestLocation({ payload }) {
 export default [
   takeEvery(WarehouseLocationsTypes.LOCATION_REQUEST, onRequestLocation),
   takeEvery(WarehouseLocationsTypes.ADD_LOCATION_REQUEST, onAddRequestLocation),
-  takeEvery(WarehouseLocationsTypes.EDIT_LOCATION_REQUEST, onEditRequestLocation)
+  takeEvery(WarehouseLocationsTypes.EDIT_LOCATION_REQUEST, onEditRequestLocation),
+  takeEvery(WarehouseLocationsTypes.DELETE_LOCATION_REQUEST, onDeleteRequestLocation)
 ];

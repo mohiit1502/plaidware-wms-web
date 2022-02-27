@@ -12,5 +12,6 @@ export default {
   ADD_NEW_LEVEL: '/level',
   ADD_NEW_SUBLEVEL: '/sublevel',
   ADD_PRODUCT: '/item/',
-  ADD_INVENTORY: '/inventory'
+  ADD_INVENTORY: '/inventory',
+  LOCATION_DELETE: '/dashboard/delete-location'
 };
