@@ -208,7 +208,7 @@ function EditWarehouseDetails() {
               >
                 {/* ---edit-- */}
                 <MDButton size="large" color="primary" variant="outlined" type="submit">
-                  EDIT DETAILS
+                  SAVE
                 </MDButton>
                 <MDButton
                   size="large"
