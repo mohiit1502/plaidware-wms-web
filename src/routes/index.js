@@ -187,7 +187,7 @@ const protectedRoutes = [
       {
         name: 'Edit Warehouse',
         key: 'edit-warehouse',
-        route: '/setup/warehouse/edit-warehouse',
+        route: '/setup/warehouse/edit-warehouse/:warehouseId',
         hide: true,
         component: <EditWarehouseDetails />
       },
