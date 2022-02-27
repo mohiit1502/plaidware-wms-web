@@ -206,7 +206,10 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
         <Toolbar className="custom-header">
           {isMini ? null : (
             <MDBox display="flex" width="100% !important" max-width="100% !important">
-              <MDBox sx={{ width: '100%', maxWidth: '100%' }} pr={3}>
+              <MDBox
+                sx={{ width: '100%', maxWidth: '100%', display: 'flex', alignItems: 'center' }}
+                pr={3}
+              >
                 <img
                   src={FSRServicesLogo}
                   alt="FSR services logo"
@@ -214,7 +217,7 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
                     height: '2.3em'
                   }}
                 />
-                <Typography sx={{ color: '#fff' }}>We Know Roofing</Typography>
+                <Typography sx={{ color: '#fff', marginLeft: '60px' }}>We Know Roofing</Typography>
               </MDBox>
               <MDBox display="flex" color={light ? 'white' : 'inherit'}>
                 <IconButton
