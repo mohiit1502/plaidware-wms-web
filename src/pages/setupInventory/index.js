@@ -45,7 +45,7 @@ function SetupInventory()
     <DashboardLayout>
       <DashboardNavbar>
         <MDButton sx={{ ml: 3 }} color="primary" onClick={() => navigate('/setup/inventory/inventory-new')}>
-          + Add new
+           Add new Inventory
         </MDButton>
       </DashboardNavbar>
       <MDBox px={2} py={3}>

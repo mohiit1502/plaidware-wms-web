@@ -32,7 +32,7 @@ function WarehouseScreen() {
           color="primary"
           onClick={() => navigate('/setup/warehouse/add-warehouse')}
         >
-          + Add new
+          Add new Warehouse
         </MDButton>
       </DashboardNavbar>
       <TileBasic

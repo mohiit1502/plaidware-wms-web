@@ -55,7 +55,7 @@ function Breadcrumbs({ title, route, light, children }) {
         backgroundColor: '#fff'
       }}
     >
-      <Grid container spacing={2} justifyContent="space-between" alignItems="center">
+      <Grid container spacing={2} alignItems="center">
         <Grid item>
           <MuiBreadcrumbs
             sx={{
@@ -78,7 +78,7 @@ function Breadcrumbs({ title, route, light, children }) {
             </MDTypography>
           </MuiBreadcrumbs>
         </Grid>
-        <Grid item md={4}>
+        <Grid item md={4} whiteSpace="nowrap" position="absolute" right="16px">
           {children}
         </Grid>
       </Grid>
