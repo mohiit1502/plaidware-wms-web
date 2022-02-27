@@ -39,7 +39,7 @@ function WarehouseScreen() {
         tiles={warehouseData.map((warehouse) => ({
           ...warehouse,
           icon: <WarehouseIcon height={96} width={96} />,
-          path: '/setup/warehouse/edit-warehouse'
+          path: `/setup/warehouse/edit-warehouse/${warehouse._id}`
         }))}
       />
     </DashboardLayout>

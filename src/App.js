@@ -23,14 +23,14 @@ import LoginScreen from 'pages/authentication';
 // @mui material components
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import Icon from '@mui/material/Icon';
+// import Icon from '@mui/material/Icon';
 
 // Material Dashboard 2 PRO React components
-import MDBox from 'components/MDBox';
+// import MDBox from 'components/MDBox';
 
 // Material Dashboard 2 PRO React example components
 import Sidenav from 'components/Sidenav';
-import Configurator from 'components/Configurator';
+// import Configurator from 'components/Configurator';
 
 // Material Dashboard 2 PRO React themes
 import theme from 'assets/theme';
@@ -39,7 +39,7 @@ import theme from 'assets/theme';
 import themeDark from 'assets/theme-dark';
 
 // Material Dashboard 2 PRO React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from 'context';
+import { useMaterialUIController, setMiniSidenav /*, setOpenConfigurator*/ } from 'context';
 
 // Images
 // import brandWhite from 'assets/images/logo-ct.png';
@@ -59,7 +59,7 @@ export default function App() {
     miniSidenav,
     direction,
     layout,
-    openConfigurator,
+    // openConfigurator,
     sidenavColor,
     // transparentSidenav,
     // whiteSidenav,
@@ -85,7 +85,7 @@ export default function App() {
   };
 
   // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+  // const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -116,29 +116,29 @@ export default function App() {
       return null;
     });
 
-  const configsButton = (
-    <MDBox
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      width="3.25rem"
-      height="3.25rem"
-      bgColor="white"
-      shadow="sm"
-      borderRadius="50%"
-      position="fixed"
-      right="2rem"
-      bottom="2rem"
-      zIndex={99}
-      color="dark"
-      sx={{ cursor: 'pointer' }}
-      onClick={handleConfiguratorOpen}
-    >
-      <Icon fontSize="small" color="inherit">
-        settings
-      </Icon>
-    </MDBox>
-  );
+  // const configsButton = (
+  //   <MDBox
+  //     display="flex"
+  //     justifyContent="center"
+  //     alignItems="center"
+  //     width="3.25rem"
+  //     height="3.25rem"
+  //     bgColor="white"
+  //     shadow="sm"
+  //     borderRadius="50%"
+  //     position="fixed"
+  //     right="2rem"
+  //     bottom="2rem"
+  //     zIndex={99}
+  //     color="dark"
+  //     sx={{ cursor: 'pointer' }}
+  //     onClick={handleConfiguratorOpen}
+  //   >
+  //     <Icon fontSize="small" color="inherit">
+  //       settings
+  //     </Icon>
+  //   </MDBox>
+  // );
 
   return (
     <Provider store={reduxStore.store}>
@@ -155,11 +155,11 @@ export default function App() {
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
               />
-              <Configurator />
-              {configsButton}
+              {/* <Configurator /> */}
+              {/* {configsButton} */}
             </>
           )}
-          {layout === 'vr' && <Configurator />}
+          {/* {layout === 'vr' && <Configurator />} */}
           <Routes>
             <Route path="/" element={<PublicRoutes component={<LoginScreen />} />} />
             {getRoutes(routes)}
