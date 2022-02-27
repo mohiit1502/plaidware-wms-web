@@ -17,7 +17,7 @@ import { useState, useEffect } from 'react';
 // import Grid from '@mui/material/Grid';
 
 // react-router components
-import { useLocation } from 'react-router-dom';
+// import { useLocation } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import AuthActions from 'redux/AuthRedux';
@@ -40,7 +40,7 @@ import MDBox from 'components/MDBox';
 // import MDBadge from 'components/MDBadge';
 
 // Material Dashboard 2 PRO React example components
-import Breadcrumbs from 'components/Breadcrumbs';
+// import Breadcrumbs from 'components/Breadcrumbs';
 import NotificationItem from 'components/NotificationItem';
 
 // import InputAdornment from '@mui/material/InputAdornment';
@@ -49,7 +49,7 @@ import NotificationItem from 'components/NotificationItem';
 import {
   // navbar,
   // navbarContainer,
-  navbarRow,
+  // navbarRow,
   navbarIconButton,
   // navbarDesktopMenu,
   navbarMobileMenu
@@ -81,14 +81,14 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-function DashboardNavbar({ absolute, light, isMini, children }) {
+function DashboardNavbar({ absolute, light, isMini /*, children*/ }) {
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentNavbar, fixedNavbar, /*openConfigurator,*/ darkMode } =
     controller;
   // const [openMenu, setOpenMenu] = useState(false);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
-  const route = useLocation().pathname.split('/').slice(1);
+  // const route = useLocation().pathname.split('/').slice(1);
   const dispatchLogout = useDispatch();
   const handleLogout = () => dispatchLogout(AuthActions.logout());
   const classes = useStyles();
@@ -270,13 +270,13 @@ function DashboardNavbar({ absolute, light, isMini, children }) {
           )}
         </Toolbar>
       </Box>
-      <Toolbar variant="dense">
+      {/* <Toolbar variant="dense">
         <MDBox color="inherit" mb={{ xs: 2, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
           <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light}>
             {children}
           </Breadcrumbs>
         </MDBox>
-      </Toolbar>
+      </Toolbar> */}
     </AppBar>
   );
 }

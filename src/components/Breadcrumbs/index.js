@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui material components
-import { Breadcrumbs as MuiBreadcrumbs, Grid } from '@mui/material';
+import { Breadcrumbs as MuiBreadcrumbs, Grid, Toolbar } from '@mui/material';
 import ArrowRight from 'assets/images/CarretArrowRightIcon';
 
 // Material Dashboard 2 PRO React components
@@ -24,65 +24,64 @@ import MDBox from 'components/MDBox';
 import MDTypography from 'components/MDTypography';
 
 const buildBreadcrumbs = (route, light) => {
-  if (route[0] === 'home') route = [];
-  else if (route.length === 1) route = ['home'];
-  else {
-    route = ['home', ...route];
-    route.pop();
-  }
-  return route.map((el) => (
-    <Link to={`/${el}`} key={el}>
+  return route.map((el) => {
+    return el.path ? (
+      <Link to={el.path} key={el}>
+        <MDTypography
+          component="span"
+          variant="button"
+          fontWeight="regular"
+          textTransform="capitalize"
+          color={light ? 'white' : 'dark'}
+          sx={{ lineHeight: 0 }}
+        >
+          {el.name}
+        </MDTypography>
+      </Link>
+    ) : (
       <MDTypography
-        component="span"
         variant="button"
         fontWeight="regular"
         textTransform="capitalize"
         color={light ? 'white' : 'dark'}
         sx={{ lineHeight: 0 }}
       >
-        {el}
+        {el.name}
       </MDTypography>
-    </Link>
-  ));
+    );
+  });
 };
 
-function Breadcrumbs({ title, route, light, children }) {
+function Breadcrumbs({ route, light, children }) {
   return (
-    <MDBox
-      mr={{ xs: 0, xl: 8 }}
-      sx={{
-        padding: '12.5px 24px',
-        backgroundColor: '#fff'
-      }}
-    >
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-          <MuiBreadcrumbs
-            sx={{
-              '& .MuiBreadcrumbs-separator': {
-                color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
-                padding: '0 8px'
-              }
-            }}
-            separator={<ArrowRight height={15} width={15} />}
-          >
-            {buildBreadcrumbs(route, light)}
-            <MDTypography
-              variant="button"
-              fontWeight="regular"
-              textTransform="capitalize"
-              color={light ? 'white' : 'dark'}
-              sx={{ lineHeight: 0 }}
+    <Toolbar variant="dense">
+      <MDBox
+        mr={{ xs: 0, xl: 8 }}
+        sx={{
+          padding: '12.5px 24px'
+          // backgroundColor: '#fff'
+        }}
+      >
+        <Grid container spacing={2} alignItems="center">
+          <Grid item>
+            <MuiBreadcrumbs
+              sx={{
+                '& .MuiBreadcrumbs-separator': {
+                  color: ({ palette: { white, grey } }) => (light ? white.main : grey[600]),
+                  padding: '0 8px'
+                }
+              }}
+              separator={<ArrowRight height={15} width={15} />}
             >
-              {title.replace('-', ' ')}
-            </MDTypography>
-          </MuiBreadcrumbs>
+              {buildBreadcrumbs(route, light)}
+            </MuiBreadcrumbs>
+          </Grid>
+          <Grid item md={4} whiteSpace="nowrap" position="absolute" right="16px">
+            {children}
+          </Grid>
         </Grid>
-        <Grid item md={4} whiteSpace="nowrap" position="absolute" right="16px">
-          {children}
-        </Grid>
-      </Grid>
-    </MDBox>
+      </MDBox>
+    </Toolbar>
   );
 }
 
@@ -93,7 +92,6 @@ Breadcrumbs.defaultProps = {
 
 // Typechecking props for the Breadcrumbs
 Breadcrumbs.propTypes = {
-  title: PropTypes.string.isRequired,
   route: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   light: PropTypes.bool,
   children: PropTypes.node

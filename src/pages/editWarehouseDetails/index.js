@@ -24,7 +24,6 @@ import MDInput from 'components/MDInput';
 import { useLocation } from 'react-router-dom';
 import WarehouseActions from 'redux/WarehouseRedux';
 import SnackBar from 'components/SnackBar';
-import { useNavigate } from 'react-router-dom';
 import { getChildLocationType } from 'utils/nestedTableTools';
 import { getPropertiesOfLocationType } from 'utils/nestedTableTools';
 import { getInitialvaluesFromParentData } from 'utils/nestedTableTools';
@@ -36,6 +35,7 @@ import { useParams } from 'react-router-dom';
 import { WarehouseLocationsSelectors } from 'redux/WarehouseLocationsRedux';
 import { API } from 'constant';
 import NestedDataTable from 'components/NestedTable';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -86,7 +86,6 @@ const AddForm = ({ addFormOpen, setAddFormOpen, selected, warehouseId }) => {
         {fields &&
           fields.map((fieldName) => (
             <TextField
-              autoFocus
               fullWidth
               key={fieldName}
               margin="dense"
@@ -318,7 +317,6 @@ const WarehouseNestedDetails = () => {
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function EditWarehouseDetails() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const ITEM_HEIGHT = 48;
@@ -370,6 +368,14 @@ function EditWarehouseDetails() {
     <>
       <DashboardLayout>
         <DashboardNavbar />
+        <Breadcrumbs
+          route={[
+            { name: 'Home', path: '/home' },
+            { name: 'Setup', path: '/setup' },
+            { name: 'Warehouse', path: '/setup/warehouse' },
+            { name: location.state.name || '' }
+          ]}
+        />
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
@@ -442,7 +448,7 @@ function EditWarehouseDetails() {
                         marginBottom: '4px'
                       }}
                     >
-                      Types of inventories hosted
+                      Inventories hosted
                     </Box>
                     <Select
                       multiple
@@ -533,7 +539,7 @@ function EditWarehouseDetails() {
                 <MDButton size="large" color="primary" variant="outlined" type="submit">
                   SAVE
                 </MDButton>
-                <MDButton
+                {/* <MDButton
                   size="large"
                   color="primary"
                   variant="contained"
@@ -542,7 +548,7 @@ function EditWarehouseDetails() {
                   }}
                 >
                   SHOW DETAILS
-                </MDButton>
+                </MDButton> */}
               </Box>
             </Box>
           </form>

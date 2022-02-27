@@ -5,6 +5,7 @@ import InventoryIcon from 'assets/images/InventoryIcon';
 import ProfileCircleIcon from 'assets/images/ProfileCircleIcon';
 import LabelIcon from 'assets/images/LabelIcon';
 import TileBasic from 'components/TileBasic';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 function SetupHome() {
   const data = [
@@ -32,6 +33,7 @@ function SetupHome() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs route={[{ name: 'Home', path: '/home' }, { name: 'Setup' }]} />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

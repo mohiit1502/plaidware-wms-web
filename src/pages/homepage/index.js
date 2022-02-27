@@ -5,6 +5,7 @@ import SearchInventoryIcon from 'assets/images/SearchInventoryIcon';
 import ReportsIcon from 'assets/images/ReportsIcon';
 import ScanIcon from 'assets/images/ScanIcon';
 import TileBasic from 'components/TileBasic';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 function HomepageScreen() {
   const data = [
@@ -36,6 +37,7 @@ function HomepageScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs route={[{ name: 'Home', path: '/home' }]} />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

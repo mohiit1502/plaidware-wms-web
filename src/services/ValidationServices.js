@@ -25,7 +25,7 @@ const schema = {
     inventorytype: Yup.array('Enter inventory Type')
       .of(Yup.string())
       .required('inventory Type is required'),
-    attributes: Yup.string('Enter other attributes').required('attributes is required')
+    attributes: Yup.string('Enter other attributes')
   }),
 
   addNewProduct: Yup.object({

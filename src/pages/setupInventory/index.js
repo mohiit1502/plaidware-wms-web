@@ -9,9 +9,9 @@ import { Grid } from '@mui/material';
 import Tile from 'components/TileComponent';
 import MDButton from 'components/Button';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumbs from 'components/Breadcrumbs';
 
-function SetupInventory()
-{
+function SetupInventory() {
   const navigate = useNavigate();
 
   const tiles = [
@@ -43,11 +43,22 @@ function SetupInventory()
   ];
   return (
     <DashboardLayout>
-      <DashboardNavbar>
-        <MDButton sx={{ ml: 3 }} color="primary" onClick={() => navigate('/setup/inventory/inventory-new')}>
-           Add new Inventory
+      <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Inventory' }
+        ]}
+      >
+        <MDButton
+          sx={{ ml: 3 }}
+          color="primary"
+          onClick={() => navigate('/setup/inventory/inventory-new')}
+        >
+          Add new Inventory
         </MDButton>
-      </DashboardNavbar>
+      </Breadcrumbs>
       <MDBox px={2} py={3}>
         <Grid container spacing={2}>
           {tiles &&

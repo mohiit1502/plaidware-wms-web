@@ -15,6 +15,7 @@ import { API } from 'constant';
 import { useDispatch } from 'react-redux';
 import InventoryActions from 'redux/InventoryRedux';
 import LOGGER from 'services/Logger';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const customStyles = {
   labelSize: {
@@ -158,6 +159,14 @@ function InventoryScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Inventory Definition' },
+          { name: 'Add New/Update Inventory' }
+        ]}
+      />
       <MDBox px={5} py={5}>
         <form onSubmit={formik.handleSubmit}>
           <MDBox

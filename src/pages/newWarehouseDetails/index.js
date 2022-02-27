@@ -11,6 +11,7 @@ import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
 import { API } from 'constant';
 import SnackBar from 'components/SnackBar';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
@@ -67,6 +68,14 @@ function NewWarehouseDetails() {
     <>
       <DashboardLayout>
         <DashboardNavbar />
+        <Breadcrumbs
+          route={[
+            { name: 'Home', path: '/home' },
+            { name: 'Setup', path: '/setup' },
+            { name: 'Warehouse', path: '/setup/warehouse' },
+            { name: 'Add new' }
+          ]}
+        />
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
@@ -139,7 +148,7 @@ function NewWarehouseDetails() {
                         marginBottom: '4px'
                       }}
                     >
-                      Types of inventories hosted
+                      Inventories hosted
                     </Box>
                     <Select
                       multiple
@@ -232,9 +241,9 @@ function NewWarehouseDetails() {
                 <MDButton size="medium" color="primary" variant="outlined" type="submit">
                   SAVE
                 </MDButton>
-                <MDButton size="medium" color="primary" variant="contained">
+                {/* <MDButton size="medium" color="primary" variant="contained">
                   NEXT
-                </MDButton>
+                </MDButton> */}
               </Box>
             </Box>
           </form>

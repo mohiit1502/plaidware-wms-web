@@ -9,6 +9,7 @@ import { WarehouseSelectors } from 'redux/WarehouseRedux';
 import WarehouseIcon from 'assets/images/WarehouseIcon';
 import MDButton from 'components/Button';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 function WarehouseScreen() {
   const dispatch = useDispatch();
@@ -26,7 +27,14 @@ function WarehouseScreen() {
 
   return (
     <DashboardLayout>
-      <DashboardNavbar>
+      <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Warehouse' }
+        ]}
+      >
         <MDButton
           sx={{ ml: 3 }}
           color="primary"
@@ -34,7 +42,7 @@ function WarehouseScreen() {
         >
           Add new Warehouse
         </MDButton>
-      </DashboardNavbar>
+      </Breadcrumbs>
       <TileBasic
         tiles={warehouseData.map((warehouse) => ({
           ...warehouse,

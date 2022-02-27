@@ -19,6 +19,7 @@ import { useDispatch } from 'react-redux';
 import ProductActions from 'redux/ProductsRedux';
 import { API } from 'constant';
 import LOGGER from 'services/Logger';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -118,6 +119,15 @@ function AddNewProduct() {
     <>
       <DashboardLayout>
         <DashboardNavbar />
+        <Breadcrumbs
+          route={[
+            { name: 'Home', path: '/home' },
+            { name: 'Setup', path: '/setup' },
+            { name: 'Inventory', path: '/setup/inventory' },
+            { name: 'Products' },
+            { name: 'Add New Product' }
+          ]}
+        />
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
