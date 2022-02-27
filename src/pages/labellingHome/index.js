@@ -3,6 +3,7 @@ import DashboardLayout from 'layouts/DashboardLayout';
 import LocationLabelIcon from 'assets/images/LocationLabelIcon';
 import WidgetLabelIcon from 'assets/images/WidgetLabelIcon';
 import TileBasic from 'components/TileBasic';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 function LabelingHome() {
   const data = [
@@ -21,6 +22,13 @@ function LabelingHome() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Labeling', path: '/setup/labeling' }
+        ]}
+      />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

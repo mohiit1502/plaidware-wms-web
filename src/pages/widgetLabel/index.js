@@ -10,6 +10,7 @@ import SearchBar from 'components/SearchBar';
 import BasicTable from 'components/BasicTable';
 import Barcodeimage from 'assets/images/barcode-number.png';
 import MDButton from 'components/Button';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -165,6 +166,14 @@ function WidgetLabel() {
     <>
       <DashboardLayout>
         <DashboardNavbar />
+        <Breadcrumbs
+          route={[
+            { name: 'Home', path: '/home' },
+            { name: 'Setup', path: '/setup' },
+            { name: 'Labeling', path: '/setup/labeling' },
+            { name: 'Widget Label' }
+          ]}
+        />
         <Box mx={3} my={3}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={3} md={3}>

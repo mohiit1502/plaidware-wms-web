@@ -73,7 +73,7 @@ function NewWarehouseDetails() {
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
             { name: 'Warehouse', path: '/setup/warehouse' },
-            { name: 'Add new' }
+            { name: 'Add Warehouse' }
           ]}
         />
         <Box mx={3} my={3}>

@@ -6,6 +6,7 @@ import Dropdown from 'components/Dropdown';
 import { Grid, TableBody, TableCell, TableRow } from '@mui/material';
 import BasicTable from 'components/BasicTable';
 import MDButton from 'components/Button';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles({
   iconSize: {
@@ -127,6 +128,14 @@ function LabelingScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Labeling', path: '/setup/labeling' },
+          { name: 'Location Label' }
+        ]}
+      />
       <MDBox px={5} py={5}>
         <Grid container spacing={2}>
           {data &&

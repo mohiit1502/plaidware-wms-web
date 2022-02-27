@@ -18,6 +18,7 @@ import { API } from 'constant';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   iconSize: {
@@ -146,6 +147,13 @@ function UserAccessScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Users and Access', path: '/setup/users-access' }
+        ]}
+      />
       <MDBox px={2} py={3}>
         <Grid container spacing={2} className={classes.margin}>
           <Grid item xs={12} sm={4} md={4}>

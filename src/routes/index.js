@@ -115,24 +115,24 @@ const protectedRoutes = [
   },
   {
     type: 'collapse',
-    name: 'Setup',
-    key: 'Setup',
+    name: 'Configuration',
+    key: 'Configuration',
     icon: <SetupIcon width={24} height={24} color="white" />,
     collapse: [
       {
-        name: 'Setup Home',
+        name: 'Setup',
         key: 'setup',
         route: '/setup',
         component: <SetupHome />
       },
       {
-        name: 'Inventory Home',
+        name: 'Inventory',
         key: 'inventory',
         route: '/setup/inventory',
         component: <SetupInventory />
       },
       {
-        name: 'Warehouse Design',
+        name: 'Warehouse',
         key: 'warehouse',
         route: '/setup/warehouse',
         component: <WarehouseScreen />

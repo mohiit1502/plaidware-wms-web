@@ -163,7 +163,7 @@ function InventoryScreen() {
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
-          { name: 'Inventory Definition' },
+          { name: 'Inventory', path: '/setup/inventory' },
           { name: 'Add New/Update Inventory' }
         ]}
       />

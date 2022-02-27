@@ -56,7 +56,7 @@ function SetupInventory() {
           color="primary"
           onClick={() => navigate('/setup/inventory/inventory-new')}
         >
-          Add new Inventory
+          Create Inventory
         </MDButton>
       </Breadcrumbs>
       <MDBox px={2} py={3}>
