@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Grid, MenuItem, OutlinedInput, Chip, Select } from '@mui/material';
-import { makeStyles } from '@mui/styles';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
 import ImageUpload from 'components/ImageUpload';
@@ -13,19 +12,9 @@ import WarehouseActions from 'redux/WarehouseRedux';
 import { API } from 'constant';
 import SnackBar from 'components/SnackBar';
 
-const useStyles = makeStyles({
-  labelSize: {
-    fontSize: '16px',
-    letterSpacing: '0.01em',
-    color: '#000',
-    marginBottom: '4px'
-  }
-});
-
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function NewWarehouseDetails() {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
 
@@ -95,7 +84,15 @@ function NewWarehouseDetails() {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box
+                      component="div"
+                      sx={{
+                        fontSize: '16px',
+                        letterSpacing: '0.01em',
+                        color: '#000',
+                        marginBottom: '4px'
+                      }}
+                    >
                       Warehouse name
                     </Box>
                     <MDInput
@@ -110,7 +107,15 @@ function NewWarehouseDetails() {
                     />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box
+                      component="div"
+                      sx={{
+                        fontSize: '16px',
+                        letterSpacing: '0.01em',
+                        color: '#000',
+                        marginBottom: '4px'
+                      }}
+                    >
                       Address
                     </Box>
                     <MDInput
@@ -125,7 +130,15 @@ function NewWarehouseDetails() {
                     />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box
+                      component="div"
+                      sx={{
+                        fontSize: '16px',
+                        letterSpacing: '0.01em',
+                        color: '#000',
+                        marginBottom: '4px'
+                      }}
+                    >
                       Types of inventories hosted
                     </Box>
                     <Select
@@ -168,7 +181,15 @@ function NewWarehouseDetails() {
                     </Select>
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box
+                      component="div"
+                      sx={{
+                        fontSize: '16px',
+                        letterSpacing: '0.01em',
+                        color: '#000',
+                        marginBottom: '4px'
+                      }}
+                    >
                       Other attributes
                     </Box>
                     <MDInput
