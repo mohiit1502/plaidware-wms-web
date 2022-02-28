@@ -15,11 +15,14 @@ import CrossIcon from 'assets/images/CrossIcon';
 import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProductActions from 'redux/ProductsRedux';
 import { API } from 'constant';
 import LOGGER from 'services/Logger';
 import Breadcrumbs from 'components/Breadcrumbs';
+import { useParams } from 'react-router-dom';
+import { WidgetSelectors } from 'redux/WidgetRedux';
+import WidgetActions from 'redux/WidgetRedux';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -43,47 +46,53 @@ const useStyles = makeStyles({
   }
 });
 
-const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
-
-function AddNewProduct() {
+function AddNewItem() {
   const classes = useStyles();
+  const { widgetName, inventoryId } = useParams();
   const dispatch = useDispatch();
   const [Manufacturer, setManufacturer] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  React.useEffect(() => {
+    dispatch(
+      WidgetActions.widgetRequest({
+        loader: 'location-request',
+        slug: `${API.GET_WIDGET_FAMILY_BY_INVENTORY}${inventoryId}`,
+        method: 'get'
+      })
+    );
+  }, []);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleChange = (event) => {
-    setManufacturer(event.target.value);
-  };
+  const [pFam, setPFam] = React.useState(null);
+  const primaryFamily = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
+  const secondaryFamily = useSelector(WidgetSelectors.getWidgetsByParentId(pFam));
+  LOGGER.log({ primaryFamily, secondaryFamily });
 
   const formik = useFormik({
     initialValues: {
-      warehousename: '',
+      commonName: '',
+      formalName: '',
       description: '',
       manufacturer: '',
-      type: '',
-      unitofmaterial: '',
-      packagecount: '',
-      formalname: '',
       size: '',
       color: '',
-      unitcost: '',
-      countperpallet: '',
-      countperpalletpackage: '',
-      productfamilyassociation: '',
-      under: '',
-      over: '',
-      alert: '',
+      type: '',
+      unitOfMaterial: '',
+      unitCost: 0,
+      packageCount: 0,
+      countPerPallet: 0,
+      countPerPalletPackage: 0,
+      primaryWidgetFamilyId: '',
+      secondaryWidgetFamilyId: '',
+      policiesMetadata: {
+        underStockLevelCount: 0,
+        overStockLevelCount: 0,
+        alertStockLevelCount: 0,
+        reorderStockLevelCount: 0
+      },
       images: []
     },
-    validationSchema: schema.addNewProduct,
+    validationSchema: schema.addNewItem,
     onSubmit: (values, onSubmitProps) => {
       LOGGER.log('values', values);
       dispatch(
@@ -92,25 +101,33 @@ function AddNewProduct() {
           slug: API.ADD_PRODUCT,
           method: 'post',
           data: {
-            commonName: values.warehousename,
-            formalName: values.formalname,
+            commonName: values.commonName,
+            formalName: values.formalName,
             description: values.description,
             manufacturer: values.manufacturer,
             size: values.size,
             color: values.color,
             type: values.type,
-            unitOfMaterial: values.unitofmaterial,
-            unitCost: values.unitcost,
-            packageCount: values.packagecount,
-            countPerPallet: values.countperpallet,
-            countPerPalletPackage: values.countperpalletpackage,
-            customAttributes: [
-              { fieldName: 'someName', fieldType: 'String', fieldValue: 'someValue' }
-            ],
-            widgetFamilyId: '61dcdd10699e8f55b44c606d'
+            unitOfMaterial: values.unitOfMaterial,
+            unitCost: values.unitCost,
+            packageCount: values.packageCount,
+            countPerPallet: values.countPerPallet,
+            countPerPalletPackage: values.countPerPalletPackage,
+            customAttributes: [],
+            policiesMetadata: {
+              underStockLevelCount: values.policiesMetadata.underStockLevelCount,
+              overStockLevelCount: values.policiesMetadata.overStockLevelCount,
+              alertStockLevelCount: values.policiesMetadata.alertStockLevelCount,
+              reorderStockLevelCount: values.policiesMetadata.reorderStockLevelCount
+            },
+            widgetFamilyId:
+              values.secondaryWidgetFamilyId === ''
+                ? values.primaryWidgetFamilyId
+                : values.secondaryWidgetFamilyId
           }
         })
       );
+      // navigate to inventory page?
       onSubmitProps.resetForm();
     }
   });
@@ -124,8 +141,8 @@ function AddNewProduct() {
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
             { name: 'Inventory', path: '/setup/inventory' },
-            { name: 'Products' },
-            { name: 'Add New Product' }
+            { name: `${widgetName || 'Item'}` },
+            { name: `Add New ${widgetName || 'Item'}` }
           ]}
         />
         <Box mx={3} my={3}>
@@ -135,16 +152,16 @@ function AddNewProduct() {
                 <Grid item xs={12} sm={6} md={6}>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
-                      Warehouse name
+                      {widgetName || 'Item'} name
                     </Box>
                     <MDInput
                       fullWidth
-                      name="warehousename"
+                      name="commonName"
                       type="text"
                       variant="outlined"
-                      value={formik.values.warehousename}
-                      error={formik.touched.warehousename && Boolean(formik.errors.warehousename)}
-                      helperText={formik.touched.warehousename && formik.errors.warehousename}
+                      value={formik.values.commonName}
+                      error={formik.touched.commonName && Boolean(formik.errors.commonName)}
+                      helperText={formik.touched.commonName && formik.errors.commonName}
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -170,91 +187,46 @@ function AddNewProduct() {
                     <Box component="div" className={classes.labelSize}>
                       Manufacturer
                     </Box>
-                    <FormControl fullWidth>
-                      <Select
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="manufacturer"
-                        value={formik.values.manufacturer}
-                        error={formik.touched.manufacturer && Boolean(formik.errors.manufacturer)}
-                        onChange={formik.handleChange}
-                      >
-                        <MenuItem key={''} value={''}>
-                          None Selected
-                        </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formik.errors.manufacturer &&
-                          formik.touched.manufacturer &&
-                          formik.errors.manufacturer}
-                      </FormHelperText>
-                    </FormControl>
+                    <MDInput
+                      fullWidth
+                      name="manufacturer"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.manufacturer}
+                      error={formik.touched.manufacturer && Boolean(formik.errors.manufacturer)}
+                      helperText={formik.touched.manufacturer && formik.errors.manufacturer}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
                       Type
                     </Box>
-                    <FormControl fullWidth>
-                      <Select
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="type"
-                        value={formik.values.type}
-                        error={formik.touched.type && Boolean(formik.errors.type)}
-                        onChange={formik.handleChange}
-                      >
-                        <MenuItem key={''} value={''}>
-                          None Selected
-                        </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formik.errors.type && formik.touched.type && formik.errors.type}
-                      </FormHelperText>
-                    </FormControl>
+                    <MDInput
+                      fullWidth
+                      name="type"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.type}
+                      error={formik.touched.type && Boolean(formik.errors.type)}
+                      helperText={formik.touched.type && formik.errors.type}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
                       Unit of Material
                     </Box>
-                    <FormControl fullWidth>
-                      <Select
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="unitofmaterial"
-                        value={formik.values.unitofmaterial}
-                        error={
-                          formik.touched.unitofmaterial && Boolean(formik.errors.unitofmaterial)
-                        }
-                        onChange={formik.handleChange}
-                      >
-                        <MenuItem key={''} value={''}>
-                          None Selected
-                        </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formik.errors.unitofmaterial &&
-                          formik.touched.unitofmaterial &&
-                          formik.errors.unitofmaterial}
-                      </FormHelperText>
-                    </FormControl>
+                    <MDInput
+                      fullWidth
+                      name="unitOfMaterial"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.unitOfMaterial}
+                      error={formik.touched.unitOfMaterial && Boolean(formik.errors.unitOfMaterial)}
+                      helperText={formik.touched.unitOfMaterial && formik.errors.unitOfMaterial}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
@@ -262,12 +234,12 @@ function AddNewProduct() {
                     </Box>
                     <MDInput
                       fullWidth
-                      name="packagecount"
-                      type="text"
+                      name="packageCount"
+                      type="number"
                       variant="outlined"
-                      value={formik.values.packagecount}
-                      error={formik.touched.packagecount && Boolean(formik.errors.packagecount)}
-                      helperText={formik.touched.packagecount && formik.errors.packagecount}
+                      value={formik.values.packageCount}
+                      error={formik.touched.packageCount && Boolean(formik.errors.packageCount)}
+                      helperText={formik.touched.packageCount && formik.errors.packageCount}
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -279,12 +251,12 @@ function AddNewProduct() {
                     </Box>
                     <MDInput
                       fullWidth
-                      name="formalname"
+                      name="formalName"
                       type="text"
                       variant="outlined"
-                      value={formik.values.formalname}
-                      error={formik.touched.formalname && Boolean(formik.errors.formalname)}
-                      helperText={formik.touched.formalname && formik.errors.formalname}
+                      value={formik.values.formalName}
+                      error={formik.touched.formalName && Boolean(formik.errors.formalName)}
+                      helperText={formik.touched.formalName && formik.errors.formalName}
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -292,57 +264,31 @@ function AddNewProduct() {
                     <Box component="div" className={classes.labelSize}>
                       Size
                     </Box>
-                    <FormControl fullWidth>
-                      <Select
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="size"
-                        value={formik.values.size}
-                        error={formik.touched.size && Boolean(formik.errors.size)}
-                        onChange={formik.handleChange}
-                      >
-                        <MenuItem key={''} value={''}>
-                          None Selected
-                        </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formik.errors.size && formik.touched.size && formik.errors.size}
-                      </FormHelperText>
-                    </FormControl>
+                    <MDInput
+                      fullWidth
+                      name="size"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.size}
+                      error={formik.touched.size && Boolean(formik.errors.size)}
+                      helperText={formik.touched.size && formik.errors.size}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
                       Color
                     </Box>
-                    <FormControl fullWidth>
-                      <Select
-                        select
-                        fullWidth
-                        variant="outlined"
-                        name="color"
-                        value={formik.values.color}
-                        error={formik.touched.color && Boolean(formik.errors.color)}
-                        onChange={formik.handleChange}
-                      >
-                        <MenuItem key={''} value={''}>
-                          None Selected
-                        </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <FormHelperText>
-                        {formik.errors.color && formik.touched.color && formik.errors.color}
-                      </FormHelperText>
-                    </FormControl>
+                    <MDInput
+                      fullWidth
+                      name="color"
+                      type="text"
+                      variant="outlined"
+                      value={formik.values.color}
+                      error={formik.touched.color && Boolean(formik.errors.color)}
+                      helperText={formik.touched.color && formik.errors.color}
+                      onChange={formik.handleChange}
+                    />
                   </Box>
                   <Box component="div" sx={{ marginBottom: '24px' }}>
                     <Box component="div" className={classes.labelSize}>
@@ -350,12 +296,12 @@ function AddNewProduct() {
                     </Box>
                     <MDInput
                       fullWidth
-                      name="unitcost"
-                      type="text"
+                      name="unitCost"
+                      type="number"
                       variant="outlined"
-                      value={formik.values.unitcost}
-                      error={formik.touched.unitcost && Boolean(formik.errors.unitcost)}
-                      helperText={formik.touched.unitcost && formik.errors.unitcost}
+                      value={formik.values.unitCost}
+                      error={formik.touched.unitCost && Boolean(formik.errors.unitCost)}
+                      helperText={formik.touched.unitCost && formik.errors.unitCost}
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -365,12 +311,12 @@ function AddNewProduct() {
                     </Box>
                     <MDInput
                       fullWidth
-                      name="countperpallet"
-                      type="text"
+                      name="countPerPallet"
+                      type="number"
                       variant="outlined"
-                      value={formik.values.countperpallet}
-                      error={formik.touched.countperpallet && Boolean(formik.errors.countperpallet)}
-                      helperText={formik.touched.countperpallet && formik.errors.countperpallet}
+                      value={formik.values.countPerPallet}
+                      error={formik.touched.countPerPallet && Boolean(formik.errors.countPerPallet)}
+                      helperText={formik.touched.countPerPallet && formik.errors.countPerPallet}
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -380,16 +326,16 @@ function AddNewProduct() {
                     </Box>
                     <MDInput
                       fullWidth
-                      name="countperpalletpackage"
-                      type="text"
+                      name="countPerPalletPackage"
+                      type="number"
                       variant="outlined"
-                      value={formik.values.countperpalletpackage}
+                      value={formik.values.countPerPalletPackage}
                       error={
-                        formik.touched.countperpalletpackage &&
-                        Boolean(formik.errors.countperpalletpackage)
+                        formik.touched.countPerPalletPackage &&
+                        Boolean(formik.errors.countPerPalletPackage)
                       }
                       helperText={
-                        formik.touched.countperpalletpackage && formik.errors.countperpalletpackage
+                        formik.touched.countPerPalletPackage && formik.errors.countPerPalletPackage
                       }
                       onChange={formik.handleChange}
                     />
@@ -398,32 +344,36 @@ function AddNewProduct() {
                     <Box component="div" className={classes.labelSize}>
                       Product Family Association
                     </Box>
-                    <FormControl fullWidth sx={{ marginBottom: '32px' }}>
+                    <FormControl fullWidth>
                       <Select
                         select
                         fullWidth
                         variant="outlined"
-                        name="productfamilyassociation"
-                        value={formik.values.productfamilyassociation}
+                        name="primaryWidgetFamilyId"
+                        value={formik.values.primaryWidgetFamilyId}
                         error={
-                          formik.touched.productfamilyassociation &&
-                          Boolean(formik.errors.productfamilyassociation)
+                          formik.touched.primaryWidgetFamilyId &&
+                          Boolean(formik.errors.primaryWidgetFamilyId)
                         }
-                        onChange={formik.handleChange}
+                        onChange={(e, ...rest) => {
+                          setPFam(e.target.value);
+                          formik.handleChange(e, ...rest);
+                        }}
                       >
-                        <MenuItem key={''} value={''}>
+                        <MenuItem key={'none'} value={''}>
                           None Selected
                         </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
+                        {primaryFamily &&
+                          primaryFamily.map((fam) => (
+                            <MenuItem key={fam._id} value={fam._id}>
+                              {fam.name}
+                            </MenuItem>
+                          ))}
                       </Select>
                       <FormHelperText>
-                        {formik.errors.productfamilyassociation &&
-                          formik.touched.productfamilyassociation &&
-                          formik.errors.productfamilyassociation}
+                        {formik.errors.primaryWidgetFamilyId &&
+                          formik.touched.primaryWidgetFamilyId &&
+                          formik.errors.primaryWidgetFamilyId}
                       </FormHelperText>
                     </FormControl>
                     <FormControl fullWidth>
@@ -431,27 +381,28 @@ function AddNewProduct() {
                         select
                         fullWidth
                         variant="outlined"
-                        name="productfamilyassociation"
-                        value={formik.values.productfamilyassociation}
+                        name="secondaryWidgetFamilyId"
+                        value={formik.values.secondaryWidgetFamilyId}
                         error={
-                          formik.touched.productfamilyassociation &&
-                          Boolean(formik.errors.productfamilyassociation)
+                          formik.touched.secondaryWidgetFamilyId &&
+                          Boolean(formik.errors.secondaryWidgetFamilyId)
                         }
                         onChange={formik.handleChange}
                       >
-                        <MenuItem key={''} value={''}>
+                        <MenuItem key={'none'} value={''}>
                           None Selected
                         </MenuItem>
-                        {inventoryTypes.map((name) => (
-                          <MenuItem key={name} value={name}>
-                            {name}
-                          </MenuItem>
-                        ))}
+                        {secondaryFamily &&
+                          secondaryFamily.map((fam) => (
+                            <MenuItem key={fam._id} value={fam._id}>
+                              {fam.name}
+                            </MenuItem>
+                          ))}
                       </Select>
                       <FormHelperText>
-                        {formik.errors.productfamilyassociation &&
-                          formik.touched.productfamilyassociation &&
-                          formik.errors.productfamilyassociation}
+                        {formik.errors.secondaryWidgetFamilyId &&
+                          formik.touched.secondaryWidgetFamilyId &&
+                          formik.errors.secondaryWidgetFamilyId}
                       </FormHelperText>
                     </FormControl>
                   </Box>
@@ -459,7 +410,6 @@ function AddNewProduct() {
               </Grid>
               <Box>
                 <ImageUpload
-                  multiple
                   heading="Upload Product Image"
                   accept="image/*"
                   images={formik.values.images}
@@ -482,7 +432,9 @@ function AddNewProduct() {
                   size="large"
                   color="primary"
                   variant="outlined"
-                  onClick={handleClickOpen}
+                  onClick={() => {
+                    setOpen(true);
+                  }}
                 >
                   add custom fields
                 </MDButton>
@@ -508,12 +460,10 @@ function AddNewProduct() {
                   </Box>
                   <MDInput
                     fullWidth
-                    name="under"
+                    name="policiesMetadata.underStockLevelCount"
                     type="number"
                     variant="outlined"
-                    value={formik.values.under}
-                    error={formik.touched.under && Boolean(formik.errors.under)}
-                    helperText={formik.touched.under && formik.errors.under}
+                    value={formik.values.policiesMetadata.underStockLevelCount}
                     onChange={formik.handleChange}
                   />
                 </Box>
@@ -523,12 +473,10 @@ function AddNewProduct() {
                   </Box>
                   <MDInput
                     fullWidth
-                    name="over"
+                    name="policiesMetadata.overStockLevelCount"
                     type="number"
                     variant="outlined"
-                    value={formik.values.over}
-                    error={formik.touched.over && Boolean(formik.errors.over)}
-                    helperText={formik.touched.over && formik.errors.over}
+                    value={formik.values.policiesMetadata.overStockLevelCount}
                     onChange={formik.handleChange}
                   />
                 </Box>
@@ -538,12 +486,23 @@ function AddNewProduct() {
                   </Box>
                   <MDInput
                     fullWidth
-                    name="alert"
+                    name="policiesMetadata.alertStockLevelCount"
                     type="number"
                     variant="outlined"
-                    value={formik.values.alert}
-                    error={formik.touched.alert && Boolean(formik.errors.alert)}
-                    helperText={formik.touched.alert && formik.errors.alert}
+                    value={formik.values.policiesMetadata.alertStockLevelCount}
+                    onChange={formik.handleChange}
+                  />
+                </Box>
+                <Box>
+                  <Box component="div" className={classes.labelSize}>
+                    Reorder
+                  </Box>
+                  <MDInput
+                    fullWidth
+                    name="policiesMetadata.reorderStockLevelCount"
+                    type="number"
+                    variant="outlined"
+                    value={formik.values.policiesMetadata.reorderStockLevelCount}
                     onChange={formik.handleChange}
                   />
                 </Box>
@@ -558,10 +517,10 @@ function AddNewProduct() {
                 }}
               >
                 <MDButton size="medium" color="error" variant="outlined">
-                  cancel
+                  Cancel
                 </MDButton>
                 <MDButton size="medium" color="primary" variant="contained" type="submit">
-                  add ITem
+                  Add {widgetName}
                 </MDButton>
               </Box>
             </Box>
@@ -584,7 +543,12 @@ function AddNewProduct() {
             padding: '10px 20px'
           }}
         >
-          <MDButton sx={{ padding: '0px', minWidth: '14px' }} onClick={handleClose}>
+          <MDButton
+            sx={{ padding: '0px', minWidth: '14px' }}
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
             <CrossIcon className={classes.cursorPointer} />
           </MDButton>
         </Box>
@@ -628,7 +592,9 @@ function AddNewProduct() {
                         return <em>Placeholder</em>;
                       }
                     }}
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      setManufacturer(event.target.value);
+                    }}
                   >
                     <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
@@ -648,7 +614,9 @@ function AddNewProduct() {
                         return <em>Placeholder</em>;
                       }
                     }}
-                    onChange={handleChange}
+                    onChange={(event) => {
+                      setManufacturer(event.target.value);
+                    }}
                   >
                     <MenuItem value={10}>Ten</MenuItem>
                     <MenuItem value={20}>Twenty</MenuItem>
@@ -783,4 +751,4 @@ function AddNewProduct() {
   );
 }
 
-export default AddNewProduct;
+export default AddNewItem;

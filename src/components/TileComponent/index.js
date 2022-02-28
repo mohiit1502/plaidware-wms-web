@@ -34,24 +34,24 @@ export default function Tile({ data, children }) {
         </Box>
       </AccordionSummary>
       <AccordionDetails className={`${classes.row2} ${expand ? null : classes.remove}`}>
-        <Link to={data.path.update}>
+        <Link to={`/setup/inventory/update/${data.id}`}>
           <Box className={classes.box}>
             Update {data.name} <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to={data.path.addNew}>
+        <Link to={`/setup/inventory/new-item/${data.widgetname}/${data.id}`}>
           <Box className={`${classes.box} ${classes.boxEven}`}>
-            Add New {data.name} <ArrowRightIcon />
+            Add New {data.widgetname} <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to={data.path.cycleCount}>
-          <Box className={classes.box}>
+        <Link to="#">
+          <Box className={classes.boxDisabled}>
             Cycle Count <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to={data.path.list}>
+        <Link to="/">
           <Box className={`${classes.box} ${classes.boxEven}`}>
-            {data.name} List <ArrowRightIcon />
+            {data.widgetname} List <ArrowRightIcon />
           </Box>
         </Link>
       </AccordionDetails>

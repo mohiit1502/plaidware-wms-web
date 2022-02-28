@@ -6,6 +6,7 @@ import { productReducer } from './ProductsRedux';
 import { inventoryReducer } from './InventoryRedux';
 import { rolesReducer } from './RolesRedux';
 import { WarehouseLocationsReducer } from './WarehouseLocationsRedux';
+import { widgetReducer } from './WidgetRedux';
 
 // Combine all reducers.
 const appReducer = combineReducers({
@@ -15,7 +16,8 @@ const appReducer = combineReducers({
   roles: rolesReducer,
   warehouseLocations: WarehouseLocationsReducer,
   product: productReducer,
-  inventory: inventoryReducer
+  inventory: inventoryReducer,
+  widgets: widgetReducer
 });
 
 const rootReducer = (state, action) => {

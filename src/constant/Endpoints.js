@@ -13,5 +13,10 @@ export default {
   ADD_NEW_SUBLEVEL: '/sublevel',
   ADD_PRODUCT: '/item/',
   ADD_INVENTORY: '/inventory',
-  LOCATION_DELETE: '/dashboard/delete-location'
+  GET_INVENTORY: '/inventory/all?page=0&perPage=50',
+  GET_INVENTORY_TYPES: '/inventory/types',
+  LOCATION_DELETE: '/dashboard/delete-location',
+  GET_WIDGET_FAMILY_BY_INVENTORY: '/widget-family/search-by-inventory?inventory=',
+  ADD_WIDGET_FAMILY: '/widget-family',
+  EDIT_WIDGET_FAMILY: '/widget-family/'
 };

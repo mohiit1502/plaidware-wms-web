@@ -28,33 +28,41 @@ const schema = {
     attributes: Yup.string('Enter other attributes')
   }),
 
-  addNewProduct: Yup.object({
-    warehousename: Yup.string('Enter warehouse name').required('warehouse name is required'),
-    description: Yup.string('Enter Description').required('description is required'),
-    manufacturer: Yup.string('Enter manufacturer').required('manufacturer is required'),
-    type: Yup.string('Enter type').required('type is required'),
-    unitofmaterial: Yup.string('Enter unitofmaterial').required('Unit of material is required'),
-    packagecount: Yup.number('Enter packagecount').required('Package Count is required'),
-    formalname: Yup.string('Enter formal name').required('Formal Name is required'),
-    size: Yup.string('Enter Size').required('Size is required'),
-    color: Yup.string('Enter Color').required('Color is required'),
-    unitcost: Yup.number('Enter UnitCost').required('Unit Cost is required'),
-    countperpallet: Yup.number('Enter countperpallet').required('Count per pallet is required'),
-    countperpalletpackage: Yup.number('Enter countperpalletpackage').required(
-      'count per pallet package is required'
-    ),
-    productfamilyassociation: Yup.string('Enter productfamilyassociation').required(
-      'product Family Association is required'
-    ),
-    under: Yup.number().required('required'),
-    over: Yup.number().required('required'),
-    alert: Yup.number().required('required')
+  addNewItem: Yup.object({
+    commonName: Yup.string('Enter details').required(),
+    formalName: Yup.string('Enter details').required(),
+    description: Yup.string('Enter details').required(),
+    manufacturer: Yup.string('Enter details').required(),
+    size: Yup.string('Enter details').required(),
+    color: Yup.string('Enter details').required(),
+    type: Yup.string('Enter details').required(),
+    unitOfMaterial: Yup.string('Enter details').required(),
+    unitCost: Yup.number().test((val) => val >= 0),
+    packageCount: Yup.number().test((val) => val >= 0),
+    countPerPallet: Yup.number().test((val) => val >= 0),
+    countPerPalletPackage: Yup.number().test((val) => val >= 0),
+    primaryWidgetFamilyId: Yup.string('Enter details').required(),
+    secondaryWidgetFamilyId: Yup.string('Enter details'),
+    policiesMetadata: Yup.object({
+      underStockLevelCount: Yup.number().test((val) => val >= 0),
+      overStockLevelCount: Yup.number().test((val) => val >= 0),
+      alertStockLevelCount: Yup.number().test((val) => val >= 0),
+      reorderStockLevelCount: Yup.number().test((val) => val >= 0)
+    }),
+    images: Yup.array()
   }),
 
   addInventory: Yup.object({
-    inventoryname: Yup.string('Enter Inventory name').required('Inventory name is required'),
-    inventorytype: Yup.string('Enter inventory Type').required('inventory Type is required'),
-    widgetname: Yup.string('Enter Widget Name').required('Widget Name is required')
+    name: Yup.string('Enter Widget Name').required('Widget Name is required'),
+    widgetName: Yup.string('Enter Inventory name').required('Inventory name is required'),
+    policies: Yup.object({
+      orderTracking: Yup.boolean(),
+      alerting: Yup.boolean(),
+      replenishment: Yup.boolean(),
+      preferredLocations: Yup.boolean(),
+      inventory_process: Yup.string()
+    }),
+    image: Yup.array()
   })
 };
 

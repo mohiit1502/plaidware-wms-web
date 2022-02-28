@@ -57,7 +57,7 @@ import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
 import HomeIcon from 'assets/images/HomeIcon';
 import SetupIcon from 'assets/images/SetupIcon';
-import AddNewProduct from '../pages/addNewProduct';
+import AddNewItem from '../pages/addNewProduct';
 import CreateUserRole from 'pages/createUserRole';
 import WidgetLabel from 'pages/widgetLabel';
 
@@ -141,15 +141,22 @@ const protectedRoutes = [
         name: 'Inventory Definition',
         key: 'inventory-new',
         hide: true,
-        route: '/setup/inventory/inventory-new',
+        route: '/setup/inventory/new',
         component: <InventoryScreen />
       },
       {
-        name: 'Add New Product',
-        key: 'add-new-product',
+        name: 'Inventory Definition',
+        key: 'inventory-update',
         hide: true,
-        route: '/setup/inventory/product/add-new-product',
-        component: <AddNewProduct />
+        route: '/setup/inventory/update/:inventoryId',
+        component: <InventoryScreen />
+      },
+      {
+        name: 'Add New Item',
+        key: 'add-new-item',
+        hide: true,
+        route: '/setup/inventory/new-item/:widgetName/:inventoryId',
+        component: <AddNewItem />
       },
       {
         name: 'Location Labeling',

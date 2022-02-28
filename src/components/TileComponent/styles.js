@@ -83,6 +83,23 @@ const useStyles = makeStyles({
   },
   remove: {
     display: 'none'
+  },
+  boxDisabled: {
+    display: 'flex',
+    color: '#cccccc',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '13px 0 13px 10px',
+    borderTop: '1px solid lightgray',
+    '& svg': {
+      opacity: '0'
+    },
+    '&:hover': {
+      cursor: 'auto',
+      '& svg': {
+        opacity: '0'
+      }
+    }
   }
 });
 
