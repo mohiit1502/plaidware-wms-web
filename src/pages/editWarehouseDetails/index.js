@@ -21,7 +21,6 @@ import MDButton from 'components/Button';
 import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
-import { useLocation } from 'react-router-dom';
 import WarehouseActions from 'redux/WarehouseRedux';
 import SnackBar from 'components/SnackBar';
 import { getChildLocationType } from 'utils/nestedTableTools';
@@ -36,6 +35,7 @@ import { WarehouseLocationsSelectors } from 'redux/WarehouseLocationsRedux';
 import { API } from 'constant';
 import NestedDataTable from 'components/NestedTable';
 import Breadcrumbs from 'components/Breadcrumbs';
+import { WarehouseSelectors } from 'redux/WarehouseRedux';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -317,7 +317,9 @@ const WarehouseNestedDetails = () => {
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function EditWarehouseDetails() {
-  const location = useLocation();
+  const { warehouseId } = useParams();
+  const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetailById(warehouseId));
+
   const [open, setOpen] = useState(false);
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -329,21 +331,22 @@ function EditWarehouseDetails() {
       }
     }
   };
+
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
-      warehousename: location.state.name,
-      address: location.state.address,
+      warehousename: warehouseData.name,
+      address: warehouseData.address,
       inventorytype: [],
       attributes: '',
-      images: []
+      images: warehouseData.images
     },
     validationSchema: schema.warehouseForm,
     onSubmit: (values, onSubmitProps) => {
       dispatch(
         WarehouseActions.editWarehouseAction({
           loader: 'loading-request',
-          slug: `/warehouse/${location.state.id}`,
+          slug: `/warehouse/${warehouseData._id}`,
           method: 'patch',
           data: {
             name: values.warehousename,
@@ -373,7 +376,7 @@ function EditWarehouseDetails() {
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
             { name: 'Warehouse', path: '/setup/warehouse' },
-            { name: location.state.name || '' }
+            { name: warehouseData.name || '' }
           ]}
         />
         <Box mx={3} my={3}>

@@ -49,7 +49,7 @@ export default function Tile({ data, children }) {
             Cycle Count <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to="/">
+        <Link to={`/setup/inventory/browse/${data.widgetname}/${data.id}`}>
           <Box className={`${classes.box} ${classes.boxEven}`}>
             {data.widgetname} List <ArrowRightIcon />
           </Box>

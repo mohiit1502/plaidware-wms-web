@@ -1,25 +1,27 @@
 import { AuthorizedAPI } from 'config';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import ApiServices from 'services/API/ApiServices';
-import WidgetActions, { WidgetTypes } from '../redux/WidgetRedux';
+import ItemActions, { ItemTypes } from '../redux/ItemRedux';
 
-export function* onRequestWidget({ payload }) {
+export function* onRequestItem({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
     AuthorizedAPI,
-    payload?.slug,
+    `${payload?.slug}${payload?.inventoryId}&page=${payload?.page}&perPage=${payload?.perPage}`,
     payload?.data
   );
   if (response?.status === 200) {
     yield put(
-      WidgetActions.widgetSuccess({
+      ItemActions.itemSuccess({
         loader: payload?.loader,
-        widgets: response?.data?.data
+        items: response?.data?.data,
+        page: payload?.page,
+        reset: !payload.page
       })
     );
   } else {
     yield put(
-      WidgetActions.widgetFailure({
+      ItemActions.itemFailure({
         loader: payload?.loader,
         error: response?.message
       })
@@ -27,7 +29,7 @@ export function* onRequestWidget({ payload }) {
   }
 }
 
-export function* onEditRequestWidget({ payload }) {
+export function* onEditRequestItem({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
     AuthorizedAPI,
@@ -36,16 +38,15 @@ export function* onEditRequestWidget({ payload }) {
   );
   if (response?.status === 200) {
     yield put(
-      WidgetActions.editWidgetSuccess({
+      ItemActions.editItemSuccess({
         loader: payload?.loader,
-        widget: response?.data?.data,
-        type: payload?.type,
-        deletedId: payload?.deletedId
+        item: response?.data?.data,
+        type: payload?.type
       })
     );
   } else {
     yield put(
-      WidgetActions.widgetFailure({
+      ItemActions.itemFailure({
         loader: payload?.loader,
         error: response?.message
       })
@@ -54,6 +55,6 @@ export function* onEditRequestWidget({ payload }) {
 }
 
 export default [
-  takeEvery(WidgetTypes.WIDGET_REQUEST, onRequestWidget),
-  takeEvery(WidgetTypes.EDIT_WIDGET_REQUEST, onEditRequestWidget)
+  takeEvery(ItemTypes.ITEM_REQUEST, onRequestItem),
+  takeEvery(ItemTypes.EDIT_ITEM_REQUEST, onEditRequestItem)
 ];

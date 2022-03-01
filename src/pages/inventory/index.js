@@ -103,7 +103,7 @@ function InventoryScreen() {
             preferredLocations: false, // TODO: change later when implemented on BE
             inventory_process: currentInventoryData.policies.inventory_process
           },
-          image: [{ src: currentInventoryData.image }]
+          image: [{ src: currentInventoryData.image_url }]
         }
       : {
           name: '',
@@ -118,7 +118,7 @@ function InventoryScreen() {
           image: []
         },
     validationSchema: schema.addInventory,
-    onSubmit: (values, onSubmitProps) => {
+    onSubmit: (values) => {
       LOGGER.log('values', values);
       inventoryId
         ? dispatch(
@@ -144,9 +144,11 @@ function InventoryScreen() {
             })
           );
       // navigate to edit inventory page
-      onSubmitProps.resetForm();
+      // onSubmitProps.resetForm();
     }
   });
+
+  LOGGER.log('Form values', formik.values);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -178,7 +180,6 @@ function InventoryScreen() {
                   </Box>
                   <MDInput
                     fullWidth
-                    disabled={inventoryId}
                     name="name"
                     type="text"
                     variant="outlined"
@@ -195,7 +196,6 @@ function InventoryScreen() {
                   </Box>
                   <MDInput
                     fullWidth
-                    disabled={inventoryId}
                     name="widgetName"
                     type="text"
                     variant="outlined"
@@ -227,7 +227,6 @@ function InventoryScreen() {
                       <div sx={customStyles.gridWrap} key={item.key}>
                         <MDTypography sx={customStyles.textWrap}>{item.text}</MDTypography>
                         <Switch
-                          disabled={inventoryId}
                           name={`policies.${item.key}`}
                           checked={formik.values.policies[item.key]}
                           onChange={formik.handleChange}
@@ -241,7 +240,6 @@ function InventoryScreen() {
                       <Select
                         select
                         fullWidth
-                        disabled={inventoryId}
                         variant="outlined"
                         name="policies.inventory_process"
                         value={formik.values.policies.inventory_process}
@@ -279,23 +277,35 @@ function InventoryScreen() {
                 >
                   {'CANCEL'}
                 </MDButton>
+                <MDButton sx={{ ml: 3 }} color="primary" variant="outlined" type="submit">
+                  {'SAVE'}
+                </MDButton>
                 <MDButton
                   sx={{ ml: 3 }}
                   color="primary"
-                  variant="outlined"
-                  disabled={inventoryId}
-                  type="submit"
+                  onClick={() => {
+                    navigate(
+                      `/setup/inventory/new-item/${currentInventoryData.widgetName}/${inventoryId}`
+                    );
+                  }}
                 >
-                  {'SAVE'}
-                </MDButton>
-                <MDButton sx={{ ml: 3 }} color="primary">
                   {'ADD ITEMS'}
                 </MDButton>
               </MDBox>
             </Grid>
           </MDBox>
         </form>
-        {inventoryId ? <WidgetNestedDataTable inventoryId={inventoryId} /> : null}
+        {inventoryId ? (
+          <>
+            <MDBox sx={{ my: 4 }}>
+              <MDTypography variant="h5">Widget family hierarchy</MDTypography>
+              <MDTypography sx={customStyles.textSize}>
+                Define widget family and sub-family
+              </MDTypography>
+            </MDBox>
+            <WidgetNestedDataTable inventoryId={inventoryId} />
+          </>
+        ) : null}
       </MDBox>
     </DashboardLayout>
   );

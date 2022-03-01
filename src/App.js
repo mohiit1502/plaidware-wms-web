@@ -53,6 +53,9 @@ import reduxStore from './redux/Store';
 import { protectedRoutes as routes } from './routes/index';
 import PrivateRoute from './routes/PrivateRoute';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const {
@@ -166,6 +169,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </ThemeProvider>
+        <ToastContainer />
       </PersistGate>
     </Provider>
   );

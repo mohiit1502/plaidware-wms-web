@@ -65,14 +65,16 @@ export const onWidgetSuccess = (state, { data }) =>
     list: mergeWidgetStates(state.list, data.widgets)
   });
 
-const mergeEditWidgetStates = (stateList, widget, type) => {
-  if (!widget) return stateList; // undefined check
+const mergeEditWidgetStates = (stateList, widget, type, deletedId) => {
+  if (!(widget || deletedId)) return stateList; // undefined check
 
   if (type === 'add') {
     return [...stateList, widget];
   } else if (type === 'edit') {
     const newState = stateList.filter((x) => x._id !== widget._id);
     return [...newState, widget];
+  } else if (type === 'delete') {
+    return stateList.filter((x) => x._id !== deletedId);
   } else {
     return stateList;
   }
@@ -82,7 +84,7 @@ export const onEditWidgetSuccess = (state, { data }) =>
   state.merge({
     fetching: getFetchingValue(state.fetching, data?.loader),
     error: getErrorValue(state?.error, data?.loader),
-    list: mergeEditWidgetStates(state.list, data.widget, data.type)
+    list: mergeEditWidgetStates(state.list, data.widget, data.type, data.deletedId)
   });
 
 export const onWidgetFailure = (state, { error }) =>

@@ -46,7 +46,7 @@ function MaterialForm({ formType, setFormOpen, selected, inventoryId }) {
         : dispatch(
             WidgetActions.editWidgetRequest({
               loader: 'location-request',
-              slug: `${API.EDIT_WIDGET_FAMILY}${inventoryId}`,
+              slug: `${API.EDIT_WIDGET_FAMILY}${formType._id}`,
               method: 'patch',
               data: values,
               type: 'edit'
@@ -113,6 +113,7 @@ function WidgetNestedDataTable({
   inventoryId
 }) {
   const [open, setOpen] = React.useState(false);
+  const dispatch = useDispatch();
   const widgetChildren = useSelector(WidgetSelectors.getWidgetsByParentId(data._id));
 
   return (
@@ -167,46 +168,44 @@ function WidgetNestedDataTable({
             </MDButton>
           </Grid>
           <Grid
-            container
             item
-            xs={10}
+            xs={8}
             onClick={() => {
               setSelected(data);
             }}
           >
-            <Grid item xs={9}>
-              {data.name}
-            </Grid>
-            <Grid item xs={1}>
-              <MDButton
-                disabled
-                size="small"
-                variant="contained"
-                color="error"
-                sx={{
-                  textTransform: 'capitalize',
-                  minWidth: '45px',
-                  minHeight: '28px',
-                  marginLeft: '5px',
-                  marginRight: '20px',
-                  boxShadow: 'none',
-                  fontWeight: '500',
-                  padding: '0 6'
-                }}
-                onClick={() => {
-                  // dispatch(
-                  //   WarehouseLocationsActions.deleteLocationRequest({
-                  //     loader: 'location-request',
-                  //     slug: API.LOCATION_DELETE,
-                  //     method: 'post',
-                  //     data: { type: data.location, id: data.id }
-                  //   })
-                  // );
-                }}
-              >
-                DELETE
-              </MDButton>
-            </Grid>
+            {data.name}
+          </Grid>
+          <Grid item xs={2}>
+            <MDButton
+              size="small"
+              variant="contained"
+              color="error"
+              sx={{
+                textTransform: 'capitalize',
+                minWidth: '45px',
+                minHeight: '28px',
+                marginLeft: '5px',
+                marginRight: '20px',
+                boxShadow: 'none',
+                fontWeight: '500',
+                padding: '0 6'
+              }}
+              onClick={() => {
+                setSelected(null);
+                dispatch(
+                  WidgetActions.editWidgetRequest({
+                    loader: 'location-request',
+                    slug: `${API.EDIT_WIDGET_FAMILY}${data._id}`,
+                    deletedId: data._id,
+                    method: 'delete',
+                    type: 'delete'
+                  })
+                );
+              }}
+            >
+              DELETE
+            </MDButton>
           </Grid>
         </Grid>
         {open && widgetChildren ? (

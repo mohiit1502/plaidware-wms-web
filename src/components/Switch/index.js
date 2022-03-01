@@ -1,8 +1,8 @@
 import * as React from 'react';
-import FormControlLabel from '@mui/material/FormControlLabel';
+// import FormControlLabel from '@mui/material/FormControlLabel';
 import PropTypes from 'prop-types';
 import { styled } from '@mui/material/styles';
-import FormGroup from '@mui/material/FormGroup';
+// import FormGroup from '@mui/material/FormGroup';
 import SwitchButton from '@mui/material/Switch';
 
 const IOSSwitch = styled((props) => (
@@ -56,14 +56,12 @@ const IOSSwitch = styled((props) => (
   }
 }));
 
-export default function Switch({ checked }) {
-  return (
-    <FormGroup>
-      <FormControlLabel control={<IOSSwitch defaultChecked={checked} sx={{ m: 1 }} />} label="" />
-    </FormGroup>
-  );
+export default function Switch({ checked, onChange, name }) {
+  return <IOSSwitch checked={checked} sx={{ m: 1 }} name={name} onChange={onChange} />;
 }
 
 Switch.propTypes = {
-  checked: PropTypes.bool
+  checked: PropTypes.any,
+  name: PropTypes.any,
+  onChange: PropTypes.any
 };

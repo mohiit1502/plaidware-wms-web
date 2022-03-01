@@ -93,8 +93,8 @@ export const onUpdateInventorySuccess = (state, { data }) =>
     fetching: getFetchingValue(state.fetching, data?.loader),
     error: getErrorValue(state?.error, data?.loader),
     getInventoryDetail: [
-      ...state.getInventoryDetail.filter((x) => x._id !== data.newInventory._id),
-      data.newInventory
+      ...state.getInventoryDetail.filter((x) => x._id !== data.updateInventory?.inventory?._id),
+      data.updateInventory?.inventory
     ]
   });
 

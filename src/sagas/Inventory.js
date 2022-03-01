@@ -1,5 +1,6 @@
 import { AuthorizedAPI } from 'config';
-import { takeLatest, call, put, takeEvery } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import InventoryActions from 'redux/InventoryRedux';
 import { InventoryTypes } from 'redux/InventoryRedux';
 import ApiServices from 'services/API/ApiServices';
@@ -101,10 +102,11 @@ export function* onRequestUpdateInventoryData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
+    toast('Updated inventory successfully');
     yield put(
       InventoryActions.updateInventorySuccess({
         loader: payload?.loader,
-        updateInventoryDetail: response?.data?.data
+        updateInventory: response?.data?.data
       })
     );
   } else {
@@ -118,8 +120,8 @@ export function* onRequestUpdateInventoryData({ payload }) {
   }
 }
 export default [
-  takeLatest(InventoryTypes.GET_INVENTORY_ACTION, onRequestGetInventoryData),
-  takeLatest(InventoryTypes.ADD_INVENTORY_ACTION, onRequestAddInventoryData),
-  takeLatest(InventoryTypes.UPDATE_INVENTORY_ACTION, onRequestUpdateInventoryData),
+  takeEvery(InventoryTypes.GET_INVENTORY_ACTION, onRequestGetInventoryData),
+  takeEvery(InventoryTypes.ADD_INVENTORY_ACTION, onRequestAddInventoryData),
+  takeEvery(InventoryTypes.UPDATE_INVENTORY_ACTION, onRequestUpdateInventoryData),
   takeEvery(InventoryTypes.GET_INVENTORY_TYPES_ACTION, onRequestGetInventoryTypesData)
 ];

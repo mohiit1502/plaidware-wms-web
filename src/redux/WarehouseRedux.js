@@ -39,6 +39,8 @@ export const INITIAL_STATE = Immutable({
 /* ------------- Selectors ------------- */
 export const WarehouseSelectors = {
   getWarehouseDetail: (state) => state.warehouse.warehouseDetail,
+  getWarehouseDetailById: (id) => (state) =>
+    state.warehouse.warehouseDetail.find((x) => x._id === id),
   createWarehouseDetail: (state) => state.warehouse.createWarehouse,
   editWarehouseDetail: (state) => state.warehouse.editWarehouse
 };

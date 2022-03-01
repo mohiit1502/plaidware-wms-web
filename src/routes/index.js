@@ -51,7 +51,6 @@ import LocationLabelingScreen from 'pages/labeling';
 import UserAccessScreen from 'pages/useraccess';
 import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import SetupHome from 'pages/setup';
-import WarehouseDetailsTables from 'pages/warehouseDetailsTables';
 import EditWarehouseDetails from 'pages/editWarehouseDetails';
 import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
@@ -60,6 +59,7 @@ import SetupIcon from 'assets/images/SetupIcon';
 import AddNewItem from '../pages/addNewProduct';
 import CreateUserRole from 'pages/createUserRole';
 import WidgetLabel from 'pages/widgetLabel';
+import ItemListing from 'pages/itemListing';
 
 // Images
 // import profilePicture from 'assets/images/team-3.jpg';
@@ -159,6 +159,13 @@ const protectedRoutes = [
         component: <AddNewItem />
       },
       {
+        name: 'View Items',
+        key: 'view-items',
+        hide: true,
+        route: '/setup/inventory/browse/:widgetName/:inventoryId',
+        component: <ItemListing />
+      },
+      {
         name: 'Location Labeling',
         key: 'location-labeling',
         hide: true,
@@ -176,13 +183,6 @@ const protectedRoutes = [
         key: 'labeling',
         route: '/setup/labeling',
         component: <LabelingHome />
-      },
-      {
-        name: 'Warehouse Details',
-        key: 'warehouse-details',
-        hide: true,
-        route: '/setup/warehouse/warehouse-details/:warehouseId',
-        component: <WarehouseDetailsTables />
       },
       {
         name: 'Add Warehouse',
