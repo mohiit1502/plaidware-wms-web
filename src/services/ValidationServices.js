@@ -63,6 +63,12 @@ const schema = {
       inventory_process: Yup.string()
     }),
     image: Yup.array()
+  }),
+
+  createUser: Yup.object({
+    fullName: Yup.string('Enter Full Name').required('User Name is required'),
+    phoneNumber: Yup.string('Enter Phone Numbe').required('Phone Number is required'),
+    roles: Yup.string('Select a role').required('At least one role is required'),
   })
 };
 

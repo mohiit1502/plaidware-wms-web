@@ -3,7 +3,7 @@ import { Table } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import PropTypes from 'prop-types';
 
-export default function TblContainer({ children, backgroundColor, color }) {
+export default function TblContainer({ children, backgroundColor, color, id }) {
   const useStyles = makeStyles({
     headDisplay: {
       display: 'revert'
@@ -31,7 +31,7 @@ export default function TblContainer({ children, backgroundColor, color }) {
   const classes = useStyles();
   return (
     <>
-      <Table className={classes.table}>{children}</Table>
+      <Table className={classes.table} id={id}>{children}</Table>
     </>
   );
 }
@@ -39,5 +39,6 @@ export default function TblContainer({ children, backgroundColor, color }) {
 TblContainer.propTypes = {
   children: PropTypes.node.isRequired,
   backgroundColor: PropTypes.string.isRequired,
-  color: PropTypes.string.isRequired
+  color: PropTypes.string.isRequired,
+  id: PropTypes.string
 };

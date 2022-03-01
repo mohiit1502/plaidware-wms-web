@@ -27,7 +27,7 @@ export default styled(Button)(({ theme, ownerState }) => {
   const { borderRadius } = borders;
   const { colored } = boxShadows;
 
-  // styles for the button with variant="contained"
+  // styles for the button with variant='contained'
   const containedStyles = () => {
     // background color value
     const backgroundValue = palette[color] ? palette[color].main : white.main;
@@ -97,7 +97,7 @@ export default styled(Button)(({ theme, ownerState }) => {
     };
   };
 
-  // styles for the button with variant="outlined"
+  // styles for the button with variant='outlined'
   const outliedStyles = () => {
     // background color value
     const backgroundValue = color === 'white' ? rgba(white.main, 0.1) : transparent.main;
@@ -145,7 +145,7 @@ export default styled(Button)(({ theme, ownerState }) => {
     };
   };
 
-  // styles for the button with variant="gradient"
+  // styles for the button with variant='gradient'
   const gradientStyles = () => {
     // background value
     const backgroundValue =
@@ -202,7 +202,7 @@ export default styled(Button)(({ theme, ownerState }) => {
     };
   };
 
-  // styles for the button with variant="text"
+  // styles for the button with variant='text'
   const textStyles = () => {
     // color value
     const colorValue = palette[color] ? palette[color].main : white.main;

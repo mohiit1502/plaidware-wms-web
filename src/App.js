@@ -52,6 +52,7 @@ import PublicRoutes from 'routes/PublicRoutes';
 import reduxStore from './redux/Store';
 import { protectedRoutes as routes } from './routes/index';
 import PrivateRoute from './routes/PrivateRoute';
+import MDAlert from 'components/MDAlert';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -168,6 +169,7 @@ export default function App() {
             {getRoutes(routes)}
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
+          {/* <MDAlert dismissible><span>Submitted Successfully!</span></MDAlert> */}
         </ThemeProvider>
         <ToastContainer />
       </PersistGate>

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
@@ -45,11 +46,11 @@ function intersection(a, b) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-export default function TransferList() {
+export default function TransferList({list}) {
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3]);
-  const [right, setRight] = React.useState([4, 5, 6, 7]);
+  const [left, setLeft] = React.useState(list || []);
+  const [right, setRight] = React.useState([]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -89,17 +90,18 @@ export default function TransferList() {
     setRight([]);
   };
 
-  const customList = (items) => (
+  const customList = items => (
     <List component="div" role="list">
-      {items.map((value) => {
+      {items.map((item, key) => {
+        const value = item.name;
         const labelId = `transfer-list-item-${value}-label`;
 
         return (
-          <ListItem button key={value} role="listitem" onClick={handleToggle(value)}>
+          <ListItem button key={value + '-' + key} role="listitem" onClick={handleToggle(item)}>
             <ListItemIcon className={classes.unsetwidth}>
               <Checkbox
                 disableRipple
-                checked={checked.indexOf(value) !== -1}
+                checked={checked.indexOf(item) !== -1}
                 tabIndex={-1}
                 inputProps={{
                   'aria-labelledby': labelId
@@ -110,7 +112,7 @@ export default function TransferList() {
             <ListItemText
               id={labelId}
               className={classes.label}
-              primary={`Warehouse ${value + 1}`}
+              primary={`${value}`}
             />
           </ListItem>
         );
@@ -126,7 +128,7 @@ export default function TransferList() {
           Unassigned
         </Typography>
         <Divider className={classes.line} />
-        {customList(left)}
+        {left && customList(left) }
       </Grid>
       <Grid item md={2}>
         <Grid container direction="column" alignItems="center">
@@ -177,8 +179,12 @@ export default function TransferList() {
           Assigned
         </Typography>
         <Divider className={classes.line} />
-        {customList(right)}
+        {right && customList(right)}
       </Grid>
     </Grid>
   );
 }
+
+TransferList.propTypes = {
+  list: PropTypes.array
+};

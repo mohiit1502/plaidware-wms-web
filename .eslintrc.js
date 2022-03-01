@@ -6,7 +6,7 @@ module.exports = {
     es6: true
   },
   extends: ['eslint:recommended', 'plugin:react/recommended'],
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -16,15 +16,16 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module'
   },
-  plugins: ['react'],
+  // plugins: ['react'],
   rules: {
     // general
-    indent: ['error', 2, { SwitchCase: 1, ignoredNodes: ['TemplateLiteral'] }],
+    indent: ['warn', 2, { SwitchCase: 1, ignoredNodes: ['TemplateLiteral'] }],
     'linebreak-style': ['error', 'unix'],
-    quotes: ['error', 'single'],
-    semi: ['error', 'always'],
+    quotes: ['warn', 'single'],
+    semi: ['warn', 'always'],
+    'no-unused-vars' : 'warn',
     'comma-dangle': [
-      'error',
+      'warn',
       {
         arrays: 'never',
         objects: 'never',
@@ -33,11 +34,11 @@ module.exports = {
         functions: 'ignore'
       }
     ],
-    'object-curly-spacing': ['error', 'always'],
-    'eol-last': ['error', 'always'],
+    'object-curly-spacing': 'off',
+    'eol-last': ['warn', 'always'],
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     complexity: ['error', { max: 20 }],
-    eqeqeq: ['error', 'always'],
+    eqeqeq: ['warn', 'always'],
     // react
     'react/no-unescaped-entities': ['error', { forbid: ['>', '"', '}'] }],
     'react/prop-types': [2, { ignore: ['action', 'dispatch', 'nav', 'navigation'] }],

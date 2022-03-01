@@ -27,7 +27,7 @@ import MDBox from 'components/MDBox';
 // Material Dashboard 2 PRO React context
 import { useMaterialUIController, setLayout } from 'context';
 
-function DashboardLayout({ children }) {
+function DashboardLayout({ children, className }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const { pathname } = useLocation();
@@ -38,6 +38,8 @@ function DashboardLayout({ children }) {
 
   return (
     <MDBox
+      id="dashboard-layout"
+      className={className ? className : ''}
       sx={({ breakpoints, transitions, functions: { pxToRem } }) => ({
         p: 0,
         position: 'relative',
@@ -58,7 +60,8 @@ function DashboardLayout({ children }) {
 
 // Typechecking props for the DashboardLayout
 DashboardLayout.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  className: PropTypes.string
 };
 
 export default DashboardLayout;

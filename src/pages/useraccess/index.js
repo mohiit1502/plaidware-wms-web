@@ -28,8 +28,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.light,
     marginRight: '8px'
   },
+  statusActive: {
+    color: 'green'
+  },
+  statusInactive: {
+    color: 'red'
+  },
   margin: {
-    marginBottom: '20px'
+    marginBottom: '20px',
+    borderTop: '1px solid #ddd',
+    borderBottom: '1px solid #ddd'
   },
   wrap: {
     display: 'flex'
@@ -41,30 +49,25 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center'
   },
+  radialBorder: {
+    overflow: 'hidden',
+    borderRadius: '0.5rem'
+  },
   tabs: {
+    borderRadius: 0,
     '& .MuiButtonBase-root.MuiTab-root': {
       padding: '12px 0px',
-      borderRadius: '0px'
+      borderRadius: '0px',
+      fontWeight: 'bold',
+      backgroundColor: '#eee',
+      border: '1px solid #ddd'
     },
-    '& .Mui-selected': {
+    '& .MuiButtonBase-root.MuiTab-root.Mui-selected': {
       backgroundColor: '#017AFF',
-      color: 'white'
+      color: 'white !important'
     }
   }
 }));
-const userHeadCells = [
-  { id: 'fullName', label: 'Name' },
-  { id: 'role_name', label: 'Roles' },
-  { id: 'updated_at', label: 'Updated at' },
-  { id: 'created_at', label: 'Created by and at' }
-];
-
-const rolesHeadCells = [
-  { id: 'role', label: 'Role' },
-  { id: 'permissions', label: 'Permissions' },
-  { id: 'status', label: 'Status' }
-];
-
 // const permissionsHeadCells = [
 //   { id: 'permission', label: 'Permission' },
 //   { id: 'warehouse', label: 'Warehouse' },
@@ -83,6 +86,26 @@ function UserAccessScreen() {
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
   const navigate = useNavigate();
+
+  const userHeadCells = [
+    { id: 'full_name', label: 'User Name', isEditAnchor: true, value: record => record.fullName },
+    { id: 'phone_number', label: 'Phone Number', value: record => record.phoneNumber },
+    { id: 'role_name', label: 'Roles', value: record => record.role_name },
+    { id: 'updated_by_at', label: 'Last Updated By & Date', value: record => `${record.updatedBy?.fullName} | ${moment(record.updatedAt).format('D/M/YYYY h:m:s A')}` },
+    { id: 'created_by_at', label: 'Created By & Date', value: record => `${record.createdBy?.fullName} | ${moment(record.createdAt).format('D/M/YYYY h:m:s A')}` },
+    { id: 'last_login', label: 'Last Login', value: record => record.lastLogin },
+    {
+      id: 'is_active', label: 'Access', value: record => record.isActive ? <span className={classes.statusActive}>Active</span>
+        : <span className={status.Inactive}>Inactive</span>
+    }
+  ];
+
+  const rolesHeadCells = [
+    { id: 'role', label: 'Role' },
+    { id: 'permissions', label: 'Permissions' },
+    { id: 'status', label: 'Status' }
+  ];
+
 
   const usersHandler = () => {
     dispatch(
@@ -120,14 +143,11 @@ function UserAccessScreen() {
       let roles = JSON.parse(JSON.stringify(rolesData));
       roles = roles.map((item) => {
         item.name = item.name.split('-').join(' ').toUpperCase();
-        item.permissions = item.permissions.map((permission) => permission.name).join(',');
+        item.permissions = item.permissions?.allowedUIModules?.join(',');
         if (!item.permissions) {
           item.permissions = 'NA';
         }
-        item.status = 'INACTIVE';
-        if (item.status) {
-          item.status = 'ACTIVE';
-        }
+        item.status = item.status ? 'ACTIVE' : 'INACTIVE';
         return item;
       });
       setRoleRecords(roles);
@@ -144,6 +164,17 @@ function UserAccessScreen() {
     }
   }));
 
+  const columnRenders = userRecords && userRecords.map(record => {
+    return <StyledTableRow key={record.id}>
+      {userHeadCells.map((columnConfig, key) => <TableCell key={key} onClick={() => columnConfig.isEditAnchor && navigate('/setup/users-access/edit-user', {state: {user: record}})}>
+        {columnConfig.isEditAnchor && <span className={classes.iconwrap}>
+          <EditIcon className={classes.iconSize}/>
+        </span>}
+        {columnConfig.value(record)}
+      </TableCell>)}
+    </StyledTableRow>;
+  });
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -154,79 +185,67 @@ function UserAccessScreen() {
           { name: 'Users and Access', path: '/setup/users-access' }
         ]}
       />
-      <MDBox px={2} py={3}>
-        <Grid container spacing={2} className={classes.margin}>
-          <Grid item xs={12} sm={4} md={4}>
-            <Tabs value={value} className={classes.tabs} onChange={handleTabs}>
+      <MDBox px={0} py={3}>
+        <Grid container spacing={1} className={classes.margin}>
+          <Grid item xs={12} sm={4} md={4} className='ps-2 pt-0'>
+            <Tabs value={value} className={`p-0 h-100 ${classes.tabs}`} onChange={handleTabs}>
               <Tab label="Roles" onClick={() => rolesHandler()} />
               <Tab label="Users" onClick={() => usersHandler()} />
             </Tabs>
           </Grid>
-          <Grid item xs={12} sm={4} md={6}>
+          <Grid item xs={12} sm={4} md={6} className='py-2' style={{ display: 'flex', alignItems: 'center' }}>
             <SearchBar />
           </Grid>
-          <Grid item xs={12} sm={4} md={2}>
+          <Grid item xs={12} sm={4} md={2} className='py-2' style={{ display: 'flex', alignItems: 'center' }}>
             <MDButton
               color="primary"
               size="medium"
-              onClick={() => navigate('/setup/users-access/create-role')}
+              onClick={() => navigate(`/setup/users-access/${value === 0 ? 'create-role' : 'create-user'}`)}
             >
-              {'+ CREATE USER'}
+              {value === 0 ? '+ CREATE ROLE' : '+ CREATE USER'}
             </MDButton>
           </Grid>
         </Grid>
-        <TabPanel value={value} index={0}>
-          <BasicTable
-            headCells={rolesHeadCells}
-            records={rolesRecords}
-            backgroundColor="#007AFF"
-            color="#fff"
-          >
-            <TableBody>
-              {rolesRecords &&
-                rolesRecords.map((item) => (
-                  <StyledTableRow key={item.id}>
-                    <TableCell>
-                      <div className={classes.iconwrap}>
-                        <EditIcon className={classes.iconSize} />
-                        {item.name}
-                      </div>
-                    </TableCell>
-                    <TableCell>{item.permissions}</TableCell>
-                    <TableCell>{item.status}</TableCell>
-                  </StyledTableRow>
-                ))}
-            </TableBody>
-          </BasicTable>
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <BasicTable
-            headCells={userHeadCells}
-            records={userRecords}
-            backgroundColor="#007AFF"
-            color="#fff"
-          >
-            <TableBody>
-              {userRecords &&
-                userRecords.map((item) => (
-                  <StyledTableRow key={item.id}>
-                    <TableCell>
-                      <div className={classes.iconwrap}>
-                        <EditIcon className={classes.iconSize} />
-                        {item.fullName}
-                      </div>
-                    </TableCell>
-                    <TableCell>{item.role_name}</TableCell>
-                    <TableCell>{moment(item.updatedAt).format('D/M/YYYY h:m:s A')}</TableCell>
-                    <TableCell>
-                      {item.createdBy ? item.createdBy?.fullName + ' | ' : null}
-                      {moment(item.createdAt).format('D/M/YYYY h:m:s A')}
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-            </TableBody>
-          </BasicTable>
-        </TabPanel>
+        <Grid px={2}>
+          <TabPanel value={value} index={0} className={classes.radialBorder}>
+            <BasicTable
+              headCells={rolesHeadCells}
+              records={rolesRecords}
+              backgroundColor="#007AFF"
+              color="#fff"
+            >
+              <TableBody>
+                {rolesRecords &&
+                  rolesRecords.map((item) => (
+                    <StyledTableRow key={item.id}>
+                      <TableCell>
+                        <div className={classes.iconwrap}>
+                          <EditIcon className={classes.iconSize} />
+                          {item.name}
+                        </div>
+                      </TableCell>
+                      <TableCell>{item.permissions}</TableCell>
+                      <TableCell>{item.status}</TableCell>
+                    </StyledTableRow>
+                  ))}
+              </TableBody>
+            </BasicTable>
+          </TabPanel>
+          <TabPanel value={value} index={1} className={classes.radialBorder}>
+            <BasicTable
+              id="user-list"
+              headCells={userHeadCells}
+              records={userRecords}
+              backgroundColor="#007AFF"
+              color="#fff"
+            >
+              {userRecords && userRecords.length > 0
+                ? <TableBody>
+                  {columnRenders}
+                </TableBody> : 'No Records to Display'}
+            </BasicTable>
+          </TabPanel>
+        </Grid>
       </MDBox>
     </DashboardLayout>
   );

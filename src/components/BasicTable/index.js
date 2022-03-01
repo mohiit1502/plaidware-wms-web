@@ -10,11 +10,11 @@ const useStyles = makeStyles(() => ({
   }
 }));
 
-export default function BasicTable({ children, headCells, backgroundColor, color }) {
+export default function BasicTable({ children, headCells, id, backgroundColor, color }) {
   const classes = useStyles();
   return (
     <>
-      <TblContainer backgroundColor={backgroundColor} color={color}>
+      <TblContainer id={id} backgroundColor={backgroundColor} color={color}>
         <TableHead className={classes.headDisplay}>
           <TableRow>
             {headCells.map((headCell) => (
@@ -36,5 +36,6 @@ BasicTable.propTypes = {
     })
   ).isRequired,
   backgroundColor: PropTypes.string,
-  color: PropTypes.string
+  color: PropTypes.string,
+  id: PropTypes.string
 };

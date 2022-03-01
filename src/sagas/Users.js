@@ -27,4 +27,33 @@ export function* onRequestUsersData({ payload }) {
     );
   }
 }
-export default [takeLatest(UsersTypes.GET_USERS_ACTION, onRequestUsersData)];
+
+export function* onCreateUserData({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug,
+    payload?.data
+  );
+  if (response?.status === 200) {
+    payload.onSuccessfulSubmission(response.data?.data);
+    yield put(
+      UsersActions.createUserSuccess({
+        loader: payload?.loader,
+        usersDetail: response?.data?.data
+      })
+    );
+  } else {
+    payload.onValidationFailed(response.data?.error);
+    yield put(
+      UsersActions.createUserFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+export default [
+  takeLatest(UsersTypes.GET_USERS_ACTION, onRequestUsersData),
+  takeLatest(UsersTypes.CREATE_USER_ACTION, onCreateUserData)
+];
