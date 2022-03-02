@@ -29,11 +29,7 @@ const tHeads = [
   { key: 'unitCost', name: 'Unit Cost' },
   { key: 'packageCount', name: 'Package Count' },
   { key: 'countPerPallet', name: 'Count Per Pallet' },
-  { key: 'countPerPalletPackage', name: 'Count Per Pallet Package' },
-  { key: 'location', name: 'Location' },
-  { key: 'totalQuantity', name: 'Total Quantity' },
-  { key: 'reservedQuantity', name: 'Reserved Quantity' },
-  { key: 'availableQuantity', name: 'Available Quantity' }
+  { key: 'countPerPalletPackage', name: 'Count Per Pallet Package' }
 ];
 
 function ItemListing() {
@@ -170,11 +166,7 @@ function ItemListing() {
                     unitCost: item.unitCost,
                     packageCount: item.packageCount,
                     countPerPallet: item.countPerPallet,
-                    countPerPalletPackage: item.countPerPalletPackage,
-                    location: `SubLevel-${item.location.name}`,
-                    totalQuantity: item.totalQuantity,
-                    reservedQuantity: item.reservedQuantity,
-                    availableQuantity: item.availableQuantity
+                    countPerPalletPackage: item.countPerPalletPackage
                   };
                 })
               : []

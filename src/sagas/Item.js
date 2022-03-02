@@ -9,7 +9,7 @@ export function* onRequestItem({ payload }) {
     ApiServices[payload?.method],
     AuthorizedAPI,
     `${payload?.slug}${payload?.inventoryId}&page=${payload?.page}&perPage=${payload?.perPage}${
-      payload?.family ? 'family=' + payload?.family : ''
+      payload?.family ? '&family=' + payload?.family : ''
     }`,
     payload?.data
   );
