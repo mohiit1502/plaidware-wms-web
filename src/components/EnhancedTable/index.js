@@ -1,12 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
-// import SearchBar from 'components/SearchBar';
 import MDButton from 'components/Button';
-// import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
-// import Fade from '@mui/material/Fade';
-// import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,11 +10,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-// import IconButton from '@mui/material/IconButton';
-// import Collapse from '@mui/material/Collapse';
 import TablePagination from 'components/TablePagination';
-import { MenuItem, Select } from '@mui/material';
+import { Dialog, DialogActions, MenuItem, Select } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -86,15 +78,24 @@ function Row({ tHeads, rowData, editHandler }) {
   );
 }
 
-function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads, editHandler }) {
-  // const [anchorEl, setAnchorEl] = React.useState(false);
-  // const open = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
+function EnhancedTable({
+  count,
+  page,
+  setPage,
+  perPage,
+  setPerPage,
+  data,
+  tHeads,
+  editHandler,
+  filtersControl,
+  resetFilters
+}) {
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
+
+  const handleFiltersClose = () => {
+    setFiltersOpen(false);
+  };
+
   return (
     <>
       <Box
@@ -105,7 +106,7 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
           overflow: 'hidden'
         }}
       >
-        {/* <Box
+        <Box
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -113,9 +114,7 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
             padding: '16px'
           }}
         >
-          <Box>
-            <SearchBar />
-          </Box>
+          <Box>{/* <SearchBar /> */}</Box>
           <Box sx={{ display: 'flex', columnGap: '15px' }}>
             <MDButton
               size="small"
@@ -127,10 +126,31 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
                 minHeight: '44px',
                 fontWeight: '500'
               }}
+              onClick={() => {
+                setFiltersOpen(true);
+              }}
             >
-              Sorting
+              Filter
             </MDButton>
-            <MDButton
+            {filtersControl ? (
+              <Dialog open={filtersOpen} onClose={handleFiltersClose}>
+                {filtersControl}
+                <DialogActions>
+                  <MDButton onClick={resetFilters}>Reset Filters</MDButton>
+                  <MDButton
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setFiltersOpen(false);
+                    }}
+                  >
+                    Close
+                  </MDButton>
+                </DialogActions>
+              </Dialog>
+            ) : null}
+            {/* <MDButton
               id="fade-button"
               size="small"
               variant="outlined"
@@ -148,8 +168,8 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
               onClick={() => {}}
             >
               Dashboard
-            </MDButton>
-            <Menu
+            </MDButton> */}
+            {/* <Menu
               id="fade-menu"
               MenuListProps={{
                 'aria-labelledby': 'fade-button'
@@ -162,9 +182,9 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
               <MenuItem>Profile</MenuItem>
               <MenuItem>My account</MenuItem>
               <MenuItem>Logout</MenuItem>
-            </Menu>
+            </Menu> */}
           </Box>
-        </Box> */}
+        </Box>
         {/* Table-row- */}
         <TableContainer component={Paper} sx={{ borderRadius: '0 !important', boxShadow: 'none' }}>
           <Table aria-label="collapsible table" sx={{ minWidth: 700 }}>
@@ -287,9 +307,9 @@ function EnhancedTable({ count, page, setPage, perPage, setPerPage, data, tHeads
                 setPerPage(e.target.value);
               }}
             >
-              <MenuItem value={10}>5</MenuItem>
-              <MenuItem value={20}>10</MenuItem>
-              <MenuItem value={30}>20</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
             </Select>
           </Box>
           <Box>
@@ -313,7 +333,9 @@ EnhancedTable.propTypes = {
   setPerPage: PropTypes.any,
   data: PropTypes.array,
   tHeads: PropTypes.array,
-  editHandler: PropTypes.any
+  editHandler: PropTypes.any,
+  filtersControl: PropTypes.any,
+  resetFilters: PropTypes.any
 };
 
 export default EnhancedTable;

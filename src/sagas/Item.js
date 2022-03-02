@@ -8,7 +8,9 @@ export function* onRequestItem({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
     AuthorizedAPI,
-    `${payload?.slug}${payload?.inventoryId}&page=${payload?.page}&perPage=${payload?.perPage}`,
+    `${payload?.slug}${payload?.inventoryId}&page=${payload?.page}&perPage=${payload?.perPage}${
+      payload?.family ? 'family=' + payload?.family : ''
+    }`,
     payload?.data
   );
   if (response?.status === 200) {

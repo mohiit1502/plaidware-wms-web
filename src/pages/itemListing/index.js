@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React from 'react';
 import MDBox from 'components/MDBox';
 import DashboardNavbar from 'components/DashboardNavbar';
@@ -11,6 +12,9 @@ import LOGGER from 'services/Logger';
 import { ItemSelectors } from 'redux/ItemRedux';
 import EnhancedTable from 'components/EnhancedTable';
 import { useNavigate } from 'react-router-dom';
+import WidgetActions from 'redux/WidgetRedux';
+import { WidgetSelectors } from 'redux/WidgetRedux';
+import { DialogContent, DialogContentText, DialogTitle, MenuItem, Select } from '@mui/material';
 
 const tHeads = [
   { key: 'name', name: '' },
@@ -18,17 +22,18 @@ const tHeads = [
   { key: 'formalName', name: 'Formal Name' },
   { key: 'description', name: 'Description' },
   { key: 'manufacturer', name: 'Manufacturer' },
-  { key: 'size', name: 'size' },
-  { key: 'color', name: 'color' },
-  { key: 'type', name: 'type' },
-  { key: 'unitOfMaterial', name: 'unitOfMaterial' },
-  { key: 'unitCost', name: 'unitCost' },
-  { key: 'packageCount', name: 'packageCount' },
-  { key: 'countPerPallet', name: 'countPerPallet' },
-  { key: 'countPerPalletPackage', name: 'countPerPalletPackage' },
-  { key: 'totalQuantity', name: 'totalQuantity' },
-  { key: 'reservedQuantity', name: 'reservedQuantity' },
-  { key: 'availableQuantity', name: 'availableQuantity' }
+  { key: 'size', name: 'Size' },
+  { key: 'color', name: 'Color' },
+  { key: 'type', name: 'Type' },
+  { key: 'unitOfMaterial', name: 'Unit of Material' },
+  { key: 'unitCost', name: 'Unit Cost' },
+  { key: 'packageCount', name: 'Package Count' },
+  { key: 'countPerPallet', name: 'Count Per Pallet' },
+  { key: 'countPerPalletPackage', name: 'Count Per Pallet Package' },
+  { key: 'location', name: 'Location' },
+  { key: 'totalQuantity', name: 'Total Quantity' },
+  { key: 'reservedQuantity', name: 'Reserved Quantity' },
+  { key: 'availableQuantity', name: 'Available Quantity' }
 ];
 
 function ItemListing() {
@@ -46,6 +51,11 @@ function ItemListing() {
   const data = useSelector(ItemSelectors.getItems);
   const count = useSelector(ItemSelectors.getItemsCount);
 
+  const [pFam, setPFam] = React.useState('');
+  const [sFam, setSFam] = React.useState('');
+  const primaryFamilies = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
+  const secondaryFamilies = useSelector(WidgetSelectors.getWidgetsByParentId(pFam));
+
   React.useEffect(() => {
     dispatch(
       ItemActions.itemRequest({
@@ -54,10 +64,21 @@ function ItemListing() {
         method: 'get',
         page: page - 1,
         perPage,
-        inventoryId
+        inventoryId,
+        family: sFam || pFam || null
       })
     );
-  }, [page, perPage]);
+  }, [page, perPage, pFam, sFam]);
+
+  React.useEffect(() => {
+    dispatch(
+      WidgetActions.widgetRequest({
+        loader: 'location-request',
+        slug: `${API.GET_WIDGET_FAMILY_BY_INVENTORY}${inventoryId}`,
+        method: 'get'
+      })
+    );
+  }, []);
 
   return (
     <DashboardLayout>
@@ -82,7 +103,82 @@ function ItemListing() {
           editHandler={(id) => {
             navigateTo(`/setup/inventory/browse/${widgetName}/${inventoryId}/edit/${id}`);
           }}
-          data={data}
+          resetFilters={() => {
+            setPFam('');
+            setSFam('');
+          }}
+          filtersControl={
+            <>
+              <DialogTitle>Add filters</DialogTitle>
+              <DialogContent>
+                <DialogContentText>Filter by family</DialogContentText>
+                <Select
+                  select
+                  fullWidth
+                  variant="outlined"
+                  value={pFam}
+                  onChange={(e) => {
+                    setSFam('');
+                    setPFam(e.target.value);
+                  }}
+                >
+                  <MenuItem key={'none'} value={''}>
+                    None Selected
+                  </MenuItem>
+                  {primaryFamilies &&
+                    primaryFamilies.map((fam) => (
+                      <MenuItem key={fam._id} value={fam._id}>
+                        {fam.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+                <Select
+                  select
+                  fullWidth
+                  variant="outlined"
+                  value={sFam}
+                  onChange={(e) => {
+                    setSFam(e.target.value);
+                  }}
+                >
+                  <MenuItem key={'none'} value={''}>
+                    None Selected
+                  </MenuItem>
+                  {secondaryFamilies &&
+                    secondaryFamilies.map((fam) => (
+                      <MenuItem key={fam._id} value={fam._id}>
+                        {fam.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </DialogContent>
+            </>
+          }
+          data={
+            data
+              ? data.map((item) => {
+                  return {
+                    name: item._id,
+                    commonName: item.commonName,
+                    formalName: item.formalName,
+                    description: item.description,
+                    manufacturer: item.manufacturer,
+                    size: item.size,
+                    color: item.color,
+                    type: item.type,
+                    unitOfMaterial: item.unitOfMaterial,
+                    unitCost: item.unitCost,
+                    packageCount: item.packageCount,
+                    countPerPallet: item.countPerPallet,
+                    countPerPalletPackage: item.countPerPalletPackage,
+                    location: `SubLevel-${item.location.name}`,
+                    totalQuantity: item.totalQuantity,
+                    reservedQuantity: item.reservedQuantity,
+                    availableQuantity: item.availableQuantity
+                  };
+                })
+              : []
+          }
           tHeads={tHeads}
         />
       </MDBox>
