@@ -5,6 +5,7 @@ import { usersReducer } from './UsersRedux';
 import { productReducer } from './ProductsRedux';
 import { inventoryReducer } from './InventoryRedux';
 import { rolesReducer } from './RolesRedux';
+import { permissionsReducer } from './PermissionsRedux';
 import { WarehouseLocationsReducer } from './WarehouseLocationsRedux';
 import { widgetReducer } from './WidgetRedux';
 import { itemReducer } from './ItemRedux';
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   warehouse: warehouseReducer,
   users: usersReducer,
   roles: rolesReducer,
+  permissions: permissionsReducer,
   warehouseLocations: WarehouseLocationsReducer,
   product: productReducer,
   inventory: inventoryReducer,

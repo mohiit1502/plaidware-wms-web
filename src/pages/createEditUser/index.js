@@ -13,6 +13,7 @@ import Select from '@mui/material/Select';
 import WarehouseActions, { WarehouseSelectors } from 'redux/WarehouseRedux';
 import InventoryActions, { InventorySelectors } from 'redux/InventoryRedux';
 import RolesActions, { RolesSelectors } from 'redux/RolesRedux';
+import PermissionsActions, { PermissionsSelectors } from 'redux/PermissionsRedux';
 import { AuthSelectors } from 'redux/AuthRedux';
 import UsersActions from 'redux/UsersRedux';
 
@@ -70,49 +71,12 @@ function CreateEditUser(props) {
   const roles = useSelector(RolesSelectors.getRolesDetail);
   const warehouses = useSelector(WarehouseSelectors.getWarehouseDetail);
   const inventories = useSelector(InventorySelectors.getInventoryDetail);
+  const actions = useSelector(PermissionsSelectors.getActionsDetail);
+  const permissions = useSelector(PermissionsSelectors.getPermissionsDetail);
   const currentUser = useSelector(AuthSelectors.getUser);
   const location = useLocation();
-  const [editedUser, setEditedUser] = useState();
-  const [userRoles, setUserRoles] = useState([]);
-
-  const formik = useFormik({
-    initialValues: {
-      fullName: editedUser ? editedUser.fullName : '',
-      phoneNumber: editedUser ? editedUser.phoneNumber : '',
-      roles: userRoles,
-      permissions: {},
-      isActive: editedUser && editedUser.isActive !== undefined ? editedUser.isActive : true,
-      createdBy: context === 'new' ? currentUser ? currentUser.fullName : '' : editedUser ? editedUser.createdBy?.fullName : '',
-      createdOn: new Date(),
-      updatedBy: context === 'new' ? currentUser ? currentUser.fullName : '' : editedUser ? editedUser.updatedBy?.fullName : '',
-      updatedOn: new Date()
-    },
-    validationSchema: schema.createUser,
-    onSubmit: (values, { setSubmitting }) =>
-    {
-      const onValidationFailed = () => {
-        setSubmitting(false);
-      };
-
-      // const onSuccessfulSubmission = data => {
-      const onSuccessfulSubmission = () => {
-        navigate('/setup/users-access');
-        // TODO
-        // dispatchAlert
-      };
-      values.roles = values.roles && values.roles.length > 0 ? values.roles.map(role => role._id) : [];
-      dispatch(
-        UsersActions.createUserAction({
-          loader: 'loading-request',
-          slug: API.CREATE_USER,
-          method: 'post',
-          data: values,
-          onValidationFailed,
-          onSuccessfulSubmission
-        })
-      );
-    }
-  });
+  const [editedUser, setEditedUser] = useState(location?.state?.user);
+  const [selectedRoles, setSelectedRoles] = useState([]);
 
   useEffect(() => {
     if (context === 'edit') {
@@ -121,26 +85,100 @@ function CreateEditUser(props) {
         navigate('/setup/users-access');
       } else {
         setEditedUser(editedUser);
-        setUserRoles(editedUser.role_name ? editedUser.role_name.split(',') : []);
+        setSelectedRoles(editedUser.roles);
       }
     }
   }, []);
 
   useEffect(() => {
-    dispatch(WarehouseActions.warehouseDataAction({loader: 'loading-request', slug: API.GET_WAREHOUSE_DATA,method: 'get'}));
-    dispatch(InventoryActions.getInventoryAction({loader: 'loading-request', slug: API.GET_INVENTORY,method: 'get'}));
-    !roles || roles.length === 0 && dispatch(RolesActions.getRolesAction({loader: 'loading-request', slug: API.GET_ROLES_DATA, method: 'get'}));
-    dispatch(RolesActions.getRolesAction({loader: 'loading-request', slug: API.GET_ROLES_DATA, method: 'get'}));
-    dispatch(PermissionActions.getRolesAction({loader: 'loading-request', slug: API.GET_ROLES_DATA, method: 'get'}));
-    fetchPermissions();
-    fetchActions();
+    (!warehouses || warehouses.length === 0) && dispatch(WarehouseActions.warehouseDataAction({loader: 'loading-request', slug: API.GET_WAREHOUSE_DATA,method: 'get'}));
+    (!inventories || inventories.length === 0) && dispatch(InventoryActions.getInventoryAction({loader: 'loading-request', slug: API.GET_INVENTORY,method: 'get'}));
+    (!roles || roles.length === 0) && dispatch(RolesActions.getRolesAction({loader: 'loading-request', slug: API.GET_ROLES_DATA, method: 'get'}));
+    (!permissions || permissions.length === 0) && dispatch(PermissionsActions.getPermissionsAction({loader: 'loading-request', slug: API.GET_PERMISSIONS_DATA, method: 'get'}));
+    (!actions || actions.length === 0) && dispatch(PermissionsActions.getActionsAction({loader: 'loading-request', slug: API.GET_ACTIONS_DATA, method: 'get'}));
   }, []);
 
+  const formik = useFormik({
+    initialValues: context === 'new' ? {
+      fullName: '',
+      phoneNumber: '',
+      email: '',
+      password: '',
+      roles: '',
+      warehouses: '',
+      inventories: '',
+      actions: '',
+      visibilities: '',
+      isActive: true,
+      createdBy: currentUser ? currentUser.fullName : '',
+      createdAt: new Date(),
+      updatedBy: currentUser ? currentUser.fullName : '',
+      updatedAt: new Date()
+    } : {
+      fullName: editedUser ? editedUser.fullName : '',
+      phoneNumber: editedUser ? editedUser.phoneNumber : '',
+      email: editedUser ? editedUser.email : '',
+      password: '',
+      roles: editedUser ? editedUser.roles.map(role => role.name).join(', ') : '',
+      warehouses: editedUser?.permissions?.warehouseScopes ? editedUser.permissions.warehouseScopes.map(sc => sc.id).join(',') : '',
+      inventories: editedUser?.permissions?.inventoryScopes ? editedUser.permissions.inventoryScopes.map(sc => sc.id).join(',') : '',
+      actions: editedUser?.permissions?.actions ? editedUser.permissions.actions.join(',') : '',
+      visibilities: editedUser?.permissions?.allowedUIModules ? editedUser.permissions.allowedUIModules.join(',') : '',
+      isActive: editedUser && editedUser.isActive !== undefined ? editedUser.isActive : true,
+      createdBy: editedUser ? editedUser.createdBy?.fullName : '',
+      createdAt: editedUser ? editedUser.createdAt : '',
+      updatedBy: editedUser ? editedUser.updatedBy?.fullName : '',
+      updatedAt: editedUser ? editedUser.updatedAt : ''
+    },
+    validationSchema: schema.createUser,
+    onSubmit: (values, { setSubmitting }) =>
+    {
+      const onValidationFailed = () => {
+        setSubmitting(false);
+      };
+      const onSuccessfulSubmission = () => {
+        navigate('/setup/users-access');
+      };
+      const adaptPayload = values => {
+        const valuesClone = {...values};
+        valuesClone.permissions = {};
+        valuesClone.permissions.inventoryScopes = values.inventories ? values.inventories.split(',').map(inv => ({id: inv, type: 'Inventory'})) : [];
+        valuesClone.permissions.warehouseScopes = values.warehouses ? values.warehouses.split(',').map(wh => ({id: wh, type: 'Warehouse'})) : [];
+        valuesClone.permissions.actions = values.actions ? values.actions.split(',') : [];
+        valuesClone.permissions.allowedUIModules = values.visibilities ? values.visibilities.split(',') : [];
+        delete valuesClone.inventories;
+        delete valuesClone.warehouses;
+        delete valuesClone.actions;
+        delete valuesClone.visibilities;
+        return valuesClone;
+      };
+      values.roles = selectedRoles && selectedRoles.length > 0 ? selectedRoles.map(role => role._id) : [];
+      dispatch(
+        UsersActions.createUserAction({
+          loader: 'loading-request',
+          slug: context === 'edit' ? API.UPDATE_USER.replace(':id', editedUser._id): API.CREATE_USER,
+          method: 'post',
+          data: adaptPayload(values),
+          onValidationFailed,
+          onSuccessfulSubmission,
+          toastMessage: context === 'edit' ? 'Updated user __placeholder__successfully' : 'Added user __placeholder__successfully'
+        })
+      );
+    }
+  });
 
-  const handleChange = event => {
-    const value = typeof event.target.value === 'string' ? event.target.value?.split(',') : event.target.value;
-    setUserRoles(value);
-    formik.handleChange(event);
+  const handleMultiSelectChange = e => {
+    const uniqueRoles = [];
+    e.target.value.forEach(role => {
+      const roleIndex = uniqueRoles.findIndex(uRole => uRole._id === role._id);
+      if (roleIndex > -1) {
+        uniqueRoles.splice(roleIndex, 1);
+      } else {
+        uniqueRoles.push(role);
+      }
+    });
+    formik.handleChange('roles')(uniqueRoles.map(role => role.name).join());
+    setSelectedRoles(uniqueRoles);
   };
 
   return (
@@ -150,29 +188,45 @@ function CreateEditUser(props) {
         <MDBox mx={4} sx={{ border: '1px solid #C4C4C4', borderRadius: '4px', padding: '30px' }}>
           <MDBox sx={{ width: '50%', margin: 'auto' }}>
             <MDBox sx={{ width: '120px', margin: 'auto', position: 'relative' }}>
-              <img src={UserIcon} alt="img" />
+              <img src={UserIcon} alt='img' />
               <MDBox sx={{ position: 'absolute', bottom: '0', right: '0', cursor: 'pointer' }}>
-                <img src={EditIcon} alt="img" />
+                <img src={EditIcon} alt='img' />
               </MDBox>
             </MDBox>
             <MDBox sx={{ marginBottom: '24px' }}>
-              <Box component="div" sx={{}} className={classes.labelSize}>
+              <Box component='div' sx={{}} className={classes.labelSize}>
                 User Name
               </Box>
-              <MDInput fullWidth disabled={context === 'edit'} value={formik.values.fullName} name="fullName" type="text"
-                variant="outlined" error={formik.touched.fullName && Boolean(formik.errors.fullName)}
+              <MDInput fullWidth value={formik.values.fullName} name='fullName' type='text'
+                variant='outlined' error={formik.touched.fullName && Boolean(formik.errors.fullName)}
                 helperText={formik.touched.fullName && formik.errors.fullName} onChange={formik.handleChange} />
             </MDBox>
             <MDBox sx={{ marginBottom: '24px' }}>
-              <Box component="div" sx={{}} className={classes.labelSize}>
+              <Box component='div' sx={{}} className={classes.labelSize}>
+                Email
+              </Box>
+              <MDInput fullWidth disabled={context === 'edit'} value={formik.values.email} name='email' type='email'
+                variant='outlined' error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email} onChange={formik.handleChange} />
+            </MDBox>
+            <MDBox sx={{ marginBottom: '24px' }}>
+              <Box component='div' sx={{}} className={classes.labelSize}>
+                Password
+              </Box>
+              <MDInput fullWidth value={formik.values.password} name='password' type='password'
+                variant='outlined' error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password} onChange={formik.handleChange} />
+            </MDBox>
+            <MDBox sx={{ marginBottom: '24px' }}>
+              <Box component='div' sx={{}} className={classes.labelSize}>
                 Phone Number
               </Box>
-              <MDInput fullWidth value={formik.values.phoneNumber} name="phoneNumber" type="text"
-                variant="outlined" error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+              <MDInput fullWidth value={formik.values.phoneNumber} name='phoneNumber' type='text'
+                variant='outlined' error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
                 helperText={formik.touched.phoneNumber && formik.errors.phoneNumber} onChange={formik.handleChange} />
             </MDBox>
             <MDBox sx={{ marginBottom: '24px' }}>
-              <Box component="div" sx={{}} className={classes.labelSize}>
+              <Box component='div' sx={{}} className={classes.labelSize}>
                 Role
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', columnGap: '20px' }}>
@@ -181,21 +235,13 @@ function CreateEditUser(props) {
                     multiple
                     displayEmpty
                     name='roles'
-                    value={userRoles}
+                    value={selectedRoles}
                     input={<OutlinedInput />}
                     error={formik.touched.roles && Boolean(formik.errors.roles)}
-                    renderValue={() => {
-                      if (userRoles.length === 0) {
-                        return 'Please select a role';
-                      }
-
-                      return userRoles.map(role => role.name).join(',');
-                    }}
+                    renderValue={() => selectedRoles?.length === 0 ? 'Please select a role' : selectedRoles?.map(role => role.name).join(', ')}
                     inputProps={{ 'aria-label': 'Without label' }}
-                    sx={{
-                      width: '100%'
-                    }}
-                    onChange={handleChange}
+                    sx={{width: '100%'}}
+                    onChange={handleMultiSelectChange}
                   >
                     {roles && roles.map((role, key) => <MenuItem key={key} value={role}>{role.name}</MenuItem>)}
                   </Select>
@@ -206,12 +252,13 @@ function CreateEditUser(props) {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: '30%',
+                    paddingRight: '1rem',
                     border: '1px solid #C4C4C4',
                     borderRadius: '4px'
                   }}
                 >
                   <Box
-                    component="div"
+                    component='div'
                     sx={{
                       fontSize: '16px',
                       lineHeight: '20px',
@@ -231,7 +278,7 @@ function CreateEditUser(props) {
                       left: '20px'
                     }}
                   >
-                    <Switch checked={formik.values.isActive} />
+                    <Switch name='isActive' checked={formik.values.isActive} onChange={formik.handleChange} />
                   </Box>
                 </Box>
               </Box>
@@ -240,28 +287,28 @@ function CreateEditUser(props) {
               <Grid item xs={12}>
                 <Grid container spacing={2} className={classes.margin}>
                   <Grid item xs={6}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box component='div' className={classes.labelSize}>
                       Created By
                     </Box>
-                    <MDInput fullWidth disabled name="warehousename" type="text" value={currentUser ? currentUser.fullName : ''} variant="outlined" />
+                    <MDInput fullWidth disabled name='createdBy' type='text' value={formik.values.createdBy} variant='outlined' />
                   </Grid>
                   <Grid item xs={6}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box component='div' className={classes.labelSize}>
                       Date &amp; Time
                     </Box>
-                    <DateTimeInput disabled />
+                    <DateTimeInput disabled name='createdAt' value={formik.values.createdAt} />
                   </Grid>
                   <Grid item xs={6}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box component='div' className={classes.labelSize}>
                       Last Updated by
                     </Box>
-                    <MDInput fullWidth disabled name="warehousename" type="text" value={currentUser ? currentUser.fullName : ''} variant="outlined" />
+                    <MDInput fullWidth disabled name='updatedBy' type='text' value={formik.values.updatedBy} variant='outlined' />
                   </Grid>
                   <Grid item xs={6}>
-                    <Box component="div" className={classes.labelSize}>
+                    <Box component='div' className={classes.labelSize}>
                       Date &amp; Time
                     </Box>
-                    <DateTimeInput disabled />
+                    <DateTimeInput disabled name='updatedAt' value={formik.values.updatedAt} />
                   </Grid>
                 </Grid>
               </Grid>
@@ -269,30 +316,33 @@ function CreateEditUser(props) {
           </MDBox>
         </MDBox>
         <Grid container spacing={4} sx={{ marginTop: '-6px' }}>
-          <AllocationManager gridStyleOverride={{ paddingLeft: '4rem !important' }} list={warehouses} title='Warehouse' />
-          <AllocationManager gridStyleOverride={{ paddingRight: '2rem' }} list={inventories} title='Inventory' />
+          <AllocationManager name='warehouses' gridStyleOverride={{ paddingLeft: '4rem !important' }} initlist={formik.values.warehouses}
+            list={warehouses} matchProp={{a: '_id'}} title='Warehouse' onChange={val => formik.handleChange('warehouses')(val)} />
+          <AllocationManager name='inventories' gridStyleOverride={{ paddingRight: '2rem' }} initlist={formik.values.inventories}
+            list={inventories}  matchProp={{a: '_id'}} title='Inventory' onChange={val => formik.handleChange('inventories')(val)} />
         </Grid>
         <Grid container spacing={2} sx={{ marginTop: '12px', paddingLeft: '2rem' }}>
-          <Toggles title='Actions' />
-          <Toggles title='Application' />
+          <Toggles name='actions' title='Actions' toggles={actions} inittoggles={formik.values.actions} onChange={val => formik.handleChange('actions')(val)} />
+          <Toggles name='visibilities' title='Application' toggles={permissions} inittoggles={formik.values.visibilities} onChange={val => formik.handleChange('visibilities')(val)} />
         </Grid>
         <MDBox
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
           lineHeight={1}
           sx={{ marginBottom: '15px', marginTop: '45px', paddingBottom: '30px' }}
         >
           <MDButton
-            size="medium"
-            color="error"
-            variant="outlined"
-            type="button"
+            size='medium'
+            color='error'
+            variant='outlined'
+            type='button'
             sx={{ marginRight: '15px' }}
+            onClick={() => navigate('/setup/users-access')}
           >
             Cancel
           </MDButton>
-          <MDButton size="medium" color="primary" variant="contained" type="submit">
+          <MDButton size='medium' color='primary' variant='contained' type='submit'>
             {context === 'new' ? 'Create' : 'Save'}
           </MDButton>
         </MDBox>

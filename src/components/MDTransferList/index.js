@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 import List from '@mui/material/List';
@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 
 import { makeStyles } from '@mui/styles';
+import {intersection, not, notBy, intersectionBy} from 'services/Utils';
 
 const useStyles = makeStyles({
   boxStyling: {
@@ -38,22 +39,24 @@ const useStyles = makeStyles({
   }
 });
 
-function not(a, b) {
-  return a.filter((value) => b.indexOf(value) === -1);
-}
-
-function intersection(a, b) {
-  return a.filter((value) => b.indexOf(value) !== -1);
-}
-
-export default function TransferList({list}) {
+export default function TransferList({list, initlist, matchProp, onChange}) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState(list || []);
-  const [right, setRight] = React.useState([]);
+  const [checked, setChecked] = useState([]);
+  const [left, setLeft] = useState(list || []);
+  const [right, setRight] = useState([]);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+
+  useEffect(() => {
+    if (initlist) {
+      const initlistClone = typeof initlist === 'object' ? initlist : initlist.split(',');
+      const left = notBy(matchProp, list, initlistClone);
+      const right = intersectionBy(matchProp, list, initlistClone);
+      setLeft(left);
+      setRight(right);
+    }
+  }, []);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -69,25 +72,37 @@ export default function TransferList({list}) {
   };
 
   const handleAllRight = () => {
-    setRight(right.concat(left));
-    setLeft([]);
+    const rightNew = right.concat(left);
+    const leftNew = [];
+    setRight(rightNew);
+    setLeft(leftNew);
+    onChange({unassigned: leftNew, assigned: rightNew});
   };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
-    setLeft(not(left, leftChecked));
+    const rightNew = right.concat(leftChecked);
+    const leftNew = not(left, leftChecked);
+    setRight(rightNew);
+    setLeft(leftNew);
     setChecked(not(checked, leftChecked));
+    onChange({unassigned: leftNew, assigned: rightNew});
   };
 
   const handleCheckedLeft = () => {
-    setLeft(left.concat(rightChecked));
-    setRight(not(right, rightChecked));
+    const rightNew = not(right, rightChecked);
+    const leftNew = left.concat(rightChecked);
+    setLeft(leftNew);
+    setRight(rightNew);
     setChecked(not(checked, rightChecked));
+    onChange({unassigned: leftNew, assigned: rightNew});
   };
 
   const handleAllLeft = () => {
-    setLeft(left.concat(right));
-    setRight([]);
+    const rightNew = [];
+    const leftNew = left.concat(right);
+    setLeft(leftNew);
+    setRight(rightNew);
+    onChange({unassigned: leftNew, assigned: rightNew});
   };
 
   const customList = items => (
@@ -186,5 +201,11 @@ export default function TransferList({list}) {
 }
 
 TransferList.propTypes = {
-  list: PropTypes.array
+  initlist: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array
+  ]),
+  list: PropTypes.array,
+  matchProp: PropTypes.object,
+  onChange: PropTypes.func
 };

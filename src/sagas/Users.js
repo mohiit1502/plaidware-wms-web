@@ -1,5 +1,6 @@
 import { AuthorizedAPI } from 'config';
 import { takeLatest, call, put } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 import UsersActions, { UsersTypes } from '../redux/UsersRedux';
 import ApiServices from 'services/API/ApiServices';
 
@@ -36,7 +37,10 @@ export function* onCreateUserData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
-    payload.onSuccessfulSubmission(response.data?.data);
+    const data = response.data?.data;
+    const msg = payload.toastMessage.replace('__placeholder__', data && data.fullName ? '"' + data.fullName + '" ' : '');
+    toast(msg);
+    payload.onSuccessfulSubmission(data);
     yield put(
       UsersActions.createUserSuccess({
         loader: payload?.loader,
@@ -44,6 +48,7 @@ export function* onCreateUserData({ payload }) {
       })
     );
   } else {
+    toast('Something went wrong!');
     payload.onValidationFailed(response.data?.error);
     yield put(
       UsersActions.createUserFailure({

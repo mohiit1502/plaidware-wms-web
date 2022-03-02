@@ -14,6 +14,7 @@ import { Tabs, Tab } from '@mui/material';
 import TabPanel from 'components/Tabs';
 import UsersActions, { UsersSelectors } from 'redux/UsersRedux';
 import RolesActions, { RolesSelectors } from 'redux/RolesRedux';
+import { AuthSelectors } from 'redux/AuthRedux';
 import { API } from 'constant';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -22,9 +23,8 @@ import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   iconSize: {
-    width: '2%',
-    height: '2%',
-    marginBottom: '10px',
+    width: '1.5rem',
+    height: '1.5rem',
     color: theme.palette.primary.light,
     marginRight: '8px'
   },
@@ -83,6 +83,7 @@ function UserAccessScreen() {
   const [value, setValue] = useState(0);
   const usersData = useSelector(UsersSelectors.getUsersDetail);
   const rolesData = useSelector(RolesSelectors.getRolesDetail);
+  const currentUser = useSelector(AuthSelectors.getUser);
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
   const navigate = useNavigate();
@@ -91,12 +92,12 @@ function UserAccessScreen() {
     { id: 'full_name', label: 'User Name', isEditAnchor: true, value: record => record.fullName },
     { id: 'phone_number', label: 'Phone Number', value: record => record.phoneNumber },
     { id: 'role_name', label: 'Roles', value: record => record.role_name },
-    { id: 'updated_by_at', label: 'Last Updated By & Date', value: record => `${record.updatedBy?.fullName} | ${moment(record.updatedAt).format('D/M/YYYY h:m:s A')}` },
-    { id: 'created_by_at', label: 'Created By & Date', value: record => `${record.createdBy?.fullName} | ${moment(record.createdAt).format('D/M/YYYY h:m:s A')}` },
+    { id: 'updated_by_at', label: 'Last Updated By & Date', value: record => `${record.updatedBy?.fullName ? record.updatedBy.fullName + ' | ': ''}${moment(record.updatedAt).format('D/M/YYYY h:m:s A')}` },
+    { id: 'created_by_at', label: 'Created By & Date', value: record => `${record.createdBy?.fullName ? record.createdBy.fullName + ' | ': ''}${moment(record.createdAt).format('D/M/YYYY h:m:s A')}` },
     { id: 'last_login', label: 'Last Login', value: record => record.lastLogin },
     {
       id: 'is_active', label: 'Access', value: record => record.isActive ? <span className={classes.statusActive}>Active</span>
-        : <span className={status.Inactive}>Inactive</span>
+        : <span className={classes.statusInactive}>Inactive</span>
     }
   ];
 
@@ -164,13 +165,14 @@ function UserAccessScreen() {
     }
   }));
 
-  const columnRenders = userRecords && userRecords.map(record => {
+  const rowRenders = userRecords && userRecords.map(record => {
+    const canEdit = columnConfig => columnConfig.isEditAnchor && currentUser.email !== record.email;
     return <StyledTableRow key={record.id}>
-      {userHeadCells.map((columnConfig, key) => <TableCell key={key} onClick={() => columnConfig.isEditAnchor && navigate('/setup/users-access/edit-user', {state: {user: record}})}>
-        {columnConfig.isEditAnchor && <span className={classes.iconwrap}>
+      {userHeadCells.map((columnConfig, key) => <TableCell key={key} onClick={() => canEdit(columnConfig) && navigate('/setup/users-access/edit-user', {state: {user: record}})}>
+        {canEdit(columnConfig) ? <span className={classes.iconwrap}>
           <EditIcon className={classes.iconSize}/>
-        </span>}
-        {columnConfig.value(record)}
+          {columnConfig.value(record)}
+        </span> : <span>{columnConfig.value(record)}</span>}
       </TableCell>)}
     </StyledTableRow>;
   });
@@ -241,7 +243,7 @@ function UserAccessScreen() {
             >
               {userRecords && userRecords.length > 0
                 ? <TableBody>
-                  {columnRenders}
+                  {rowRenders}
                 </TableBody> : 'No Records to Display'}
             </BasicTable>
           </TabPanel>
