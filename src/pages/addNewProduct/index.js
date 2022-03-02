@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable complexity */
 import * as React from 'react';
 import { Grid, TextField, Box, FormHelperText, TextareaAutosize } from '@mui/material';
@@ -7,7 +8,7 @@ import DashboardLayout from 'layouts/DashboardLayout';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import ImageUpload from 'components/ImageUpload';
+import ImageUploadMultiple from 'components/ImageUploadMultiple';
 import MDButton from 'components/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
@@ -16,13 +17,15 @@ import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import { useDispatch, useSelector } from 'react-redux';
-import ProductActions from 'redux/ProductsRedux';
 import { API } from 'constant';
 import LOGGER from 'services/Logger';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { useParams } from 'react-router-dom';
 import { WidgetSelectors } from 'redux/WidgetRedux';
 import WidgetActions from 'redux/WidgetRedux';
+import ItemActions from 'redux/ItemRedux';
+import { useNavigate } from 'react-router-dom';
+import { ItemSelectors } from 'redux/ItemRedux';
 
 const useStyles = makeStyles({
   labelSize: {
@@ -48,10 +51,67 @@ const useStyles = makeStyles({
 
 function AddNewItem() {
   const classes = useStyles();
-  const { widgetName, inventoryId } = useParams();
+  const { widgetName, inventoryId, itemId } = useParams();
+  const getInitialFormValues = (data) => {
+    return data && data._id === itemId
+      ? {
+          commonName: data.commonName,
+          formalName: data.formalName,
+          description: data.description,
+          manufacturer: data.manufacturer,
+          size: data.size,
+          color: data.color,
+          type: data.type,
+          unitOfMaterial: data.unitOfMaterial,
+          unitCost: data.unitCost,
+          packageCount: data.packageCount,
+          countPerPallet: data.countPerPallet,
+          countPerPalletPackage: data.countPerPalletPackage,
+          primaryWidgetFamilyId: data.widgetFamily.parent
+            ? data.widgetFamily.parent
+            : data.widgetFamily._id,
+          secondaryWidgetFamilyId: data.widgetFamily.parent ? data.widgetFamily._id : '',
+          policiesMetadata: {
+            underStockLevelCount: data.policiesMetadata.underStockLevelCount,
+            overStockLevelCount: data.policiesMetadata.overStockLevelCount,
+            alertStockLevelCount: data.policiesMetadata.alertStockLevelCount,
+            reorderStockLevelCount: data.policiesMetadata.reorderStockLevelCount
+          },
+          images: data.images.map((img) => ({ ...img, src: img.url }))
+        }
+      : {
+          commonName: '',
+          formalName: '',
+          description: '',
+          manufacturer: '',
+          size: '',
+          color: '',
+          type: '',
+          unitOfMaterial: '',
+          unitCost: 0,
+          packageCount: 0,
+          countPerPallet: 0,
+          countPerPalletPackage: 0,
+          primaryWidgetFamilyId: '',
+          secondaryWidgetFamilyId: '',
+          policiesMetadata: {
+            underStockLevelCount: 0,
+            overStockLevelCount: 0,
+            alertStockLevelCount: 0,
+            reorderStockLevelCount: 0
+          },
+          images: []
+        };
+  };
+  const itemData = getInitialFormValues(useSelector(ItemSelectors.getFormItem(itemId)));
   const dispatch = useDispatch();
   const [Manufacturer, setManufacturer] = React.useState('');
   const [open, setOpen] = React.useState(false);
+
+  const navigate = useNavigate();
+  const navigateTo = (path) => {
+    navigate(path);
+  };
 
   React.useEffect(() => {
     dispatch(
@@ -61,74 +121,99 @@ function AddNewItem() {
         method: 'get'
       })
     );
+
+    itemId &&
+      dispatch(
+        ItemActions.oneItemRequest({
+          loader: 'location-request',
+          slug: API.EDIT_ITEM,
+          method: 'get',
+          widgetName,
+          inventoryId,
+          itemId
+        })
+      );
   }, []);
 
   const [pFam, setPFam] = React.useState(null);
   const primaryFamily = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
   const secondaryFamily = useSelector(WidgetSelectors.getWidgetsByParentId(pFam));
-  LOGGER.log({ primaryFamily, secondaryFamily });
 
   const formik = useFormik({
-    initialValues: {
-      commonName: '',
-      formalName: '',
-      description: '',
-      manufacturer: '',
-      size: '',
-      color: '',
-      type: '',
-      unitOfMaterial: '',
-      unitCost: 0,
-      packageCount: 0,
-      countPerPallet: 0,
-      countPerPalletPackage: 0,
-      primaryWidgetFamilyId: '',
-      secondaryWidgetFamilyId: '',
-      policiesMetadata: {
-        underStockLevelCount: 0,
-        overStockLevelCount: 0,
-        alertStockLevelCount: 0,
-        reorderStockLevelCount: 0
-      },
-      images: []
-    },
+    enableReinitialize: true,
+    initialValues: itemData,
     validationSchema: schema.addNewItem,
-    onSubmit: (values, onSubmitProps) => {
+    onSubmit: (values) => {
       LOGGER.log('values', values);
-      dispatch(
-        ProductActions.addProductAction({
-          loader: 'loading-request',
-          slug: API.ADD_PRODUCT,
-          method: 'post',
-          data: {
-            commonName: values.commonName,
-            formalName: values.formalName,
-            description: values.description,
-            manufacturer: values.manufacturer,
-            size: values.size,
-            color: values.color,
-            type: values.type,
-            unitOfMaterial: values.unitOfMaterial,
-            unitCost: values.unitCost,
-            packageCount: values.packageCount,
-            countPerPallet: values.countPerPallet,
-            countPerPalletPackage: values.countPerPalletPackage,
-            customAttributes: [],
-            policiesMetadata: {
-              underStockLevelCount: values.policiesMetadata.underStockLevelCount,
-              overStockLevelCount: values.policiesMetadata.overStockLevelCount,
-              alertStockLevelCount: values.policiesMetadata.alertStockLevelCount,
-              reorderStockLevelCount: values.policiesMetadata.reorderStockLevelCount
-            },
-            widgetFamilyId:
-              values.secondaryWidgetFamilyId === ''
-                ? values.primaryWidgetFamilyId
-                : values.secondaryWidgetFamilyId
-          }
-        })
-      );
-      // navigate to inventory page?
-      onSubmitProps.resetForm();
+      itemId
+        ? dispatch(
+            ItemActions.editItemRequest({
+              loader: 'loading-request',
+              slug: `${API.EDIT_ITEM}${itemId}`,
+              method: 'patch',
+              navigateTo,
+              data: {
+                commonName: values.commonName,
+                formalName: values.formalName,
+                description: values.description,
+                manufacturer: values.manufacturer,
+                size: values.size,
+                color: values.color,
+                type: values.type,
+                unitOfMaterial: values.unitOfMaterial,
+                unitCost: values.unitCost,
+                packageCount: values.packageCount,
+                countPerPallet: values.countPerPallet,
+                countPerPalletPackage: values.countPerPalletPackage,
+                customAttributes: [], // TBD
+                policiesMetadata: {
+                  underStockLevelCount: values.policiesMetadata.underStockLevelCount,
+                  overStockLevelCount: values.policiesMetadata.overStockLevelCount,
+                  alertStockLevelCount: values.policiesMetadata.alertStockLevelCount,
+                  reorderStockLevelCount: values.policiesMetadata.reorderStockLevelCount
+                },
+                widgetFamilyId:
+                  values.secondaryWidgetFamilyId === ''
+                    ? values.primaryWidgetFamilyId
+                    : values.secondaryWidgetFamilyId,
+                images: values.images
+              }
+            })
+          )
+        : dispatch(
+            ItemActions.addItemRequest({
+              loader: 'loading-request',
+              slug: API.ADD_ITEM,
+              method: 'post',
+              navigateTo,
+              data: {
+                commonName: values.commonName,
+                formalName: values.formalName,
+                description: values.description,
+                manufacturer: values.manufacturer,
+                size: values.size,
+                color: values.color,
+                type: values.type,
+                unitOfMaterial: values.unitOfMaterial,
+                unitCost: values.unitCost,
+                packageCount: values.packageCount,
+                countPerPallet: values.countPerPallet,
+                countPerPalletPackage: values.countPerPalletPackage,
+                customAttributes: [], // TBD
+                policiesMetadata: {
+                  underStockLevelCount: values.policiesMetadata.underStockLevelCount,
+                  overStockLevelCount: values.policiesMetadata.overStockLevelCount,
+                  alertStockLevelCount: values.policiesMetadata.alertStockLevelCount,
+                  reorderStockLevelCount: values.policiesMetadata.reorderStockLevelCount
+                },
+                widgetFamilyId:
+                  values.secondaryWidgetFamilyId === ''
+                    ? values.primaryWidgetFamilyId
+                    : values.secondaryWidgetFamilyId,
+                images: values.images
+              }
+            })
+          );
     }
   });
 
@@ -409,14 +494,27 @@ function AddNewItem() {
                 </Grid>
               </Grid>
               <Box>
-                <ImageUpload
-                  heading="Upload Product Image"
-                  accept="image/*"
-                  images={formik.values.images}
-                  setImages={(images) => {
-                    formik.setFieldValue('images', images);
-                  }}
-                />
+                {itemId ? (
+                  <ImageUploadMultiple
+                    multiple
+                    heading="Upload Product Image"
+                    accept="image/*"
+                    images={formik.values.images}
+                    setImages={(images) => {
+                      formik.setFieldValue('images', images);
+                    }}
+                  />
+                ) : (
+                  <ImageUploadMultiple
+                    multiple
+                    heading="Upload Product Image"
+                    accept="image/*"
+                    images={formik.values.images}
+                    setImages={(images) => {
+                      formik.setFieldValue('images', images);
+                    }}
+                  />
+                )}
               </Box>
               <Box
                 sx={{

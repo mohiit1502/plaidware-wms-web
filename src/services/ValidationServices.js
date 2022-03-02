@@ -22,10 +22,11 @@ const schema = {
   warehouseForm: Yup.object({
     warehousename: Yup.string('Enter warehouse name').required('warehouse name is required'),
     address: Yup.string('Enter address').required('address is required'),
-    inventorytype: Yup.array('Enter inventory Type')
+    preferredInventories: Yup.array('Enter inventory Type')
       .of(Yup.string())
       .required('inventory Type is required'),
-    attributes: Yup.string('Enter other attributes')
+    specs: Yup.string('Enter other attributes'),
+    image: Yup.array()
   }),
 
   addNewItem: Yup.object({

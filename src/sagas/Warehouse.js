@@ -35,6 +35,10 @@ const makeFormData = (data) => {
   if (data.address) formData.append('address', data.address);
   if (data.specs) formData.append('specs', data.specs);
   if (data.company_id) formData.append('company_id', data.company_id);
+  if (data.preferredInventories)
+    data.preferredInventories.forEach((prefInv, idx) => {
+      formData.append(`preferredInventories[${idx}]`, prefInv);
+    });
   if (data.image[0].file) formData.append('image', data.image[0].file);
   return formData;
 };
@@ -47,11 +51,15 @@ export function* onRequestCreateWarehouse({ payload }) {
     makeFormData(payload?.data)
   );
   if (response?.status === 200 && response?.data?.message) {
+    const warehouse = response?.data?.message;
     toast('Warehouse created successfully');
     yield put(
       WarehouseActions.createWarehouseSuccess({
         loader: payload?.loader,
-        createdWarehouse: response?.data?.message
+        createdWarehouse: {
+          ...warehouse,
+          preferredInventories: warehouse.preferredInventories.map((z) => z._id)
+        }
       })
     );
     payload.navigateTo(response?.data?.message?._id);
@@ -73,12 +81,16 @@ export function* onRequestEditWarehouse({ payload }) {
     payload?.slug,
     makeFormData(payload?.data)
   );
-  if (response?.status === 200) {
+  if (response?.status === 200 && response?.data?.data) {
     toast('Warehouse edited successfully');
+    const warehouse = response?.data?.data;
     yield put(
       WarehouseActions.editWarehouseSuccess({
         loader: payload?.loader,
-        editedWarehouse: response?.data?.data
+        editedWarehouse: {
+          ...warehouse,
+          preferredInventories: warehouse.preferredInventories.map((z) => z._id)
+        }
       })
     );
   } else {

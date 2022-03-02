@@ -10,41 +10,54 @@ import { useParams } from 'react-router-dom';
 import LOGGER from 'services/Logger';
 import { ItemSelectors } from 'redux/ItemRedux';
 import EnhancedTable from 'components/EnhancedTable';
+import { useNavigate } from 'react-router-dom';
 
 const tHeads = [
   { key: 'name', name: '' },
   { key: 'commonName', name: 'Common Name' },
   { key: 'formalName', name: 'Formal Name' },
   { key: 'description', name: 'Description' },
-  { key: 'manufacturer', name: 'Manufacturer' }
+  { key: 'manufacturer', name: 'Manufacturer' },
+  { key: 'size', name: 'size' },
+  { key: 'color', name: 'color' },
+  { key: 'type', name: 'type' },
+  { key: 'unitOfMaterial', name: 'unitOfMaterial' },
+  { key: 'unitCost', name: 'unitCost' },
+  { key: 'packageCount', name: 'packageCount' },
+  { key: 'countPerPallet', name: 'countPerPallet' },
+  { key: 'countPerPalletPackage', name: 'countPerPalletPackage' },
+  { key: 'totalQuantity', name: 'totalQuantity' },
+  { key: 'reservedQuantity', name: 'reservedQuantity' },
+  { key: 'availableQuantity', name: 'availableQuantity' }
 ];
 
 function ItemListing() {
   const dispatch = useDispatch();
   const { widgetName, inventoryId } = useParams();
-  const [page /*, setPage*/] = React.useState(0);
-  const [perPage /*, setPerPage*/] = React.useState(10);
+  const [page, setPage] = React.useState(1);
+  const [perPage, setPerPage] = React.useState(10);
   LOGGER.log({ widgetName, inventoryId });
 
-  const data = useSelector(ItemSelectors.getItemsByInventoryId(inventoryId));
+  const navigate = useNavigate();
+  const navigateTo = (path) => {
+    navigate(path);
+  };
 
-  React.useEffect(
-    () => {
-      dispatch(
-        ItemActions.itemRequest({
-          loader: 'loading-request',
-          slug: API.GET_ITEMS_BY_INVENTORY,
-          method: 'get',
-          page,
-          perPage,
-          inventoryId
-        })
-      );
-    },
-    [
-      /* page, perPage */
-    ]
-  );
+  const data = useSelector(ItemSelectors.getItems);
+  const count = useSelector(ItemSelectors.getItemsCount);
+
+  React.useEffect(() => {
+    dispatch(
+      ItemActions.itemRequest({
+        loader: 'loading-request',
+        slug: API.GET_ITEMS_BY_INVENTORY,
+        method: 'get',
+        page: page - 1,
+        perPage,
+        inventoryId
+      })
+    );
+  }, [page, perPage]);
 
   return (
     <DashboardLayout>
@@ -60,7 +73,18 @@ function ItemListing() {
 
       <MDBox px={2} py={3}>
         List of {widgetName}s{/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
-        <EnhancedTable data={data} tHeads={tHeads} />
+        <EnhancedTable
+          count={count}
+          page={page}
+          setPage={setPage}
+          perPage={perPage}
+          setPerPage={setPerPage}
+          editHandler={(id) => {
+            navigateTo(`/setup/inventory/browse/${widgetName}/${inventoryId}/edit/${id}`);
+          }}
+          data={data}
+          tHeads={tHeads}
+        />
       </MDBox>
     </DashboardLayout>
   );

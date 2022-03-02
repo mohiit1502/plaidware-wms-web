@@ -44,6 +44,7 @@ const buildBreadcrumbs = (route, light) => {
         fontWeight="regular"
         textTransform="capitalize"
         color={light ? 'white' : 'dark'}
+        key={el}
         sx={{ lineHeight: 0 }}
       >
         {el.name}

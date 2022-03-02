@@ -19,7 +19,7 @@ import DashboardLayout from 'layouts/DashboardLayout';
 import ImageUploadSingle from 'components/ImageUploadSingle';
 import MDButton from 'components/Button';
 import { useFormik } from 'formik';
-import schema from 'services/ValidationServices';
+// import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
 import { getChildLocationType } from 'utils/nestedTableTools';
@@ -35,6 +35,8 @@ import { API } from 'constant';
 import NestedDataTable from 'components/NestedTable';
 import Breadcrumbs from 'components/Breadcrumbs';
 import { WarehouseSelectors } from 'redux/WarehouseRedux';
+import { InventorySelectors } from 'redux/InventoryRedux';
+import InventoryActions from 'redux/InventoryRedux';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -313,11 +315,21 @@ const WarehouseNestedDetails = () => {
   );
 };
 
-const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
-
 function EditWarehouseDetails() {
   const { warehouseId } = useParams();
   const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetailById(warehouseId));
+
+  const inventoryTypes = useSelector(InventorySelectors.getInventoryDetail);
+
+  React.useEffect(() => {
+    dispatch(
+      InventoryActions.getInventoryAction({
+        loader: 'loading-request',
+        slug: API.GET_INVENTORY,
+        method: 'get'
+      })
+    );
+  }, []);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -334,12 +346,12 @@ function EditWarehouseDetails() {
   const formik = useFormik({
     initialValues: {
       warehousename: warehouseData.name,
-      address: warehouseData.address,
-      inventorytype: [],
-      specs: warehouseData.specs,
-      image: [{ src: warehouseData.image_url }]
+      address: warehouseData.address || '',
+      preferredInventories: warehouseData.preferredInventories || [],
+      specs: warehouseData.specs || '',
+      image: warehouseData.image_url ? [{ src: warehouseData.image_url }] : []
     },
-    validationSchema: schema.warehouseForm,
+    // validationSchema: schema.warehouseForm,
     onSubmit: (values) => {
       dispatch(
         WarehouseActions.editWarehouseAction({
@@ -350,6 +362,7 @@ function EditWarehouseDetails() {
             name: values.warehousename,
             address: values.address,
             specs: values.specs,
+            preferredInventories: values.preferredInventories,
             image: values.image
           }
         })
@@ -446,40 +459,45 @@ function EditWarehouseDetails() {
                     <Select
                       multiple
                       select
+                      disabled
                       fullWidth
                       variant="outlined"
-                      name="inventorytype"
+                      name="preferredInventories"
                       input={<OutlinedInput />}
-                      value={formik.values.inventorytype}
-                      error={formik.touched.inventorytype && Boolean(formik.errors.inventorytype)}
-                      helperText={formik.touched.inventorytype && formik.errors.inventorytype}
+                      value={formik.values.preferredInventories}
+                      error={
+                        formik.touched.preferredInventories &&
+                        Boolean(formik.errors.preferredInventories)
+                      }
+                      helperText={
+                        formik.touched.preferredInventories && formik.errors.preferredInventories
+                      }
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => (
-                            <Chip key={value} label={value} />
+                            <Chip
+                              key={value}
+                              label={inventoryTypes.find((x) => x._id === value)?.name || 'unknown'}
+                            />
                           ))}
                         </Box>
                       )}
                       MenuProps={MenuProps}
-                      onChange={(event) => {
-                        const {
-                          target: { value }
-                        } = event;
+                      onChange={(e) => {
+                        const value = e.target.value;
                         formik.setFieldValue(
-                          'inventorytype',
+                          'preferredInventories',
                           // On autofill we get a stringified value.
                           typeof value === 'string' ? value.split(',') : value
                         );
                       }}
                     >
-                      <MenuItem key={''} value={''}>
-                        None Selected
-                      </MenuItem>
-                      {inventoryTypes.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          {name}
-                        </MenuItem>
-                      ))}
+                      {inventoryTypes &&
+                        inventoryTypes.map((inventory) => (
+                          <MenuItem key={inventory._id} value={inventory._id}>
+                            {inventory.name}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>

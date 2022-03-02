@@ -1,23 +1,35 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Grid, MenuItem, OutlinedInput, Chip, Select } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
 import ImageUploadSingle from 'components/ImageUploadSingle';
 import MDButton from 'components/Button';
 import { useFormik } from 'formik';
-import schema from 'services/ValidationServices';
+// import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
 import { API } from 'constant';
 import Breadcrumbs from 'components/Breadcrumbs';
 
 import { useNavigate } from 'react-router-dom';
-
-const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
+import { InventorySelectors } from 'redux/InventoryRedux';
+import InventoryActions from 'redux/InventoryRedux';
 
 function NewWarehouseDetails() {
   const dispatch = useDispatch();
+  const inventoryTypes = useSelector(InventorySelectors.getInventoryDetail);
+
+  React.useEffect(() => {
+    dispatch(
+      InventoryActions.getInventoryAction({
+        loader: 'loading-request',
+        slug: API.GET_INVENTORY,
+        method: 'get'
+      })
+    );
+  }, []);
+
   const navigate = useNavigate();
 
   const navigateTo = (id) => {
@@ -38,11 +50,11 @@ function NewWarehouseDetails() {
     initialValues: {
       warehousename: '',
       address: '',
-      inventorytype: [],
+      preferredInventories: [],
       specs: '',
       image: []
     },
-    validationSchema: schema.warehouseForm,
+    // validationSchema: schema.warehouseForm,
     onSubmit: (values) => {
       dispatch(
         WarehouseActions.createWarehouseAction({
@@ -53,6 +65,7 @@ function NewWarehouseDetails() {
           data: {
             name: values.warehousename,
             address: values.address,
+            preferredInventories: values.preferredInventories,
             specs: values.specs,
             image: values.image,
             company_id: '61cea5fd028432700a7f8601'
@@ -153,25 +166,31 @@ function NewWarehouseDetails() {
                       select
                       fullWidth
                       variant="outlined"
-                      name="inventorytype"
+                      name="preferredInventories"
                       input={<OutlinedInput />}
-                      value={formik.values.inventorytype}
-                      error={formik.touched.inventorytype && Boolean(formik.errors.inventorytype)}
-                      helperText={formik.touched.inventorytype && formik.errors.inventorytype}
+                      value={formik.values.preferredInventories}
+                      error={
+                        formik.touched.preferredInventories &&
+                        Boolean(formik.errors.preferredInventories)
+                      }
+                      helperText={
+                        formik.touched.preferredInventories && formik.errors.preferredInventories
+                      }
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => (
-                            <Chip key={value} label={value} />
+                            <Chip
+                              key={value}
+                              label={inventoryTypes.find((x) => x._id === value)?.name || 'unknown'}
+                            />
                           ))}
                         </Box>
                       )}
                       MenuProps={MenuProps}
-                      onChange={(event) => {
-                        const {
-                          target: { value }
-                        } = event;
+                      onChange={(e) => {
+                        const value = e.target.value;
                         formik.setFieldValue(
-                          'inventorytype',
+                          'preferredInventories',
                           // On autofill we get a stringified value.
                           typeof value === 'string' ? value.split(',') : value
                         );
@@ -180,11 +199,12 @@ function NewWarehouseDetails() {
                       <MenuItem key={''} value={''}>
                         None Selected
                       </MenuItem>
-                      {inventoryTypes.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          {name}
-                        </MenuItem>
-                      ))}
+                      {inventoryTypes &&
+                        inventoryTypes.map((inventory) => (
+                          <MenuItem key={inventory._id} value={inventory._id}>
+                            {inventory.name}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
@@ -233,7 +253,14 @@ function NewWarehouseDetails() {
                   columnGap: '20px'
                 }}
               >
-                <MDButton size="medium" color="error" variant="outlined">
+                <MDButton
+                  size="medium"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    navigate('/setup/warehouse');
+                  }}
+                >
                   CANCEL
                 </MDButton>
                 <MDButton size="medium" color="primary" variant="outlined" type="submit">
