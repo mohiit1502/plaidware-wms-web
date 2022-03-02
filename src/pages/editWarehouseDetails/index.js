@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -16,13 +16,12 @@ import {
 } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import ImageUpload from 'components/ImageUpload';
+import ImageUploadSingle from 'components/ImageUploadSingle';
 import MDButton from 'components/Button';
 import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
-import SnackBar from 'components/SnackBar';
 import { getChildLocationType } from 'utils/nestedTableTools';
 import { getPropertiesOfLocationType } from 'utils/nestedTableTools';
 import { getInitialvaluesFromParentData } from 'utils/nestedTableTools';
@@ -320,7 +319,6 @@ function EditWarehouseDetails() {
   const { warehouseId } = useParams();
   const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetailById(warehouseId));
 
-  const [open, setOpen] = useState(false);
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -338,11 +336,11 @@ function EditWarehouseDetails() {
       warehousename: warehouseData.name,
       address: warehouseData.address,
       inventorytype: [],
-      attributes: '',
-      images: warehouseData.images
+      specs: warehouseData.specs,
+      image: [{ src: warehouseData.image_url }]
     },
     validationSchema: schema.warehouseForm,
-    onSubmit: (values, onSubmitProps) => {
+    onSubmit: (values) => {
       dispatch(
         WarehouseActions.editWarehouseAction({
           loader: 'loading-request',
@@ -351,21 +349,13 @@ function EditWarehouseDetails() {
           data: {
             name: values.warehousename,
             address: values.address,
-            specs: '',
-            company_id: ''
+            specs: values.specs,
+            image: values.image
           }
         })
       );
-      onSubmitProps.resetForm();
-      setOpen(true);
     }
   });
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
 
   return (
     <>
@@ -508,23 +498,22 @@ function EditWarehouseDetails() {
                       fullWidth
                       type="text"
                       variant="outlined"
-                      name="attributes"
-                      value={formik.values.attributes}
-                      error={formik.touched.attributes && Boolean(formik.errors.attributes)}
-                      helperText={formik.touched.attributes && formik.errors.attributes}
+                      name="specs"
+                      value={formik.values.specs}
+                      error={formik.touched.specs && Boolean(formik.errors.specs)}
+                      helperText={formik.touched.specs && formik.errors.specs}
                       onChange={formik.handleChange}
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box sx={{ marginTop: '30px' }}>
-                    <ImageUpload
-                      multiple
+                    <ImageUploadSingle
                       heading="Upload Warehouse Image"
                       accept="image/*"
-                      images={formik.values.images}
+                      images={formik.values.image}
                       setImages={(images) => {
-                        formik.setFieldValue('images', images);
+                        formik.setFieldValue('image', images);
                       }}
                     />
                   </Box>
@@ -558,7 +547,6 @@ function EditWarehouseDetails() {
           <WarehouseNestedDetails />
         </Box>
       </DashboardLayout>
-      <SnackBar open={open} message="warehouse edit successful" handleClose={handleClose} />
     </>
   );
 }

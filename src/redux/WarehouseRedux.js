@@ -26,12 +26,8 @@ export default WarehouseActions;
 export const INITIAL_STATE = Immutable({
   warehouseDetail: [],
   error: {},
-
-  createWarehouse: [],
   createWarehouseLoading: false,
   createWarehouseError: {},
-
-  editWarehouse: [],
   editWarehouseLoading: false,
   editWarehouseError: {}
 });
@@ -75,7 +71,7 @@ export const onCreateWarehouseSuccess = (state, { data }) =>
   state.merge({
     fetching: getFetchingValue(state.fetching, data?.loader),
     error: getErrorValue(state?.error, data?.loader),
-    createWarehouse: data.createWarehouse
+    warehouseDetail: [...state.warehouseDetail, data.createdWarehouse]
   });
 
 export const onCreateWarehouseFailure = (state, { error }) =>
@@ -94,7 +90,10 @@ export const onEditWarehouseSuccess = (state, { data }) =>
   state.merge({
     fetching: getFetchingValue(state.fetching, data?.loader),
     error: getErrorValue(state?.error, data?.loader),
-    editWarehouse: data.editWarehouse
+    warehouseDetail: [
+      ...state.warehouseDetail.filter((x) => x._id !== data?.editedWarehouse?._id),
+      data.editedWarehouse
+    ]
   });
 
 export const onEditWarehouseFailure = (state, { error }) =>

@@ -6,53 +6,8 @@ import MDTypography from 'components/MDTypography';
 import pxToRem from 'assets/theme-dark/functions/pxToRem';
 import { Button } from '@mui/material';
 import Close from 'assets/images/Close';
-import { AuthorizedAPI } from 'config';
-import LOGGER from 'services/Logger';
 
-const deleteImage = async (type, id, imageId) => {
-  LOGGER.log({ type, id, imageId });
-  switch (type) {
-    case 'warehouse':
-      await AuthorizedAPI.delete(`/warehouse/${id}/image/${imageId}`);
-      break;
-
-    default:
-      break;
-  }
-};
-
-const addNewImage = async (type, id, image, addNewImageToImages) => {
-  LOGGER.log({ type, id, image });
-  const formData = new FormData();
-  switch (type) {
-    case 'warehouse':
-      formData.append('warehouse-image', image);
-      const response = await AuthorizedAPI.post(`/warehouse/add-image/${id}`, formData);
-      addNewImageToImages(response?.data?.data);
-      return;
-    default:
-      break;
-  }
-};
-
-function ImageUpload({ heading, accept, multiple, images, setImages, type, pageId }) {
-  const addNewImageToImages = (image) => {
-    setImages([...images, image]);
-  };
-
-  const addImage = (e) => {
-    addNewImage(type, pageId, e.target.files[0], addNewImageToImages);
-    setImages([
-      ...images,
-      { src: URL.createObjectURL(e.target.files[0]), file: e.target.files[0] }
-    ]);
-  };
-
-  const removeImage = (index) => {
-    multiple && deleteImage(type, pageId, images._id);
-    setImages(images.filter((_val, idx) => idx !== index));
-  };
-
+function ImageUploadSingle({ heading, accept, multiple, images, setImages }) {
   return (
     <>
       <MDBox
@@ -62,7 +17,7 @@ function ImageUpload({ heading, accept, multiple, images, setImages, type, pageI
           padding: pxToRem(16)
         }}
       >
-        {multiple || !images.length ? (
+        {!images.length ? (
           <MDBox
             sx={{
               border: '1px dashed #C4C4C4',
@@ -93,7 +48,11 @@ function ImageUpload({ heading, accept, multiple, images, setImages, type, pageI
                 right: '0',
                 bottom: '0'
               }}
-              onChange={addImage}
+              onChange={(e) => {
+                setImages([
+                  { src: URL.createObjectURL(e.target.files[0]), file: e.target.files[0] }
+                ]);
+              }}
             />
             <MDBox component="span">
               {!multiple && images.length ? null : <UploadIcon />}
@@ -137,70 +96,24 @@ function ImageUpload({ heading, accept, multiple, images, setImages, type, pageI
                 }
               }}
               onClick={() => {
-                removeImage(0);
+                setImages([]);
               }}
             >
               <Close />
             </Button>
           </MDBox>
         )}
-        {/* -----------img-preview----------- */}
-        {multiple ? (
-          <MDBox sx={{ marginBottom: '-10px' }}>
-            {images &&
-              images.map((item, idx) => {
-                return (
-                  <MDBox
-                    key={idx}
-                    component="span"
-                    sx={{
-                      width: '80px',
-                      height: '63px',
-                      marginRight: '16px',
-                      display: 'inline-block',
-                      borderRadius: '4px',
-                      position: 'relative'
-                    }}
-                  >
-                    <img src={item.src} alt="placeholder" width="100%" />
-                    <Button
-                      sx={{
-                        backgroundColor: '#fff !important',
-                        boxShadow: '0px 1px 1px rgb(0 0 0 / 25%)',
-                        padding: '0',
-                        minWidth: '20px',
-                        minHeight: '20px',
-                        borderRadius: '100%',
-                        position: 'absolute',
-                        right: '4px',
-                        top: '4px',
-                        '&:hover': {
-                          backgroundColor: 'red !important'
-                        }
-                      }}
-                      onClick={() => {
-                        removeImage(idx);
-                      }}
-                    >
-                      <Close />
-                    </Button>
-                  </MDBox>
-                );
-              })}
-          </MDBox>
-        ) : null}
       </MDBox>
     </>
   );
 }
 
-export default ImageUpload;
-ImageUpload.propTypes = {
+ImageUploadSingle.propTypes = {
   images: PropTypes.array,
   heading: PropTypes.string,
   multiple: PropTypes.bool,
   accept: PropTypes.string,
-  setImages: PropTypes.func,
-  type: PropTypes.string,
-  pageId: PropTypes.string
+  setImages: PropTypes.func
 };
+
+export default ImageUploadSingle;

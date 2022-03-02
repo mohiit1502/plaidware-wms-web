@@ -2,6 +2,7 @@ import { AuthorizedAPI } from 'config';
 import { takeLatest, call, put } from 'redux-saga/effects';
 import WarehouseActions, { WarehouseTypes } from '../redux/WarehouseRedux';
 import ApiServices from 'services/API/ApiServices';
+import { toast } from 'react-toastify';
 
 export function* onRequestWarehouseData({ payload }) {
   const response = yield call(
@@ -28,22 +29,34 @@ export function* onRequestWarehouseData({ payload }) {
   }
 }
 
+const makeFormData = (data) => {
+  const formData = new FormData();
+  if (data.name) formData.append('name', data.name);
+  if (data.address) formData.append('address', data.address);
+  if (data.specs) formData.append('specs', data.specs);
+  if (data.company_id) formData.append('company_id', data.company_id);
+  if (data.image[0].file) formData.append('image', data.image[0].file);
+  return formData;
+};
+
 export function* onRequestCreateWarehouse({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
     AuthorizedAPI,
     payload?.slug,
-    payload?.data
+    makeFormData(payload?.data)
   );
-  if (response?.status === 200) {
+  if (response?.status === 200 && response?.data?.message) {
+    toast('Warehouse created successfully');
     yield put(
       WarehouseActions.createWarehouseSuccess({
         loader: payload?.loader,
-        createWarehouse: response?.data?.data
+        createdWarehouse: response?.data?.message
       })
     );
+    payload.navigateTo(response?.data?.message?._id);
   } else {
-    payload.onFailedCreateWarehouse(response.data.error);
+    toast('Failed to create warehouse');
     yield put(
       WarehouseActions.createWarehouseFailure({
         loader: payload?.loader,
@@ -58,17 +71,18 @@ export function* onRequestEditWarehouse({ payload }) {
     ApiServices[payload?.method],
     AuthorizedAPI,
     payload?.slug,
-    payload?.data
+    makeFormData(payload?.data)
   );
   if (response?.status === 200) {
+    toast('Warehouse edited successfully');
     yield put(
       WarehouseActions.editWarehouseSuccess({
         loader: payload?.loader,
-        createWarehouse: response?.data?.data
+        editedWarehouse: response?.data?.data
       })
     );
   } else {
-    payload.onFailedEditWarehouse(response.data.error);
+    toast('Failed to edit warehouse');
     yield put(
       WarehouseActions.editWarehouseFailure({
         loader: payload?.loader,

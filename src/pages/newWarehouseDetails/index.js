@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Box, Grid, MenuItem, OutlinedInput, Chip, Select } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import ImageUpload from 'components/ImageUpload';
+import ImageUploadSingle from 'components/ImageUploadSingle';
 import MDButton from 'components/Button';
 import { useFormik } from 'formik';
 import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
 import { API } from 'constant';
-import SnackBar from 'components/SnackBar';
 import Breadcrumbs from 'components/Breadcrumbs';
+
+import { useNavigate } from 'react-router-dom';
 
 const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
 
 function NewWarehouseDetails() {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const navigateTo = (id) => {
+    navigate(`/setup/warehouse/edit-warehouse/${id}`);
+  };
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -34,35 +39,28 @@ function NewWarehouseDetails() {
       warehousename: '',
       address: '',
       inventorytype: [],
-      attributes: '',
-      images: []
+      specs: '',
+      image: []
     },
     validationSchema: schema.warehouseForm,
-    onSubmit: (values, onSubmitProps) => {
+    onSubmit: (values) => {
       dispatch(
         WarehouseActions.createWarehouseAction({
           loader: 'loading-request',
           slug: API.CREATE_WAREHOUSE,
           method: 'post',
+          navigateTo: navigateTo,
           data: {
             name: values.warehousename,
             address: values.address,
-            specs: '',
+            specs: values.specs,
+            image: values.image,
             company_id: '61cea5fd028432700a7f8601'
           }
         })
       );
-      onSubmitProps.resetForm();
-      setOpen(true);
     }
   });
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
 
   return (
     <>
@@ -205,23 +203,23 @@ function NewWarehouseDetails() {
                       fullWidth
                       type="text"
                       variant="outlined"
-                      name="attributes"
-                      value={formik.values.attributes}
-                      error={formik.touched.attributes && Boolean(formik.errors.attributes)}
-                      helperText={formik.touched.attributes && formik.errors.attributes}
+                      name="specs"
+                      value={formik.values.specs}
+                      error={formik.touched.specs && Boolean(formik.errors.specs)}
+                      helperText={formik.touched.specs && formik.errors.specs}
                       onChange={formik.handleChange}
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box sx={{ marginTop: '30px' }}>
-                    <ImageUpload
+                    <ImageUploadSingle
                       multiple
                       heading="Upload Warehouse Image"
                       accept="image/*"
-                      images={formik.values.images}
-                      setImages={(images) => {
-                        formik.setFieldValue('images', images);
+                      images={formik.values.image}
+                      setImages={(image) => {
+                        formik.setFieldValue('image', image);
                       }}
                     />
                   </Box>
@@ -249,11 +247,6 @@ function NewWarehouseDetails() {
           </form>
         </Box>
       </DashboardLayout>
-      <SnackBar
-        open={open}
-        message="new warehouse created successfully"
-        handleClose={handleClose}
-      />
     </>
   );
 }
