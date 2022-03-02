@@ -3,7 +3,6 @@ import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { Box, Grid, MenuItem, Select } from '@mui/material';
 import MDInput from 'components/MDInput';
-import ImageUpload from 'components/ImageUpload';
 import Switch from 'components/Switch';
 import MDTypography from 'components/MDTypography';
 import MDBox from 'components/MDBox';
@@ -76,6 +75,10 @@ function InventoryScreen() {
   const navigate = useNavigate();
   const { inventoryId } = useParams();
 
+  const navigateTo = () => {
+    navigate('/setup/inventory');
+  };
+
   const currentInventoryData = useSelector(InventorySelectors.getInventoryDetailById(inventoryId));
   LOGGER.log({ currentInventoryData });
   // const [inventoryAllData, setInventoryAllData] = useState([]);
@@ -102,8 +105,7 @@ function InventoryScreen() {
             replenishment: currentInventoryData.policies.replenishment,
             preferredLocations: false, // TODO: change later when implemented on BE
             inventory_process: currentInventoryData.policies.inventory_process
-          },
-          image: [{ src: currentInventoryData.image_url }]
+          }
         }
       : {
           name: '',
@@ -114,8 +116,7 @@ function InventoryScreen() {
             replenishment: false,
             preferredLocations: false,
             inventory_process: 'CCR'
-          },
-          image: []
+          }
         },
     validationSchema: schema.addInventory,
     onSubmit: (values) => {
@@ -126,9 +127,10 @@ function InventoryScreen() {
               loader: 'loading-request',
               slug: `${API.ADD_INVENTORY}/${inventoryId}`,
               method: 'patch',
+              navigateTo,
               data: {
                 ...values,
-                image: values.image[0]?.file || null
+                icon_slug: 'testslug'
               }
             })
           )
@@ -137,14 +139,13 @@ function InventoryScreen() {
               loader: 'loading-request',
               slug: API.ADD_INVENTORY,
               method: 'post',
+              navigateTo,
               data: {
                 ...values,
-                image: values.image[0]?.file || null
+                icon_slug: 'testslug'
               }
             })
           );
-      // navigate to edit inventory page
-      // onSubmitProps.resetForm();
     }
   });
 
@@ -257,14 +258,7 @@ function InventoryScreen() {
                 </MDBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
-                <ImageUpload
-                  heading="Upload Inventory Image"
-                  accept="image/*"
-                  images={formik.values.image}
-                  setImages={(images) => {
-                    formik.setFieldValue('image', images);
-                  }}
-                />
+                icon slugs selector
               </Grid>
               <MDBox sx={{ ml: 'auto', mr: 'auto', mt: 3 }}>
                 <MDButton

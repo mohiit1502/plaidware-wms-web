@@ -1,12 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
-import SearchBar from 'components/SearchBar';
 import MDButton from 'components/Button';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Fade from '@mui/material/Fade';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,10 +10,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-// import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-// import IconButton from '@mui/material/IconButton';
-// import Collapse from '@mui/material/Collapse';
 import TablePagination from 'components/TablePagination';
+import { Dialog, DialogActions, MenuItem, Select } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -47,16 +40,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 Row.propTypes = {
   rowData: PropTypes.array,
-  tHeads: PropTypes.array
+  tHeads: PropTypes.array,
+  editHandler: PropTypes.any
 };
 
-function Row({ tHeads, rowData }) {
+function Row({ tHeads, rowData, editHandler }) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ '&odd > *': { borderBottom: 'unset' } }}>
         <StyledTableCell sx={{ width: '10%', display: 'flex', alignItems: 'center' }}>
           <MDButton
-            disabled
             size="small"
             variant="contained"
             color="primary"
@@ -68,6 +61,9 @@ function Row({ tHeads, rowData }) {
               boxShadow: 'none',
               fontWeight: '500',
               padding: '0'
+            }}
+            onClick={() => {
+              editHandler(rowData._id);
             }}
           >
             EDIT
@@ -82,15 +78,24 @@ function Row({ tHeads, rowData }) {
   );
 }
 
-function EnhancedTable({ data, tHeads }) {
-  // const [anchorEl, setAnchorEl] = React.useState(false);
-  // const open = Boolean(anchorEl);
-  // const handleClick = (event) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
+function EnhancedTable({
+  count,
+  page,
+  setPage,
+  perPage,
+  setPerPage,
+  data,
+  tHeads,
+  editHandler,
+  filtersControl,
+  resetFilters
+}) {
+  const [filtersOpen, setFiltersOpen] = React.useState(false);
+
+  const handleFiltersClose = () => {
+    setFiltersOpen(false);
+  };
+
   return (
     <>
       <Box
@@ -109,9 +114,7 @@ function EnhancedTable({ data, tHeads }) {
             padding: '16px'
           }}
         >
-          <Box>
-            <SearchBar />
-          </Box>
+          <Box>{/* <SearchBar /> */}</Box>
           <Box sx={{ display: 'flex', columnGap: '15px' }}>
             <MDButton
               size="small"
@@ -123,10 +126,31 @@ function EnhancedTable({ data, tHeads }) {
                 minHeight: '44px',
                 fontWeight: '500'
               }}
+              onClick={() => {
+                setFiltersOpen(true);
+              }}
             >
-              Sorting
+              Filter
             </MDButton>
-            <MDButton
+            {filtersControl ? (
+              <Dialog open={filtersOpen} onClose={handleFiltersClose}>
+                {filtersControl}
+                <DialogActions>
+                  <MDButton onClick={resetFilters}>Reset Filters</MDButton>
+                  <MDButton
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    onClick={() => {
+                      setFiltersOpen(false);
+                    }}
+                  >
+                    Close
+                  </MDButton>
+                </DialogActions>
+              </Dialog>
+            ) : null}
+            {/* <MDButton
               id="fade-button"
               size="small"
               variant="outlined"
@@ -144,8 +168,8 @@ function EnhancedTable({ data, tHeads }) {
               onClick={() => {}}
             >
               Dashboard
-            </MDButton>
-            <Menu
+            </MDButton> */}
+            {/* <Menu
               id="fade-menu"
               MenuListProps={{
                 'aria-labelledby': 'fade-button'
@@ -158,7 +182,7 @@ function EnhancedTable({ data, tHeads }) {
               <MenuItem>Profile</MenuItem>
               <MenuItem>My account</MenuItem>
               <MenuItem>Logout</MenuItem>
-            </Menu>
+            </Menu> */}
           </Box>
         </Box>
         {/* Table-row- */}
@@ -174,7 +198,14 @@ function EnhancedTable({ data, tHeads }) {
             </TableHead>
             <TableBody>
               {data &&
-                data.map((rowData) => <Row key={rowData._id} rowData={rowData} tHeads={tHeads} />)}
+                data.map((rowData) => (
+                  <Row
+                    key={rowData._id}
+                    editHandler={editHandler}
+                    rowData={rowData}
+                    tHeads={tHeads}
+                  />
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -265,10 +296,29 @@ function EnhancedTable({ data, tHeads }) {
             </Box>
           </Box> */}
           {/*---- pagination- */}
-          <Box>
-            <TablePagination />
+          <Box sx={{ fontSize: '14px', color: '#000' }}>
+            Per page:{' '}
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={perPage}
+              label="Age"
+              onChange={(e) => {
+                setPerPage(e.target.value);
+              }}
+            >
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+            </Select>
           </Box>
-          <Box sx={{ fontSize: '14px', color: '#000' }}>[1 to 10 of 92]</Box>
+          <Box>
+            <TablePagination count={Math.ceil(count / perPage)} page={page} setPage={setPage} />
+          </Box>
+          <Box sx={{ fontSize: '14px', color: '#000' }}>
+            [{(page - 1) * perPage + 1} to {perPage * page > count ? count : perPage * page} of{' '}
+            {count}]
+          </Box>
         </Box>
       </Box>
     </>
@@ -276,8 +326,16 @@ function EnhancedTable({ data, tHeads }) {
 }
 
 EnhancedTable.propTypes = {
+  count: PropTypes.number,
+  page: PropTypes.number,
+  setPage: PropTypes.any,
+  perPage: PropTypes.number,
+  setPerPage: PropTypes.any,
   data: PropTypes.array,
-  tHeads: PropTypes.array
+  tHeads: PropTypes.array,
+  editHandler: PropTypes.any,
+  filtersControl: PropTypes.any,
+  resetFilters: PropTypes.any
 };
 
 export default EnhancedTable;

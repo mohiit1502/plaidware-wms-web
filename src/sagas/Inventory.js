@@ -55,35 +55,24 @@ export function* onRequestGetInventoryTypesData({ payload }) {
   }
 }
 
-const parseDataToFormData = (data) => {
-  var formData = new FormData();
-  formData.append('name', data.name);
-  formData.append('widgetName', data.widgetName);
-  formData.append('icon_slug', 'testslug');
-  formData.append('policies[orderTracking]', data.policies.orderTracking);
-  formData.append('policies[alerting]', data.policies.alerting);
-  formData.append('policies[replenishment]', data.policies.replenishment);
-  formData.append('policies[preferredLocations]', data.policies.preferredLocations);
-  formData.append('policies[inventory_process]', data.policies.inventory_process);
-  data.image && formData.append('image', data.image);
-  return formData;
-};
-
 export function* onRequestAddInventoryData({ payload }) {
   const response = yield call(
     ApiServices[payload?.method],
     AuthorizedAPI,
     payload?.slug,
-    parseDataToFormData(payload?.data)
+    payload?.data
   );
   if (response?.status === 200) {
+    toast('New inventory added');
     yield put(
       InventoryActions.addInventorySuccess({
         loader: payload?.loader,
         newInventory: response?.data?.data?.inventoryData
       })
     );
+    payload.navigateTo();
   } else {
+    toast('Failed to add inventory');
     payload.onFailedAddInventoryData(response.data.error);
     yield put(
       InventoryActions.addInventoryFailure({
@@ -109,8 +98,9 @@ export function* onRequestUpdateInventoryData({ payload }) {
         updateInventory: response?.data?.data
       })
     );
+    payload.navigateTo();
   } else {
-    payload.onFailedUpdateInventoryData(response.data.error);
+    toast('Failed to update inventory');
     yield put(
       InventoryActions.updateInventoryFailure({
         loader: payload?.loader,

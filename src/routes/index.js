@@ -118,6 +118,14 @@ const protectedRoutes = [
         component: <AddNewItem />
       },
       {
+        name: 'Update Item',
+        key: 'udpate-item',
+        hide: true,
+        route: '/setup/inventory/browse/:widgetName/:inventoryId/edit/:itemId',
+        component: <AddNewItem />
+      },
+      // /setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${payload?.id}
+      {
         name: 'View Items',
         key: 'view-items',
         hide: true,

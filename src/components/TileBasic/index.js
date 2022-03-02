@@ -67,13 +67,30 @@ export default function TileBasic({ tiles }) {
         <Grid container spacing={2}>
           {tiles &&
             tiles.map((item) => (
-              <>
-                <Grid item xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
-                  {item.disabled ? (
+              <Grid item key={item.name} xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
+                {item.disabled ? (
+                  <MDBox
+                    key={item.name + item.path}
+                    data={{ name: item.name, path: item.path }}
+                    className={classes.disabledTileContent}
+                    sx={{
+                      height: 230,
+                      backgroundColor: ({ palette: { white } }) => white.main,
+                      padding: '32px 40px'
+                    }}
+                  >
+                    {item.icon}
+                    {item.name}
+                  </MDBox>
+                ) : (
+                  <Link
+                    to={item.path}
+                    state={{ name: item.name, address: item.address, id: item._id }}
+                  >
                     <MDBox
                       key={item.name + item.path}
                       data={{ name: item.name, path: item.path }}
-                      className={classes.disabledTileContent}
+                      className={classes.tileContent}
                       sx={{
                         height: 230,
                         backgroundColor: ({ palette: { white } }) => white.main,
@@ -83,28 +100,9 @@ export default function TileBasic({ tiles }) {
                       {item.icon}
                       {item.name}
                     </MDBox>
-                  ) : (
-                    <Link
-                      to={item.path}
-                      state={{ name: item.name, address: item.address, id: item._id }}
-                    >
-                      <MDBox
-                        key={item.name + item.path}
-                        data={{ name: item.name, path: item.path }}
-                        className={classes.tileContent}
-                        sx={{
-                          height: 230,
-                          backgroundColor: ({ palette: { white } }) => white.main,
-                          padding: '32px 40px'
-                        }}
-                      >
-                        {item.icon}
-                        {item.name}
-                      </MDBox>
-                    </Link>
-                  )}
-                </Grid>
-              </>
+                  </Link>
+                )}
+              </Grid>
             ))}
         </Grid>
       </MDBox>

@@ -1,23 +1,40 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Grid, MenuItem, OutlinedInput, Chip, Select } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import ImageUpload from 'components/ImageUpload';
+import ImageUploadSingle from 'components/ImageUploadSingle';
 import MDButton from 'components/Button';
 import { useFormik } from 'formik';
-import schema from 'services/ValidationServices';
+// import schema from 'services/ValidationServices';
 import MDInput from 'components/MDInput';
 import WarehouseActions from 'redux/WarehouseRedux';
 import { API } from 'constant';
-import SnackBar from 'components/SnackBar';
 import Breadcrumbs from 'components/Breadcrumbs';
 
-const inventoryTypes = ['Perishable', 'Material', 'Product', 'Inventory', 'Fleet'];
+import { useNavigate } from 'react-router-dom';
+import { InventorySelectors } from 'redux/InventoryRedux';
+import InventoryActions from 'redux/InventoryRedux';
 
 function NewWarehouseDetails() {
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
+  const inventoryTypes = useSelector(InventorySelectors.getInventoryDetail);
+
+  React.useEffect(() => {
+    dispatch(
+      InventoryActions.getInventoryAction({
+        loader: 'loading-request',
+        slug: API.GET_INVENTORY,
+        method: 'get'
+      })
+    );
+  }, []);
+
+  const navigate = useNavigate();
+
+  const navigateTo = (id) => {
+    navigate(`/setup/warehouse/edit-warehouse/${id}`);
+  };
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -33,36 +50,30 @@ function NewWarehouseDetails() {
     initialValues: {
       warehousename: '',
       address: '',
-      inventorytype: [],
-      attributes: '',
-      images: []
+      preferredInventories: [],
+      specs: '',
+      image: []
     },
-    validationSchema: schema.warehouseForm,
-    onSubmit: (values, onSubmitProps) => {
+    // validationSchema: schema.warehouseForm,
+    onSubmit: (values) => {
       dispatch(
         WarehouseActions.createWarehouseAction({
           loader: 'loading-request',
           slug: API.CREATE_WAREHOUSE,
           method: 'post',
+          navigateTo: navigateTo,
           data: {
             name: values.warehousename,
             address: values.address,
-            specs: '',
+            preferredInventories: values.preferredInventories,
+            specs: values.specs,
+            image: values.image,
             company_id: '61cea5fd028432700a7f8601'
           }
         })
       );
-      onSubmitProps.resetForm();
-      setOpen(true);
     }
   });
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
 
   return (
     <>
@@ -155,25 +166,31 @@ function NewWarehouseDetails() {
                       select
                       fullWidth
                       variant="outlined"
-                      name="inventorytype"
+                      name="preferredInventories"
                       input={<OutlinedInput />}
-                      value={formik.values.inventorytype}
-                      error={formik.touched.inventorytype && Boolean(formik.errors.inventorytype)}
-                      helperText={formik.touched.inventorytype && formik.errors.inventorytype}
+                      value={formik.values.preferredInventories}
+                      error={
+                        formik.touched.preferredInventories &&
+                        Boolean(formik.errors.preferredInventories)
+                      }
+                      helperText={
+                        formik.touched.preferredInventories && formik.errors.preferredInventories
+                      }
                       renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value) => (
-                            <Chip key={value} label={value} />
+                            <Chip
+                              key={value}
+                              label={inventoryTypes.find((x) => x._id === value)?.name || 'unknown'}
+                            />
                           ))}
                         </Box>
                       )}
                       MenuProps={MenuProps}
-                      onChange={(event) => {
-                        const {
-                          target: { value }
-                        } = event;
+                      onChange={(e) => {
+                        const value = e.target.value;
                         formik.setFieldValue(
-                          'inventorytype',
+                          'preferredInventories',
                           // On autofill we get a stringified value.
                           typeof value === 'string' ? value.split(',') : value
                         );
@@ -182,11 +199,12 @@ function NewWarehouseDetails() {
                       <MenuItem key={''} value={''}>
                         None Selected
                       </MenuItem>
-                      {inventoryTypes.map((name) => (
-                        <MenuItem key={name} value={name}>
-                          {name}
-                        </MenuItem>
-                      ))}
+                      {inventoryTypes &&
+                        inventoryTypes.map((inventory) => (
+                          <MenuItem key={inventory._id} value={inventory._id}>
+                            {inventory.name}
+                          </MenuItem>
+                        ))}
                     </Select>
                   </Box>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
@@ -205,23 +223,23 @@ function NewWarehouseDetails() {
                       fullWidth
                       type="text"
                       variant="outlined"
-                      name="attributes"
-                      value={formik.values.attributes}
-                      error={formik.touched.attributes && Boolean(formik.errors.attributes)}
-                      helperText={formik.touched.attributes && formik.errors.attributes}
+                      name="specs"
+                      value={formik.values.specs}
+                      error={formik.touched.specs && Boolean(formik.errors.specs)}
+                      helperText={formik.touched.specs && formik.errors.specs}
                       onChange={formik.handleChange}
                     />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box sx={{ marginTop: '30px' }}>
-                    <ImageUpload
+                    <ImageUploadSingle
                       multiple
                       heading="Upload Warehouse Image"
                       accept="image/*"
-                      images={formik.values.images}
-                      setImages={(images) => {
-                        formik.setFieldValue('images', images);
+                      images={formik.values.image}
+                      setImages={(image) => {
+                        formik.setFieldValue('image', image);
                       }}
                     />
                   </Box>
@@ -235,7 +253,14 @@ function NewWarehouseDetails() {
                   columnGap: '20px'
                 }}
               >
-                <MDButton size="medium" color="error" variant="outlined">
+                <MDButton
+                  size="medium"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    navigate('/setup/warehouse');
+                  }}
+                >
                   CANCEL
                 </MDButton>
                 <MDButton size="medium" color="primary" variant="outlined" type="submit">
@@ -249,11 +274,6 @@ function NewWarehouseDetails() {
           </form>
         </Box>
       </DashboardLayout>
-      <SnackBar
-        open={open}
-        message="new warehouse created successfully"
-        handleClose={handleClose}
-      />
     </>
   );
 }
