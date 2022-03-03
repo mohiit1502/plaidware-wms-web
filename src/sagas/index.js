@@ -8,6 +8,7 @@ import RolesSaga from './Roles';
 import PermissionsSaga from './Permissions';
 import WarehouseLocationsSaga from './WarehouseLocations';
 import WidgetSaga from './Widget';
+import LabellingSaga from './Labelling';
 import ItemSaga from './Item';
 
 export default function* rootSaga() {
@@ -20,5 +21,6 @@ export default function* rootSaga() {
   yield all([...PermissionsSaga]);
   yield all([...WarehouseLocationsSaga]);
   yield all([...WidgetSaga]);
+  yield all([...LabellingSaga]);
   yield all([...ItemSaga]);
 }

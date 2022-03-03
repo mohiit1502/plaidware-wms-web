@@ -1,21 +1,33 @@
-import { Box, TableBody, TableCell, TableRow } from '@mui/material';
+import { Box, Grid, TableBody, TableCell, TableRow } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
 import { makeStyles } from '@mui/styles';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import React from 'react';
-import SearchBar from 'components/SearchBar';
+import React, { useState } from 'react';
 import BasicTable from 'components/BasicTable';
-import Barcodeimage from 'assets/images/barcode-number.png';
 import MDButton from 'components/Button';
 import Checkbox from '@mui/material/Checkbox';
-
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 import Breadcrumbs from 'components/Breadcrumbs';
+import Dropdown from 'components/Dropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { InventorySelectors } from 'redux/InventoryRedux';
+import WidgetActions from 'redux/WidgetRedux';
+import { API } from 'constant';
+import MDBox from 'components/MDBox';
+import { WidgetSelectors } from 'redux/WidgetRedux';
+import ProductActions from 'redux/ProductsRedux';
+import { ProductSelectors } from 'redux/ProductsRedux';
+import InventoryActions from 'redux/InventoryRedux';
+import QRcode from 'components/QRcode';
 
 const useStyles = makeStyles({
+  nodataStyle: {
+    height: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '600%'
+  },
   labelSize: {
     fontSize: '16px',
     letterSpacing: '0.01em',
@@ -32,69 +44,6 @@ const useStyles = makeStyles({
     margin: '52px 0px'
   }
 });
-const records = [
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    row: 'Nulla',
-    label: 'Mauris',
-    bay: 'Senectus',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  },
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    row: 'Nulla',
-    label: 'Mauris',
-    bay: 'Senectus',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  },
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    row: 'Nulla',
-    label: 'Mauris',
-    bay: 'Senectus',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  }
-];
-
-const recordsNew = [
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  },
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  },
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  },
-  {
-    warehouse: 'Ipsum',
-    zone: 'Vivera',
-    area: 'Nisi',
-    barcodenumber: '2085550112',
-    barcodeimage: Barcodeimage
-  }
-];
 
 const headCells = [
   {
@@ -110,15 +59,15 @@ const headCells = [
     label: 'Subfamily'
   },
   {
-    id: 'Name',
+    id: 'formalName',
     label: 'Name'
   },
   {
-    id: 'Manufacture',
+    id: 'manufacturer',
     label: 'Manufacture'
   },
   {
-    id: 'Size',
+    id: 'size',
     label: 'Size'
   },
   {
@@ -136,11 +85,11 @@ const headCellsNew = [
     label: 'Inventory Name'
   },
   {
-    id: 'Item Name',
+    id: 'formalName',
     label: 'Item Name'
   },
   {
-    id: 'Item Description',
+    id: 'description',
     label: 'Item Description'
   },
   {
@@ -152,18 +101,93 @@ const headCellsNew = [
     label: 'Barcode'
   }
 ];
+
 function WidgetLabel() {
   const classes = useStyles();
-  const [personName, setPersonName] = React.useState([]);
+  const dispatch = useDispatch();
+  const [labelData, setLabelData] = useState([]);
+  const [inventoryId, setInventoryId] = useState('');
+  const [familyId, setFamilyId] = useState('');
+  const [allProductData, setAllProductData] = useState([]);
+  const [filterClick, setFilterClick] = useState(false);
 
-  const handleChange = (event) => {
-    const {
-      target: { value }
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
+  const inventoryData = useSelector(InventorySelectors.getInventoryDetail);
+  const familyData = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
+  const subFamilyData = useSelector(WidgetSelectors.getWidgetsByParentId(familyId));
+  const productData = useSelector(ProductSelectors.getProductDetail);
+
+  React.useEffect(() => {
+    dispatch(
+      InventoryActions.getInventoryAction({
+        loader: 'loading-request',
+        slug: API.GET_INVENTORY,
+        method: 'get'
+      })
     );
+  }, []);
+
+  React.useEffect(() => {
+    if (productData.result && filterClick) {
+      setAllProductData(productData?.result);
+    }
+  }, [productData, filterClick]);
+
+  const inventoryChange = (event) => {
+    const filterData = inventoryData.filter((item) => item.name === event.target.value);
+    const id = filterData[0]._id;
+    setInventoryId(filterData[0]._id);
+    dispatch(
+      WidgetActions.widgetRequest({
+        loader: 'loading-request',
+        slug: `${API.GET_WIDGET_FAMILY_BY_INVENTORY}${id}`,
+        method: 'get'
+      })
+    );
+  };
+
+  const familyChange = (event) => {
+    const filterData = familyData.filter((item) => item.name === event.target.value);
+    const id = filterData[0]._id;
+    setFamilyId(filterData[0]._id);
+    dispatch(
+      WidgetActions.widgetRequest({
+        loader: 'loading-request',
+        slug: `${API.GET_WIDGET_FAMILY_BY_INVENTORY}${id}`,
+        method: 'get'
+      })
+    );
+  };
+
+  const subFamilyChange = (event) => {
+    const filterData = subFamilyData.filter((item) => item.name === event.target.value);
+    const id = filterData[0]._id;
+    dispatch(
+      WidgetActions.widgetRequest({
+        loader: 'loading-request',
+        slug: `${API.GET_WIDGET_FAMILY_BY_INVENTORY}${id}`,
+        method: 'get'
+      })
+    );
+  };
+  const filterHandler = () => {
+    setInventoryId('');
+    setFilterClick(true);
+    dispatch(
+      ProductActions.getProductByIdAction({
+        loader: 'loading-request',
+        slug: `${API.GET_PRODUCT_BY_ID}${inventoryId}`,
+        method: 'get'
+      })
+    );
+  };
+
+  const getTableItem = (e, item) => {
+    if (e.target.checked) {
+      setLabelData((prev) => [...prev, item]);
+    } else {
+      const filterData = labelData.filter((item2) => item2._id !== item._id);
+      setLabelData(filterData);
+    }
   };
   return (
     <>
@@ -177,159 +201,93 @@ function WidgetLabel() {
             { name: 'Widget Label' }
           ]}
         />
-        <Box mx={3} my={3}>
-          <Box
-            sx ={{
-              display: 'grid',
-              gridTemplateColumns: ' repeat(5, 1fr)',
-              gridColumnGap :'20px'
-            }}
-          >
-            <Box>
-              <Box component="div" className={classes.labelSize}>
-                Select Inventory
-              </Box>
-              <Box className={classes.customLabel}>
-                <Select
-                  multiple
-                  displayEmpty
-                  value={personName}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return 'Placeholder';
-                    }
-
-                    return selected.join(', ');
-                  }}
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  sx={{
-                    width: '100%'
-                  }}
-                  onChange={handleChange}
-                >
-                  <MenuItem disabled value="">
-                    Placeholder
-                  </MenuItem>
-                  <MenuItem>Lorem Ipsum</MenuItem>
-                </Select>
-              </Box>
-            </Box>
-            <Box>
-              <Box component="div" className={classes.labelSize}>
-                Select Family
-              </Box>
-              <Box className={classes.customLabel}>
-                <Select
-                  multiple
-                  displayEmpty
-                  value={personName}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return 'Placeholder';
-                    }
-
-                    return selected.join(', ');
-                  }}
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  sx={{
-                    width: '100%'
-                  }}
-                  onChange={handleChange}
-                >
-                  <MenuItem disabled value="">
-                    Placeholder
-                  </MenuItem>
-                  <MenuItem>Lorem Ipsum</MenuItem>
-                </Select>
-              </Box>
-            </Box>
-            <Box>
-              <Box component="div" className={classes.labelSize}>
-                Select Sub Family
-              </Box>
-              <Box className={classes.customLabel}>
-                <Select
-                  multiple
-                  displayEmpty
-                  value={personName}
-                  input={<OutlinedInput />}
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return 'Placeholder';
-                    }
-
-                    return selected.join(', ');
-                  }}
-                  inputProps={{ 'aria-label': 'Without label' }}
-                  sx={{
-                    width: '100%'
-                  }}
-                  onChange={handleChange}
-                >
-                  <MenuItem disabled value="">
-                    Placeholder
-                  </MenuItem>
-                  <MenuItem>Lorem Ipsum</MenuItem>
-                </Select>
-              </Box>
-            </Box>
-            <Box>
-              <Box component="div" className={classes.labelSize}>
-                Search Keyword
-              </Box>
-              <Box className={classes.customLabel}>
-                <SearchBar />
-              </Box>
-            </Box>
-            <Box>
-              <MDButton color="primary" sx={{ minWidth:'100%', marginTop:'30px', padding:'13px 40px' }} >{'Filter'}</MDButton>
-            </Box>
-          </Box>
+        <MDBox px={5} py={5}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6} md={3}>
+              <Dropdown
+                dropdownData={inventoryData}
+                dropdownChange={inventoryChange}
+                label="Select Inventory"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Dropdown
+                dropdownData={familyData}
+                dropdownChange={familyChange}
+                label="Select Family"
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Dropdown
+                dropdownData={subFamilyData}
+                label="Select Sub Family"
+                dropdownChange={subFamilyChange}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <MDButton
+                color="primary"
+                sx={{ minWidth: '100%', marginTop: '50px', padding: '13px 40px' }}
+                onClick={() => filterHandler()}
+              >
+                {'Filter'}
+              </MDButton>
+            </Grid>
+          </Grid>
           <Box sx={{ marginTop: '24px', backgroundColor: '#FFFFFF' }}>
             <BasicTable
               headCells={headCells}
-              records={records}
+              records={allProductData}
               backgroundColor="#E5E5E5"
               color="#8D8D8D"
             >
               <TableBody>
-                {records &&
-                  records.map((item) => (
+                {filterClick && allProductData.length ? (
+                  allProductData &&
+                  allProductData.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell><Checkbox {...label} sx={{ marginRight:'2px' }} /> {item.warehouse}</TableCell>
-                      <TableCell>{item.zone}</TableCell>
-                      <TableCell>{item.area}</TableCell>
-                      <TableCell>{item.row}</TableCell>
-                      <TableCell>{item.label}</TableCell>
-                      <TableCell>{item.bay}</TableCell>
-                      <TableCell>{item.barcodenumber}</TableCell>
                       <TableCell>
-                        <img src={item.barcodeimage} alt="img" width="200px" />
+                        <Checkbox
+                          {...label}
+                          sx={{ marginRight: '2px' }}
+                          onChange={(e) => getTableItem(e, item)}
+                        />
+                        {item?.inventory?.name}
+                      </TableCell>
+                      <TableCell>{item?.widgetfamily?.name}</TableCell>
+                      <TableCell>{item?.location?.sub_levels}</TableCell>
+                      <TableCell>{item?.formalName}</TableCell>
+                      <TableCell>{item?.manufacturer}</TableCell>
+                      <TableCell>{item?.size}</TableCell>
+                      <TableCell>{item?._id}</TableCell>
+                      <TableCell>
+                        <QRcode payload={item._id} width={100} height={100} />
                       </TableCell>
                     </TableRow>
-                  ))}
+                  ))
+                ) : (
+                  <TableRow className={classes.nodataStyle}>No Data</TableRow>
+                )}
               </TableBody>
             </BasicTable>
           </Box>
           <Box sx={{ marginTop: '24px', backgroundColor: '#FFFFFF' }}>
             <BasicTable
               headCells={headCellsNew}
-              records={records}
+              records={labelData}
               backgroundColor="#E5E5E5"
               color="#8D8D8D"
             >
               <TableBody>
-                {recordsNew &&
-                  recordsNew.map((item) => (
+                {labelData &&
+                  labelData.map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.warehouse}</TableCell>
-                      <TableCell>{item.zone}</TableCell>
-                      <TableCell>{item.area}</TableCell>
-                      <TableCell>{item.barcodenumber}</TableCell>
+                      <TableCell>{item?.inventory?.name}</TableCell>
+                      <TableCell>{item.formalName}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>{item._id}</TableCell>
                       <TableCell>
-                        <img src={item.barcodeimage} alt="img" width="200px" />
+                        <QRcode payload={item._id} width={100} height={100} />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -339,7 +297,7 @@ function WidgetLabel() {
           <div className={classes.buttondiv}>
             <MDButton color="primary">{'Print Labels'}</MDButton>
           </div>
-        </Box>
+        </MDBox>
       </DashboardLayout>
     </>
   );

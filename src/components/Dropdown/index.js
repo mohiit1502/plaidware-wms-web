@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-// import InputLabel from '@mui/material/InputLabel'
 import PropTypes from 'prop-types';
-import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -15,17 +13,15 @@ const useStyles = makeStyles({
     color: 'black'
   }
 });
-export default function Dropdown({ items, dropdownData }) {
+
+export default function Dropdown({ dropdownData, label, dropdownChange = null }) {
   const classes = useStyles();
-
   const [age, setAge] = useState('');
-  const [dropDownValue, setDropDownValue] = useState([]);
-
-  useEffect(() => {
-    setDropDownValue(items);
-  }, [items]);
 
   const handleChange = (event) => {
+    if (dropdownChange !== null) {
+      dropdownChange(event);
+    }
     const {
       target: { value }
     } = event;
@@ -39,16 +35,15 @@ export default function Dropdown({ items, dropdownData }) {
     <>
       <Box sx={{ width: '100%' }}>
         <InputLabel className={classes.font} id="demo-simple-select-label" sx={{ pb: 2, pt: 3 }}>
-          {dropDownValue?.label}
+          {label}
         </InputLabel>
         <FormControl sx={{ width: '100%' }}>
           <Select
             displayEmpty
-            input={<OutlinedInput />}
             value={age}
             renderValue={(selected) => {
               if (selected.length === 0) {
-                return <span>{dropDownValue?.placeholder}</span>;
+                return <span>{/* {dropDownValue?.placeholder} */}</span>;
               }
               return selected;
             }}
@@ -56,12 +51,14 @@ export default function Dropdown({ items, dropdownData }) {
             onChange={handleChange}
           >
             <MenuItem disabled value="">
-              <span>{dropDownValue?.label}</span>
+              {/* <span>{dropDownValue?.label}</span> */}
             </MenuItem>
-            {dropdownData && dropdownData.map((data) => (
-              <MenuItem value={data.displayname} key={data.ID}>{data.displayname}</MenuItem>
-            ))}
-            
+            {dropdownData &&
+              dropdownData.map((data) => (
+                <MenuItem value={data.name} key={data._id}>
+                  {data.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Box>
@@ -69,7 +66,7 @@ export default function Dropdown({ items, dropdownData }) {
   );
 }
 Dropdown.propTypes = {
-  items: PropTypes.object.isRequired,
-  dropdownData: PropTypes.object.isRequired
-
+  dropdownData: PropTypes.object.isRequired,
+  dropdownChange: PropTypes.object,
+  label: PropTypes.string
 };

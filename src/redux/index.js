@@ -8,6 +8,7 @@ import { rolesReducer } from './RolesRedux';
 import { permissionsReducer } from './PermissionsRedux';
 import { WarehouseLocationsReducer } from './WarehouseLocationsRedux';
 import { widgetReducer } from './WidgetRedux';
+import { labellingReducer } from './LabellingRedux';
 import { itemReducer } from './ItemRedux';
 
 // Combine all reducers.
@@ -21,6 +22,7 @@ const appReducer = combineReducers({
   product: productReducer,
   inventory: inventoryReducer,
   widgets: widgetReducer,
+  labelling: labellingReducer,
   items: itemReducer
 });
 
