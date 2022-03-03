@@ -77,6 +77,7 @@ function CreateEditUser(props) {
   const location = useLocation();
   const [editedUser, setEditedUser] = useState(location?.state?.user);
   const [selectedRoles, setSelectedRoles] = useState([]);
+  const [uploadedImg, setUploadedImg] = useState();
 
   useEffect(() => {
     if (context === 'edit') {
@@ -86,6 +87,7 @@ function CreateEditUser(props) {
       } else {
         setEditedUser(editedUser);
         setSelectedRoles(editedUser.roles);
+        editedUser.image_url && setUploadedImg(editedUser.image_url);
       }
     }
   }, []);
@@ -110,6 +112,7 @@ function CreateEditUser(props) {
       actions: '',
       visibilities: '',
       isActive: true,
+      image: '',
       createdBy: currentUser ? currentUser.fullName : '',
       createdAt: new Date(),
       updatedBy: currentUser ? currentUser.fullName : '',
@@ -125,6 +128,7 @@ function CreateEditUser(props) {
       actions: editedUser?.permissions?.actions ? editedUser.permissions.actions.join(',') : '',
       visibilities: editedUser?.permissions?.allowedUIModules ? editedUser.permissions.allowedUIModules.join(',') : '',
       isActive: editedUser && editedUser.isActive !== undefined ? editedUser.isActive : true,
+      image: editedUser ? editedUser.image_url : EditIcon,
       createdBy: editedUser ? editedUser.createdBy?.fullName : '',
       createdAt: editedUser ? editedUser.createdAt : '',
       updatedBy: editedUser ? editedUser.updatedBy?.fullName : '',
@@ -150,14 +154,20 @@ function CreateEditUser(props) {
         delete valuesClone.warehouses;
         delete valuesClone.actions;
         delete valuesClone.visibilities;
-        return valuesClone;
+        valuesClone.permissions = JSON.stringify(valuesClone.permissions);
+        valuesClone.roles = selectedRoles && selectedRoles.length > 0 ? selectedRoles.map(role => role._id) : [];
+        const formData = new FormData();
+        Object.keys(valuesClone).forEach(key => formData.append(key, valuesClone[key]));
+        uploadedImg && formData.append('image', uploadedImg); 
+        return formData;
       };
-      values.roles = selectedRoles && selectedRoles.length > 0 ? selectedRoles.map(role => role._id) : [];
       dispatch(
         UsersActions.createUserAction({
           loader: 'loading-request',
           slug: context === 'edit' ? API.UPDATE_USER.replace(':id', editedUser._id): API.CREATE_USER,
           method: 'post',
+          contentType: false,
+          processData: false,
           data: adaptPayload(values),
           onValidationFailed,
           onSuccessfulSubmission,
@@ -181,6 +191,13 @@ function CreateEditUser(props) {
     setSelectedRoles(uniqueRoles);
   };
 
+  const handleFileChange = e => {
+    const [file] = e.target.files;
+    if (file) {
+      setUploadedImg(file);
+    }
+  };
+
   return (
     <DashboardLayout className={classes.createEditUserGlobal}>
       <DashboardNavbar />
@@ -188,9 +205,13 @@ function CreateEditUser(props) {
         <MDBox mx={4} sx={{ border: '1px solid #C4C4C4', borderRadius: '4px', padding: '30px' }}>
           <MDBox sx={{ width: '50%', margin: 'auto' }}>
             <MDBox sx={{ width: '120px', margin: 'auto', position: 'relative' }}>
-              <img src={UserIcon} alt='img' />
-              <MDBox sx={{ position: 'absolute', bottom: '0', right: '0', cursor: 'pointer' }}>
-                <img src={EditIcon} alt='img' />
+              <img src={uploadedImg ? typeof uploadedImg === 'string' ? uploadedImg : URL.createObjectURL(uploadedImg) : UserIcon} alt='img' width='120' height='120' style={{borderRadius: '50%'}} />
+              <MDBox sx={{ position: 'absolute', bottom: '0', right: '0' }}>
+                <label htmlFor="image" style={{ cursor: 'pointer' }}>
+                  <img src={EditIcon} />
+                </label>
+                <input id='image' name='image' type="file" className='d-none' accept="image/png, image/gif, image/jpeg"
+                  onChange={handleFileChange} />
               </MDBox>
             </MDBox>
             <MDBox sx={{ marginBottom: '24px' }}>
@@ -296,7 +317,7 @@ function CreateEditUser(props) {
                     <Box component='div' className={classes.labelSize}>
                       Date &amp; Time
                     </Box>
-                    <DateTimeInput disabled name='createdAt' value={formik.values.createdAt} />
+                    <DateTimeInput disabled name='createdAt' value={new Date(formik.values.createdAt)} />
                   </Grid>
                   <Grid item xs={6}>
                     <Box component='div' className={classes.labelSize}>
@@ -308,7 +329,7 @@ function CreateEditUser(props) {
                     <Box component='div' className={classes.labelSize}>
                       Date &amp; Time
                     </Box>
-                    <DateTimeInput disabled name='updatedAt' value={formik.values.updatedAt} />
+                    <DateTimeInput disabled name='updatedAt' value={new Date(formik.values.updatedAt)} />
                   </Grid>
                 </Grid>
               </Grid>

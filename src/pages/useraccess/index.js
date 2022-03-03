@@ -165,9 +165,9 @@ function UserAccessScreen() {
     }
   }));
 
-  const rowRenders = userRecords && userRecords.map(record => {
+  const rowRenders = userRecords && userRecords.map((record, keyouter) => {
     const canEdit = columnConfig => columnConfig.isEditAnchor && currentUser.email !== record.email;
-    return <StyledTableRow key={record.id}>
+    return <StyledTableRow key={record.id + '-' + keyouter}>
       {userHeadCells.map((columnConfig, key) => <TableCell key={key} onClick={() => canEdit(columnConfig) && navigate('/setup/users-access/edit-user', {state: {user: record}})}>
         {canEdit(columnConfig) ? <span className={classes.iconwrap}>
           <EditIcon className={classes.iconSize}/>
@@ -218,8 +218,8 @@ function UserAccessScreen() {
             >
               <TableBody>
                 {rolesRecords &&
-                  rolesRecords.map((item) => (
-                    <StyledTableRow key={item.id}>
+                  rolesRecords.map((item, key) => (
+                    <StyledTableRow key={item.id + '-' + key}>
                       <TableCell>
                         <div className={classes.iconwrap}>
                           <EditIcon className={classes.iconSize} />
