@@ -52,7 +52,7 @@ import PublicRoutes from 'routes/PublicRoutes';
 import reduxStore from './redux/Store';
 import { protectedRoutes as routes } from './routes/index';
 import PrivateRoute from './routes/PrivateRoute';
-import MDAlert from 'components/MDAlert';
+// import MDAlert from 'components/MDAlert';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
