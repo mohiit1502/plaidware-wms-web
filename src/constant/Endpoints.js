@@ -25,7 +25,6 @@ export default {
   ADD_WIDGET_FAMILY: '/widget-family',
   EDIT_WIDGET_FAMILY: '/widget-family/',
   GET_LABEL: '/sublevel/filter',
-  LOCATION_DELETE: '/dashboard/delete-location',
   GET_PRODUCT_BY_ID: '/item/filter?inventory=',
   GET_ITEMS_BY_INVENTORY: '/item/filter?inventory='
 };
