@@ -71,7 +71,7 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "PORT=3001 react-scripts start",
-    "build": "react-scripts build",
+    "build": "node ./build.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate": "plop",
@@ -118,6 +118,7 @@
     "node-sass": "^7.0.1",
     "plop": "^3.0.5",
     "prettier": "2.3.2",
+    "rewire": "^6.0.0",
     "sass-loader": "^12.6.0"
   },
   "resolutions": {
