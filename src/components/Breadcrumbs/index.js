@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 // @mui material components
-import { Breadcrumbs as MuiBreadcrumbs, Grid, Toolbar } from '@mui/material';
+import { Box, Breadcrumbs as MuiBreadcrumbs, Grid, Toolbar } from '@mui/material';
 import ArrowRight from 'assets/images/CarretArrowRightIcon';
 
 // Material Dashboard 2 PRO React components
@@ -53,7 +53,8 @@ const buildBreadcrumbs = (route, light) => {
   });
 };
 
-function Breadcrumbs({ route, light, children }) {
+function Breadcrumbs({ title, route, children }) {
+  const light = false;
   return (
     <Toolbar variant="dense">
       <MDBox
@@ -63,6 +64,19 @@ function Breadcrumbs({ route, light, children }) {
           // backgroundColor: '#fff'
         }}
       >
+        {title && (
+          <Box
+            component="div"
+            sx={{
+              fontSize: '22px',
+              letterSpacing: '0.01em',
+              color: '#000',
+              marginBottom: '15px'
+            }}
+          >
+            {title}
+          </Box>
+        )}
         <Grid container spacing={2} alignItems="center">
           <Grid item>
             <MuiBreadcrumbs
@@ -86,15 +100,15 @@ function Breadcrumbs({ route, light, children }) {
   );
 }
 
-// Setting default values for the props of Breadcrumbs
-Breadcrumbs.defaultProps = {
-  light: false
-};
+// // Setting default values for the props of Breadcrumbs
+// Breadcrumbs.defaultProps = {
+//   light: false
+// };
 
 // Typechecking props for the Breadcrumbs
 Breadcrumbs.propTypes = {
   route: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
-  light: PropTypes.bool,
+  title: PropTypes.string,
   children: PropTypes.node
 };
 

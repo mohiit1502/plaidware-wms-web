@@ -18,7 +18,7 @@ import AuthActions from 'redux/AuthRedux';
 import { API } from 'constant';
 
 // Image
-import bgImage from 'assets/images/illustrations/illustration-reset.jpg';
+import bgImage from 'assets/images/roofing-company-houston.jpg';
 import { useFormik } from 'formik';
 
 import schema from 'services/ValidationServices';
@@ -35,8 +35,7 @@ function LoginScreen() {
       rememberMe: true
     },
     validationSchema: schema.login,
-    onSubmit: (values, { resetForm, setSubmitting }) =>
-    {
+    onSubmit: (values, { resetForm, setSubmitting }) => {
       const onFailedLogin = (errorMessage) => {
         resetForm();
         setSubmitting(false);

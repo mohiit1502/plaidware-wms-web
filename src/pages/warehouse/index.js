@@ -29,6 +29,7 @@ function WarehouseScreen() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title="List of Warehouses"
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },

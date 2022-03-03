@@ -14,7 +14,7 @@ import EnhancedTable from 'components/EnhancedTable';
 import { useNavigate } from 'react-router-dom';
 import WidgetActions from 'redux/WidgetRedux';
 import { WidgetSelectors } from 'redux/WidgetRedux';
-import { DialogContent, DialogContentText, DialogTitle, MenuItem, Select } from '@mui/material';
+import { Grid, MenuItem, Select } from '@mui/material';
 
 const tHeads = [
   { key: 'name', name: '' },
@@ -80,6 +80,7 @@ function ItemListing() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title={`List of ${widgetName}s`}
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
@@ -88,8 +89,7 @@ function ItemListing() {
         ]}
       />
 
-      <MDBox px={2} py={3}>
-        List of {widgetName}s{/* <pre>{JSON.stringify(data, null, 4)}</pre> */}
+      <MDBox px={5} py={3}>
         <EnhancedTable
           count={count}
           page={page}
@@ -105,21 +105,22 @@ function ItemListing() {
           }}
           filtersControl={
             <>
-              <DialogTitle>Add filters</DialogTitle>
-              <DialogContent>
-                <DialogContentText>Filter by family</DialogContentText>
+              <Grid item sx={4}>
                 <Select
                   select
-                  fullWidth
                   variant="outlined"
                   value={pFam}
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  sx={{
+                    width: 200
+                  }}
                   onChange={(e) => {
                     setSFam('');
                     setPFam(e.target.value);
                   }}
                 >
                   <MenuItem key={'none'} value={''}>
-                    None Selected
+                    Widget family L1
                   </MenuItem>
                   {primaryFamilies &&
                     primaryFamilies.map((fam) => (
@@ -128,17 +129,23 @@ function ItemListing() {
                       </MenuItem>
                     ))}
                 </Select>
+              </Grid>
+              <Grid item sx={4}>
                 <Select
                   select
                   fullWidth
                   variant="outlined"
                   value={sFam}
+                  inputProps={{ 'aria-label': 'Without label' }}
+                  sx={{
+                    width: 200
+                  }}
                   onChange={(e) => {
                     setSFam(e.target.value);
                   }}
                 >
                   <MenuItem key={'none'} value={''}>
-                    None Selected
+                    Widget family L2
                   </MenuItem>
                   {secondaryFamilies &&
                     secondaryFamilies.map((fam) => (
@@ -147,14 +154,14 @@ function ItemListing() {
                       </MenuItem>
                     ))}
                 </Select>
-              </DialogContent>
+              </Grid>
             </>
           }
           data={
             data
               ? data.map((item) => {
                   return {
-                    name: item._id,
+                    _id: item._id,
                     commonName: item.commonName,
                     formalName: item.formalName,
                     description: item.description,

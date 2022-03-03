@@ -194,6 +194,7 @@ function WidgetLabel() {
       <DashboardLayout>
         <DashboardNavbar />
         <Breadcrumbs
+          title="Search And Print Location Labels"
           route={[
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },

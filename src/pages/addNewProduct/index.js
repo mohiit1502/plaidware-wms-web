@@ -135,10 +135,6 @@ function AddNewItem() {
       );
   }, []);
 
-  const [pFam, setPFam] = React.useState(null);
-  const primaryFamily = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
-  const secondaryFamily = useSelector(WidgetSelectors.getWidgetsByParentId(pFam));
-
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: itemData,
@@ -217,11 +213,17 @@ function AddNewItem() {
     }
   });
 
+  const primaryFamily = useSelector(WidgetSelectors.getWidgetFamiliesByInventoryId(inventoryId));
+  const secondaryFamily = useSelector(
+    WidgetSelectors.getWidgetsByParentId(formik.values.primaryWidgetFamilyId)
+  );
+
   return (
     <>
       <DashboardLayout>
         <DashboardNavbar />
         <Breadcrumbs
+          title={`${widgetName} Details`}
           route={[
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
@@ -440,10 +442,7 @@ function AddNewItem() {
                           formik.touched.primaryWidgetFamilyId &&
                           Boolean(formik.errors.primaryWidgetFamilyId)
                         }
-                        onChange={(e, ...rest) => {
-                          setPFam(e.target.value);
-                          formik.handleChange(e, ...rest);
-                        }}
+                        onChange={formik.handleChange}
                       >
                         <MenuItem key={'none'} value={''}>
                           None Selected
@@ -497,7 +496,7 @@ function AddNewItem() {
                 {itemId ? (
                   <ImageUploadMultiple
                     multiple
-                    heading="Upload Product Image"
+                    heading={`Upload ${widgetName} Image`}
                     accept="image/*"
                     images={formik.values.images}
                     setImages={(images) => {
@@ -507,7 +506,7 @@ function AddNewItem() {
                 ) : (
                   <ImageUploadMultiple
                     multiple
-                    heading="Upload Product Image"
+                    heading={`Upload ${widgetName} Image`}
                     accept="image/*"
                     images={formik.values.images}
                     setImages={(images) => {
@@ -516,7 +515,7 @@ function AddNewItem() {
                   />
                 )}
               </Box>
-              <Box
+              {/* <Box
                 sx={{
                   display: 'flex',
                   justifyContent: 'center',
@@ -539,7 +538,7 @@ function AddNewItem() {
                 <MDButton disabled size="large" color="primary" variant="outlined">
                   import
                 </MDButton>
-              </Box>
+              </Box> */}
               <Box
                 component="div"
                 sx={{
@@ -614,11 +613,18 @@ function AddNewItem() {
                   marginBottom: '30px'
                 }}
               >
-                <MDButton size="medium" color="error" variant="outlined">
+                <MDButton
+                  size="medium"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    navigate('/setup/inventory');
+                  }}
+                >
                   Cancel
                 </MDButton>
                 <MDButton size="medium" color="primary" variant="contained" type="submit">
-                  Add {widgetName}
+                  Save
                 </MDButton>
               </Box>
             </Box>

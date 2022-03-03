@@ -37,6 +37,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import { WarehouseSelectors } from 'redux/WarehouseRedux';
 import { InventorySelectors } from 'redux/InventoryRedux';
 import InventoryActions from 'redux/InventoryRedux';
+import { useNavigate } from 'react-router-dom';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -317,6 +318,7 @@ const WarehouseNestedDetails = () => {
 
 function EditWarehouseDetails() {
   const { warehouseId } = useParams();
+  const navigate = useNavigate();
   const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetailById(warehouseId));
 
   const inventoryTypes = useSelector(InventorySelectors.getInventoryDetail);
@@ -375,6 +377,7 @@ function EditWarehouseDetails() {
       <DashboardLayout>
         <DashboardNavbar />
         <Breadcrumbs
+          title="Edit Warehouse Details"
           route={[
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
@@ -385,17 +388,6 @@ function EditWarehouseDetails() {
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
-              <Box
-                component="div"
-                sx={{
-                  fontSize: '22px',
-                  letterSpacing: '0.01em',
-                  color: '#000',
-                  marginBottom: '30px'
-                }}
-              >
-                Form to Input
-              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
@@ -545,6 +537,16 @@ function EditWarehouseDetails() {
                   columnGap: '20px'
                 }}
               >
+                <MDButton
+                  size="medium"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    navigate('/setup/warehouse');
+                  }}
+                >
+                  CANCEL
+                </MDButton>
                 {/* ---edit-- */}
                 <MDButton size="large" color="primary" variant="outlined" type="submit">
                   SAVE

@@ -63,7 +63,9 @@ export function* onRequestAddInventoryData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
-    toast('New inventory added');
+    toast.success('New inventory added', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.addInventorySuccess({
         loader: payload?.loader,
@@ -72,7 +74,9 @@ export function* onRequestAddInventoryData({ payload }) {
     );
     payload.navigateTo();
   } else {
-    toast('Failed to add inventory');
+    toast.error('Failed to add inventory', {
+      theme: 'colored'
+    });
     payload.onFailedAddInventoryData(response.data.error);
     yield put(
       InventoryActions.addInventoryFailure({
@@ -91,16 +95,20 @@ export function* onRequestUpdateInventoryData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
-    toast('Updated inventory successfully');
+    toast.success('Updated inventory successfully', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.updateInventorySuccess({
         loader: payload?.loader,
         updateInventory: response?.data?.data
       })
     );
-    payload.navigateTo();
+    // payload.navigateTo();
   } else {
-    toast('Failed to update inventory');
+    toast.error('Failed to update inventory', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.updateInventoryFailure({
         loader: payload?.loader,

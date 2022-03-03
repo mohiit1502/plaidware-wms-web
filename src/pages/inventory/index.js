@@ -1,7 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import { Box, Grid, MenuItem, Select } from '@mui/material';
+import {
+  Box,
+  FormControlLabel,
+  Grid,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  useRadioGroup,
+  Select
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import MDInput from 'components/MDInput';
 import Switch from 'components/Switch';
 import MDTypography from 'components/MDTypography';
@@ -18,6 +29,8 @@ import { useParams } from 'react-router-dom';
 import { InventorySelectors } from 'redux/InventoryRedux';
 import { useNavigate } from 'react-router-dom';
 import WidgetNestedDataTable from 'components/WidgetNestedDataTable';
+import { GetIconFromSlug } from 'utils/inventorySlugTools';
+import { iconSlugs } from 'utils/inventorySlugTools';
 
 const customStyles = {
   labelSize: {
@@ -63,12 +76,33 @@ const definedPolicies = [
   {
     text: 'Alerting',
     key: 'alerting'
-  },
-  {
-    text: 'Location',
-    key: 'preferredLocations'
   }
+  // {
+  //   text: 'Location',
+  //   key: 'preferredLocations'
+  // }
 ];
+
+const StyledFormControlLabel = styled((props) => <FormControlLabel {...props} />)(
+  ({ theme, checked }) => ({
+    '.MuiFormControlLabel-label': checked && {
+      border: `1px solid ${theme.palette.primary.light}`,
+      borderRadius: '10px'
+    }
+  })
+);
+
+function MyFormControlLabel(props) {
+  const radioGroup = useRadioGroup();
+  let checked = false;
+  if (radioGroup) {
+    checked = radioGroup.value === props.value;
+  }
+  return <StyledFormControlLabel checked={checked} {...props} />;
+}
+MyFormControlLabel.propTypes = {
+  value: PropTypes.any
+};
 
 function InventoryScreen() {
   const dispatch = useDispatch();
@@ -99,6 +133,7 @@ function InventoryScreen() {
       ? {
           name: currentInventoryData.name,
           widgetName: currentInventoryData.widgetName,
+          icon_slug: currentInventoryData.icon_slug,
           policies: {
             orderTracking: currentInventoryData.policies.orderTracking,
             alerting: currentInventoryData.policies.alerting,
@@ -110,11 +145,12 @@ function InventoryScreen() {
       : {
           name: '',
           widgetName: '',
+          icon_slug: '',
           policies: {
             orderTracking: false,
             alerting: false,
             replenishment: false,
-            preferredLocations: false,
+            preferredLocations: false, // TODO: change later
             inventory_process: 'CCR'
           }
         },
@@ -130,7 +166,7 @@ function InventoryScreen() {
               navigateTo,
               data: {
                 ...values,
-                icon_slug: 'testslug'
+                icon_slug: values.icon_slug
               }
             })
           )
@@ -142,7 +178,7 @@ function InventoryScreen() {
               navigateTo,
               data: {
                 ...values,
-                icon_slug: 'testslug'
+                icon_slug: values.icon_slug
               }
             })
           );
@@ -154,6 +190,7 @@ function InventoryScreen() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title="Inventory Details"
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
@@ -258,7 +295,31 @@ function InventoryScreen() {
                 </MDBox>
               </Grid>
               <Grid item xs={12} sm={6} md={6}>
-                icon slugs selector
+                <Box
+                  sx={{
+                    width: 400,
+                    height: 300,
+                    padding: '20px',
+                    border: '1px solid #D2D6DA'
+                  }}
+                >
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-error-radios"
+                    name="icon_slug"
+                    value={formik.values.icon_slug}
+                    onChange={formik.handleChange}
+                  >
+                    {iconSlugs.map((iconSlug) => (
+                      <MyFormControlLabel
+                        key={iconSlug}
+                        value={iconSlug}
+                        control={<Radio style={{ display: 'none' }} />}
+                        label={GetIconFromSlug(iconSlug)}
+                      />
+                    ))}
+                  </RadioGroup>
+                </Box>
               </Grid>
               <MDBox sx={{ ml: 'auto', mr: 'auto', mt: 3 }}>
                 <MDButton
@@ -269,12 +330,12 @@ function InventoryScreen() {
                     navigate('/setup/inventory');
                   }}
                 >
-                  {'CANCEL'}
+                  {'CLOSE'}
                 </MDButton>
                 <MDButton sx={{ ml: 3 }} color="primary" variant="outlined" type="submit">
                   {'SAVE'}
                 </MDButton>
-                <MDButton
+                {/* <MDButton
                   sx={{ ml: 3 }}
                   color="primary"
                   onClick={() => {
@@ -284,7 +345,7 @@ function InventoryScreen() {
                   }}
                 >
                   {'ADD ITEMS'}
-                </MDButton>
+                </MDButton> */}
               </MDBox>
             </Grid>
           </MDBox>

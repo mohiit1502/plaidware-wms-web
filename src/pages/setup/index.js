@@ -33,7 +33,7 @@ function SetupHome() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Breadcrumbs route={[{ name: 'Home', path: '/home' }, { name: 'Setup' }]} />
+      <Breadcrumbs title="Setup Warehouse, Inventory, Users" route={[{ name: 'Home', path: '/home' }, { name: 'Setup' }]} />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

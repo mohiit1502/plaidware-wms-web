@@ -63,7 +63,7 @@ const schema = {
       preferredLocations: Yup.boolean(),
       inventory_process: Yup.string()
     }),
-    image: Yup.array()
+    icons: Yup.string()
   }),
 
   createUser: Yup.object({

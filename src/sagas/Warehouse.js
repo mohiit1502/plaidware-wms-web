@@ -39,7 +39,7 @@ const makeFormData = (data) => {
     data.preferredInventories.forEach((prefInv, idx) => {
       formData.append(`preferredInventories[${idx}]`, prefInv);
     });
-  if (data.image[0].file) formData.append('image', data.image[0].file);
+  if (data.image[0]?.file) formData.append('image', data.image[0].file);
   return formData;
 };
 
@@ -52,7 +52,9 @@ export function* onRequestCreateWarehouse({ payload }) {
   );
   if (response?.status === 200 && response?.data?.message) {
     const warehouse = response?.data?.message;
-    toast('Warehouse created successfully');
+    toast.success('Warehouse created successfully', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.createWarehouseSuccess({
         loader: payload?.loader,
@@ -64,7 +66,9 @@ export function* onRequestCreateWarehouse({ payload }) {
     );
     payload.navigateTo(response?.data?.message?._id);
   } else {
-    toast('Failed to create warehouse');
+    toast.error('Failed to create warehouse', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.createWarehouseFailure({
         loader: payload?.loader,
@@ -82,7 +86,9 @@ export function* onRequestEditWarehouse({ payload }) {
     makeFormData(payload?.data)
   );
   if (response?.status === 200 && response?.data?.data) {
-    toast('Warehouse edited successfully');
+    toast.success('Warehouse edited successfully', {
+      theme: 'colored'
+    });
     const warehouse = response?.data?.data;
     yield put(
       WarehouseActions.editWarehouseSuccess({
@@ -94,7 +100,9 @@ export function* onRequestEditWarehouse({ payload }) {
       })
     );
   } else {
-    toast('Failed to edit warehouse');
+    toast.error('Failed to edit warehouse', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.editWarehouseFailure({
         loader: payload?.loader,

@@ -171,7 +171,7 @@ export default function App() {
           </Routes>
           {/* <MDAlert dismissible><span>Submitted Successfully!</span></MDAlert> */}
         </ThemeProvider>
-        <ToastContainer />
+        <ToastContainer position="bottom-right" />
       </PersistGate>
     </Provider>
   );

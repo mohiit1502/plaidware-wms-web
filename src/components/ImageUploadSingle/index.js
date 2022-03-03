@@ -25,7 +25,7 @@ function ImageUploadSingle({ heading, accept, multiple, images, setImages }) {
               cursor: 'pointer',
               position: 'relative',
               textAlign: 'center',
-              minHeight: pxToRem(200),
+              height: pxToRem(250),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -72,14 +72,14 @@ function ImageUploadSingle({ heading, accept, multiple, images, setImages }) {
               cursor: 'pointer',
               position: 'relative',
               textAlign: 'center',
-              minHeight: pxToRem(200),
+              height: pxToRem(250),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               marginBottom: '16px'
             }}
           >
-            <img src={images[0].src} alt="" width="100%" height="100%" />
+            <img src={images[0].src} alt="" height="100%" />
             <Button
               sx={{
                 backgroundColor: '#fff !important',

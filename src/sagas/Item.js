@@ -50,7 +50,9 @@ export function* onRequestOneItem({ payload }) {
     //   `/setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${payload?.itemId}`
     // );
   } else {
-    toast('Failed to get item details');
+    toast.error('Failed to get item details', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
@@ -100,7 +102,9 @@ export function* onAddRequestItem({ payload }) {
     createFormData(payload?.data)
   );
   if (response?.status === 200) {
-    toast(`Added item: ${payload.data.commonName}`);
+    toast.success(`Added item: ${payload.data.commonName}`, {
+      theme: 'colored'
+    });
     // payload.navigateTo(
     //   `/setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${response?.data?.data?._id}`
     // );
@@ -112,7 +116,9 @@ export function* onAddRequestItem({ payload }) {
       })
     );
   } else {
-    toast('Failed to add item');
+    toast.error('Failed to add item', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
@@ -130,7 +136,9 @@ export function* onEditRequestItem({ payload }) {
     createFormData(payload?.data)
   );
   if (response?.status === 200) {
-    toast(`Successfully edited item: ${payload.data.commonName}`);
+    toast.success(`Successfully edited item: ${payload.data.commonName}`, {
+      theme: 'colored'
+    });
     payload.navigateTo('/setup/inventory');
     yield put(
       ItemActions.addItemSuccess({
@@ -139,7 +147,9 @@ export function* onEditRequestItem({ payload }) {
       })
     );
   } else {
-    toast('Failed to edit item');
+    toast.error('Failed to edit item', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
