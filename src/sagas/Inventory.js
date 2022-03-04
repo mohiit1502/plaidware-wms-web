@@ -117,9 +117,37 @@ export function* onRequestUpdateInventoryData({ payload }) {
     );
   }
 }
+
+export function* onRequestDeleteInventoryData({ payload }) {
+  const response = yield call(ApiServices[payload?.method], AuthorizedAPI, payload?.slug);
+  if (response?.status === 200) {
+    toast.success('Deleted inventory successfully', {
+      theme: 'colored'
+    });
+    payload.navigateTo();
+    yield put(
+      InventoryActions.deleteInventorySuccess({
+        loader: payload?.loader,
+        deletedInventoryID: payload?.inventoryId
+      })
+    );
+  } else {
+    toast.error('Failed to delete inventory', {
+      theme: 'colored'
+    });
+    yield put(
+      InventoryActions.updateInventoryFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
 export default [
   takeEvery(InventoryTypes.GET_INVENTORY_ACTION, onRequestGetInventoryData),
   takeEvery(InventoryTypes.ADD_INVENTORY_ACTION, onRequestAddInventoryData),
+  takeEvery(InventoryTypes.DELETE_INVENTORY_ACTION, onRequestDeleteInventoryData),
   takeEvery(InventoryTypes.UPDATE_INVENTORY_ACTION, onRequestUpdateInventoryData),
   takeEvery(InventoryTypes.GET_INVENTORY_TYPES_ACTION, onRequestGetInventoryTypesData)
 ];

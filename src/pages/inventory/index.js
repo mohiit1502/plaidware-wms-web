@@ -10,7 +10,13 @@ import {
   Radio,
   RadioGroup,
   useRadioGroup,
-  Select
+  Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MDInput from 'components/MDInput';
@@ -114,7 +120,7 @@ function InventoryScreen() {
   };
 
   const currentInventoryData = useSelector(InventorySelectors.getInventoryDetailById(inventoryId));
-  LOGGER.log({ currentInventoryData });
+  // LOGGER.log({ currentInventoryData });
   // const [inventoryAllData, setInventoryAllData] = useState([]);
   // const initialInventoryName='';
 
@@ -185,7 +191,14 @@ function InventoryScreen() {
     }
   });
 
-  LOGGER.log('Form values', formik.values);
+  const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(null);
+  const handleDeleteAlertClose = () => {
+    setDeleteAlertOpen(false);
+  };
+  const handleDeleteAlertOpen = () => {
+    setDeleteAlertOpen(true);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -294,17 +307,71 @@ function InventoryScreen() {
                   </div>
                 </MDBox>
               </Grid>
-              <Grid item xs={12} sm={6} md={6}>
+              <Grid item sx={{ textAlign: 'right' }} xs={12} sm={6} md={6}>
+                <MDButton
+                  size="large"
+                  color="error"
+                  variant="outlined"
+                  sx={{
+                    marginTop: '20px'
+                  }}
+                  onClick={handleDeleteAlertOpen}
+                >
+                  Delete Inventory
+                </MDButton>
+                <Dialog
+                  open={deleteAlertOpen}
+                  aria-labelledby="alert-dialog-title"
+                  aria-describedby="alert-dialog-description"
+                  onClose={handleDeleteAlertClose}
+                >
+                  <DialogTitle id="alert-dialog-title">Confirm Inventory Delete</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                      Are you sure you want to delete this inventory?
+                    </DialogContentText>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button autoFocus onClick={handleDeleteAlertClose}>
+                      No
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        dispatch(
+                          InventoryActions.deleteInventoryAction({
+                            loader: 'loading-request',
+                            slug: '/inventory/' + inventoryId,
+                            method: 'delete',
+                            inventoryId,
+                            navigateTo
+                          })
+                        );
+                        handleDeleteAlertClose();
+                      }}
+                    >
+                      Yes
+                    </Button>
+                  </DialogActions>
+                </Dialog>
                 <Box
                   sx={{
-                    width: 400,
                     height: 300,
                     padding: '20px',
-                    border: '1px solid #D2D6DA'
+                    marginTop: '80px',
+                    textAlign: 'left'
                   }}
                 >
+                  <MDBox sx={{ my: 4 }}>
+                    <MDTypography variant="h5">Inventory Icon</MDTypography>
+                    <MDTypography sx={customStyles.textSize}>
+                      Choose the icon to represent the inventory
+                    </MDTypography>
+                  </MDBox>
                   <RadioGroup
                     row
+                    sx={{
+                      marginTop: '15px'
+                    }}
                     aria-labelledby="demo-error-radios"
                     name="icon_slug"
                     value={formik.values.icon_slug}
