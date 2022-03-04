@@ -166,7 +166,7 @@ export function* onDeleteRequestItem({ payload }) {
     payload?.slug + payload?.itemId
   );
   if (response?.status === 200) {
-    toast.success(`Successfully deleted item`, {
+    toast.success('Successfully deleted item', {
       theme: 'colored'
     });
     payload.refreshDispatch();
