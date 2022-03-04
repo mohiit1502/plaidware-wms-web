@@ -14,7 +14,17 @@ import EnhancedTable from 'components/EnhancedTable';
 import { useNavigate } from 'react-router-dom';
 import WidgetActions from 'redux/WidgetRedux';
 import { WidgetSelectors } from 'redux/WidgetRedux';
-import { Grid, MenuItem, Select } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  MenuItem,
+  Select
+} from '@mui/material';
 
 const tHeads = [
   { key: 'name', name: '' },
@@ -76,6 +86,14 @@ function ItemListing() {
     );
   }, []);
 
+  const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(null);
+  const handleDeleteAlertClose = () => {
+    setDeleteAlertOpen(null);
+  };
+  const handleDeleteAlertOpen = (id) => {
+    setDeleteAlertOpen(id);
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -90,6 +108,53 @@ function ItemListing() {
       />
 
       <MDBox px={5} py={3}>
+        <Dialog
+          open={deleteAlertOpen}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          onClose={handleDeleteAlertClose}
+        >
+          <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete this item?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button autoFocus onClick={handleDeleteAlertClose}>
+              No
+            </Button>
+            <Button
+              onClick={() => {
+                const refreshDispatch = () => {
+                  dispatch(
+                    ItemActions.itemRequest({
+                      loader: 'loading-request',
+                      slug: API.GET_ITEMS_BY_INVENTORY,
+                      method: 'get',
+                      page: page - 1,
+                      perPage,
+                      inventoryId,
+                      family: sFam || pFam || null
+                    })
+                  );
+                };
+                dispatch(
+                  ItemActions.deleteItemRequest({
+                    loader: 'loading-request',
+                    slug: '/item/',
+                    method: 'delete',
+                    itemId: deleteAlertOpen,
+                    refreshDispatch
+                  })
+                );
+                handleDeleteAlertClose();
+              }}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
         <EnhancedTable
           count={count}
           page={page}
@@ -98,6 +163,9 @@ function ItemListing() {
           setPerPage={setPerPage}
           editHandler={(id) => {
             navigateTo(`/setup/inventory/browse/${widgetName}/${inventoryId}/edit/${id}`);
+          }}
+          deleteHandler={(id) => {
+            handleDeleteAlertOpen(id);
           }}
           resetFilters={() => {
             setPFam('');

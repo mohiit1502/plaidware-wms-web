@@ -112,8 +112,39 @@ export function* onRequestEditWarehouse({ payload }) {
   }
 }
 
+export function* onRequestDeleteWarehouse({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug + payload?.warehouseId
+  );
+  if (response?.status === 200) {
+    toast.success('Warehouse deleted successfully', {
+      theme: 'colored'
+    });
+    payload.navigateTo('/setup/warehouse');
+    yield put(
+      WarehouseActions.deleteWarehouseSuccess({
+        loader: payload?.loader,
+        deletedWarehouseID: payload?.warehouseId
+      })
+    );
+  } else {
+    toast.error('Failed to delete warehouse', {
+      theme: 'colored'
+    });
+    yield put(
+      WarehouseActions.editWarehouseFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
 export default [
   takeLatest(WarehouseTypes.WAREHOUSE_DATA_ACTION, onRequestWarehouseData),
   takeLatest(WarehouseTypes.CREATE_WAREHOUSE_ACTION, onRequestCreateWarehouse),
-  takeLatest(WarehouseTypes.EDIT_WAREHOUSE_ACTION, onRequestEditWarehouse)
+  takeLatest(WarehouseTypes.EDIT_WAREHOUSE_ACTION, onRequestEditWarehouse),
+  takeLatest(WarehouseTypes.DELETE_WAREHOUSE_ACTION, onRequestDeleteWarehouse)
 ];

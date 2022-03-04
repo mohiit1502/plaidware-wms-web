@@ -221,7 +221,7 @@ function UserAccessScreen() {
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
-          { name: 'Users and Access', path: '/setup/users-access' }
+          { name: 'Users Access' }
         ]}
       />
       <MDBox px={5} py={3}>

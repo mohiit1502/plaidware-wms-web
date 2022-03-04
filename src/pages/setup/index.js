@@ -20,7 +20,7 @@ function SetupHome() {
       icon: <InventoryIcon width={96} height={96} color="#007AFF" />
     },
     {
-      name: 'User & Access',
+      name: 'User Access',
       path: '/setup/users-access',
       icon: <ProfileCircleIcon width={96} height={96} color="#007AFF" />
     },
@@ -33,7 +33,7 @@ function SetupHome() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Breadcrumbs title="Setup Warehouse, Inventory, Users" route={[{ name: 'Home', path: '/home' }, { name: 'Setup' }]} />
+      <Breadcrumbs title="Warehouse Management System Setup" route={[{ name: 'Home', path: '/home' }, { name: 'Setup' }]} />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

@@ -12,6 +12,8 @@ const { Types, Creators } = createActions({
   addItemSuccess: ['data'],
   editItemRequest: ['payload'],
   editItemSuccess: ['data'],
+  deleteItemRequest: ['payload'],
+  deleteItemSuccess: ['data'],
   oneItemRequest: ['payload'],
   oneItemSuccess: ['data']
 });
@@ -91,6 +93,18 @@ export const onEditItemSuccess = (state, { data }) =>
     item: null
   });
 
+export const onDeleteItemRequest = (state, { payload }) =>
+  state.merge({
+    fetching: _.uniq([...state.fetching, payload?.loader]),
+    error: getErrorValue(state?.error, payload?.loader)
+  });
+
+export const onDeleteItemSuccess = (state, { data }) =>
+  state.merge({
+    fetching: getFetchingValue(state.fetching, data?.loader),
+    error: getErrorValue(state?.error, data?.loader)
+  });
+
 export const onItemFailure = (state, { error }) =>
   state.merge({
     fetching: _.without(state.fetching, error?.loader),
@@ -106,6 +120,8 @@ export const itemReducer = createReducer(INITIAL_STATE, {
   [Types.ADD_ITEM_SUCCESS]: onAddItemSuccess,
   [Types.EDIT_ITEM_REQUEST]: onEditItemRequest,
   [Types.EDIT_ITEM_SUCCESS]: onEditItemSuccess,
+  [Types.DELETE_ITEM_REQUEST]: onDeleteItemRequest,
+  [Types.DELETE_ITEM_SUCCESS]: onDeleteItemSuccess,
   [Types.ONE_ITEM_REQUEST]: onOneItemRequest,
   [Types.ONE_ITEM_SUCCESS]: onOneItemSuccess
 });

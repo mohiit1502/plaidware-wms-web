@@ -38,6 +38,7 @@ function AuthLayout({ header, title, description, illustration, children }) {
             mt={2}
             sx={{
               backgroundImage: `url(${illustration})`,
+              backgroundSize: 'cover',
               backgroundRepeat: 'no-repeat',
               backgroundPosition: 'center'
             }}

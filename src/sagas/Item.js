@@ -159,9 +159,40 @@ export function* onEditRequestItem({ payload }) {
   }
 }
 
+export function* onDeleteRequestItem({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug + payload?.itemId
+  );
+  if (response?.status === 200) {
+    toast.success(`Successfully deleted item`, {
+      theme: 'colored'
+    });
+    payload.refreshDispatch();
+    yield put(
+      ItemActions.deleteItemSuccess({
+        loader: payload?.loader,
+        item: response?.data?.data
+      })
+    );
+  } else {
+    toast.error('Failed to delete item', {
+      theme: 'colored'
+    });
+    yield put(
+      ItemActions.itemFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
 export default [
   takeEvery(ItemTypes.ITEM_REQUEST, onRequestItem),
   takeEvery(ItemTypes.ONE_ITEM_REQUEST, onRequestOneItem),
   takeEvery(ItemTypes.ADD_ITEM_REQUEST, onAddRequestItem),
-  takeEvery(ItemTypes.EDIT_ITEM_REQUEST, onEditRequestItem)
+  takeEvery(ItemTypes.EDIT_ITEM_REQUEST, onEditRequestItem),
+  takeEvery(ItemTypes.DELETE_ITEM_REQUEST, onDeleteRequestItem)
 ];

@@ -41,10 +41,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 Row.propTypes = {
   rowData: PropTypes.array,
   tHeads: PropTypes.array,
-  editHandler: PropTypes.any
+  editHandler: PropTypes.any,
+  deleteHandler: PropTypes.any
 };
 
-function Row({ tHeads, rowData, editHandler }) {
+function Row({ tHeads, rowData, editHandler, deleteHandler }) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ '&odd > *': { borderBottom: 'unset' } }}>
@@ -68,6 +69,25 @@ function Row({ tHeads, rowData, editHandler }) {
           >
             EDIT
           </MDButton>
+          <MDButton
+            size="small"
+            variant="contained"
+            color="error"
+            sx={{
+              textTransform: 'capitalize',
+              minWidth: '45px',
+              minHeight: '28px',
+              marginLeft: '10px',
+              boxShadow: 'none',
+              fontWeight: '500',
+              padding: '0'
+            }}
+            onClick={() => {
+              deleteHandler(rowData._id);
+            }}
+          >
+            DELETE
+          </MDButton>
         </StyledTableCell>
         {tHeads &&
           tHeads
@@ -87,6 +107,7 @@ function EnhancedTable({
   data,
   tHeads,
   editHandler,
+  deleteHandler,
   filtersControl,
   resetFilters
 }) {
@@ -172,6 +193,7 @@ function EnhancedTable({
                   <Row
                     key={rowData._id}
                     editHandler={editHandler}
+                    deleteHandler={deleteHandler}
                     rowData={rowData}
                     tHeads={tHeads}
                   />
@@ -304,6 +326,7 @@ EnhancedTable.propTypes = {
   data: PropTypes.array,
   tHeads: PropTypes.array,
   editHandler: PropTypes.any,
+  deleteHandler: PropTypes.any,
   filtersControl: PropTypes.any,
   resetFilters: PropTypes.any
 };
