@@ -12,7 +12,7 @@ import NewWarehouseDetails from 'pages/newWarehouseDetails';
 import EditWarehouseDetails from 'pages/editWarehouseDetails';
 import LabelingHome from 'pages/labellingHome';
 import SetupInventory from 'pages/setupInventory';
-import CreateUserRole from 'pages/createUserRole';
+import CreateEditUserRole from 'pages/createEditUserRole';
 import CreateEditUser from 'pages/createEditUser';
 import WidgetLabel from 'pages/widgetLabel';
 import ItemListing from 'pages/itemListing';
@@ -177,7 +177,7 @@ const protectedRoutes = [
         key: 'create-role',
         route: '/setup/users-access/create-role',
         hide: true,
-        component: <CreateUserRole />
+        component: <CreateEditUserRole />
       },
       {
         name: 'Create User',

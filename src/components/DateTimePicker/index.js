@@ -11,7 +11,7 @@ export default function DateTimeInput({ disabled, value }) {
 
   useEffect(() => {
     setDate(value);
-  }, [value])
+  }, [value]);
 
   const handleChange = (newValue) => {
     setDate(newValue);
