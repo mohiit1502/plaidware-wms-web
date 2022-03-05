@@ -16,6 +16,7 @@ import EditIcon from 'assets/images/edit-icon.png';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles(() => ({
   labelSize: {
@@ -66,11 +67,27 @@ function CreateUserRole() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      <Breadcrumbs
+        title="Role Details"
+        route={[
+          { name: 'Home', path: '/home' },
+          { name: 'Setup', path: '/setup' },
+          { name: 'Access', path: '/setup/users-access' },
+          { name: 'Role Details' }
+        ]}
+      />
       <MDBox px={2} sx={{ backgroundColor: '#fff' }}>
         <MDBox mx={2} sx={{ border: '1px solid #C4C4C4', borderRadius: '4px', padding: '30px' }}>
           <MDBox sx={{ width: '50%', margin: 'auto' }}>
             <MDBox sx={{ width: '120px', margin: 'auto', position: 'relative' }}>
-              <img src={UserIcon} alt="img" />
+              <MDBox
+                sx={{
+                  width: '120px',
+                  height: '120px',
+                  backgroundColor: '#333333',
+                  borderRadius: '50%'
+                }}
+              />
               <MDBox sx={{ position: 'absolute', bottom: '0', right: '0', cursor: 'pointer' }}>
                 <img src={EditIcon} alt="img" />
               </MDBox>

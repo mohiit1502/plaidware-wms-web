@@ -50,7 +50,9 @@ export function* onRequestOneItem({ payload }) {
     //   `/setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${payload?.itemId}`
     // );
   } else {
-    toast('Failed to get item details');
+    toast.error('Failed to get item details', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
@@ -100,7 +102,9 @@ export function* onAddRequestItem({ payload }) {
     createFormData(payload?.data)
   );
   if (response?.status === 200) {
-    toast(`Added item: ${payload.data.commonName}`);
+    toast.success(`Added item: ${payload.data.commonName}`, {
+      theme: 'colored'
+    });
     // payload.navigateTo(
     //   `/setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${response?.data?.data?._id}`
     // );
@@ -112,7 +116,9 @@ export function* onAddRequestItem({ payload }) {
       })
     );
   } else {
-    toast('Failed to add item');
+    toast.error('Failed to add item', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
@@ -130,7 +136,9 @@ export function* onEditRequestItem({ payload }) {
     createFormData(payload?.data)
   );
   if (response?.status === 200) {
-    toast(`Successfully edited item: ${payload.data.commonName}`);
+    toast.success(`Successfully edited item: ${payload.data.commonName}`, {
+      theme: 'colored'
+    });
     payload.navigateTo('/setup/inventory');
     yield put(
       ItemActions.addItemSuccess({
@@ -139,7 +147,39 @@ export function* onEditRequestItem({ payload }) {
       })
     );
   } else {
-    toast('Failed to edit item');
+    toast.error('Failed to edit item', {
+      theme: 'colored'
+    });
+    yield put(
+      ItemActions.itemFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
+export function* onDeleteRequestItem({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug + payload?.itemId
+  );
+  if (response?.status === 200) {
+    toast.success('Successfully deleted item', {
+      theme: 'colored'
+    });
+    payload.refreshDispatch();
+    yield put(
+      ItemActions.deleteItemSuccess({
+        loader: payload?.loader,
+        item: response?.data?.data
+      })
+    );
+  } else {
+    toast.error('Failed to delete item', {
+      theme: 'colored'
+    });
     yield put(
       ItemActions.itemFailure({
         loader: payload?.loader,
@@ -153,5 +193,6 @@ export default [
   takeEvery(ItemTypes.ITEM_REQUEST, onRequestItem),
   takeEvery(ItemTypes.ONE_ITEM_REQUEST, onRequestOneItem),
   takeEvery(ItemTypes.ADD_ITEM_REQUEST, onAddRequestItem),
-  takeEvery(ItemTypes.EDIT_ITEM_REQUEST, onEditRequestItem)
+  takeEvery(ItemTypes.EDIT_ITEM_REQUEST, onEditRequestItem),
+  takeEvery(ItemTypes.DELETE_ITEM_REQUEST, onDeleteRequestItem)
 ];

@@ -37,7 +37,7 @@ function HomepageScreen() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Breadcrumbs route={[{ name: 'Home', path: '/home' }]} />
+      <Breadcrumbs title="Warehouse Management System" route={[{ name: 'Home', path: '/home' }]} />
       <TileBasic tiles={data} />
     </DashboardLayout>
   );

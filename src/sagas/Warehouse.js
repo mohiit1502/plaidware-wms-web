@@ -39,7 +39,7 @@ const makeFormData = (data) => {
     data.preferredInventories.forEach((prefInv, idx) => {
       formData.append(`preferredInventories[${idx}]`, prefInv);
     });
-  if (data.image[0].file) formData.append('image', data.image[0].file);
+  if (data.image[0]?.file) formData.append('image', data.image[0].file);
   return formData;
 };
 
@@ -52,7 +52,9 @@ export function* onRequestCreateWarehouse({ payload }) {
   );
   if (response?.status === 200 && response?.data?.message) {
     const warehouse = response?.data?.message;
-    toast('Warehouse created successfully');
+    toast.success('Warehouse created successfully', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.createWarehouseSuccess({
         loader: payload?.loader,
@@ -64,7 +66,9 @@ export function* onRequestCreateWarehouse({ payload }) {
     );
     payload.navigateTo(response?.data?.message?._id);
   } else {
-    toast('Failed to create warehouse');
+    toast.error('Failed to create warehouse', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.createWarehouseFailure({
         loader: payload?.loader,
@@ -82,7 +86,9 @@ export function* onRequestEditWarehouse({ payload }) {
     makeFormData(payload?.data)
   );
   if (response?.status === 200 && response?.data?.data) {
-    toast('Warehouse edited successfully');
+    toast.success('Warehouse edited successfully', {
+      theme: 'colored'
+    });
     const warehouse = response?.data?.data;
     yield put(
       WarehouseActions.editWarehouseSuccess({
@@ -94,7 +100,39 @@ export function* onRequestEditWarehouse({ payload }) {
       })
     );
   } else {
-    toast('Failed to edit warehouse');
+    toast.error('Failed to edit warehouse', {
+      theme: 'colored'
+    });
+    yield put(
+      WarehouseActions.editWarehouseFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
+export function* onRequestDeleteWarehouse({ payload }) {
+  const response = yield call(
+    ApiServices[payload?.method],
+    AuthorizedAPI,
+    payload?.slug + payload?.warehouseId
+  );
+  if (response?.status === 200) {
+    toast.success('Warehouse deleted successfully', {
+      theme: 'colored'
+    });
+    payload.navigateTo('/setup/warehouse');
+    yield put(
+      WarehouseActions.deleteWarehouseSuccess({
+        loader: payload?.loader,
+        deletedWarehouseID: payload?.warehouseId
+      })
+    );
+  } else {
+    toast.error('Failed to delete warehouse', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseActions.editWarehouseFailure({
         loader: payload?.loader,
@@ -107,5 +145,6 @@ export function* onRequestEditWarehouse({ payload }) {
 export default [
   takeLatest(WarehouseTypes.WAREHOUSE_DATA_ACTION, onRequestWarehouseData),
   takeLatest(WarehouseTypes.CREATE_WAREHOUSE_ACTION, onRequestCreateWarehouse),
-  takeLatest(WarehouseTypes.EDIT_WAREHOUSE_ACTION, onRequestEditWarehouse)
+  takeLatest(WarehouseTypes.EDIT_WAREHOUSE_ACTION, onRequestEditWarehouse),
+  takeLatest(WarehouseTypes.DELETE_WAREHOUSE_ACTION, onRequestDeleteWarehouse)
 ];

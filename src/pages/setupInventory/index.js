@@ -56,6 +56,7 @@ function SetupInventory() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title="List Of Inventories"
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },

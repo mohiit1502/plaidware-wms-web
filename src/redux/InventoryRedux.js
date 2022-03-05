@@ -13,6 +13,8 @@ const { Types, Creators } = createActions({
   addInventoryFailure: ['error'],
   updateInventoryAction: ['payload'],
   updateInventorySuccess: ['data'],
+  deleteInventoryAction: ['payload'],
+  deleteInventorySuccess: ['data'],
   updateInventoryFailure: ['error'],
   getInventoryTypesAction: ['payload'],
   getInventoryTypesSuccess: ['data'],
@@ -98,6 +100,21 @@ export const onUpdateInventorySuccess = (state, { data }) =>
     ]
   });
 
+export const onDeleteInventoryAction = (state, { payload }) =>
+  state.merge({
+    fetching: _.uniq([state.fetching, payload?.loader]),
+    error: getErrorValue(state?.error, payload?.loader)
+  });
+
+export const onDeleteInventorySuccess = (state, { data }) =>
+  state.merge({
+    fetching: getFetchingValue(state.fetching, data?.loader),
+    error: getErrorValue(state?.error, data?.loader),
+    getInventoryDetail: data.deletedInventoryID
+      ? [...state.getInventoryDetail.filter((x) => x._id !== data.deletedInventoryID)]
+      : state.getInventoryDetail
+  });
+
 export const onUpdateInventoryFailure = (state, { error }) =>
   state.merge({
     fetching: _.without(state.fetching, error?.loader),
@@ -133,6 +150,8 @@ export const inventoryReducer = createReducer(INITIAL_STATE, {
   [Types.ADD_INVENTORY_FAILURE]: onAddInventoryFailure,
   [Types.UPDATE_INVENTORY_ACTION]: onUpdateInventoryAction,
   [Types.UPDATE_INVENTORY_SUCCESS]: onUpdateInventorySuccess,
+  [Types.DELETE_INVENTORY_ACTION]: onDeleteInventoryAction,
+  [Types.DELETE_INVENTORY_SUCCESS]: onDeleteInventorySuccess,
   [Types.UPDATE_INVENTORY_FAILURE]: onUpdateInventoryFailure,
   [Types.GET_INVENTORY_TYPES_ACTION]: onGetInventoryTypesAction,
   [Types.GET_INVENTORY_TYPES_SUCCESS]: onGetInventoryTypesSuccess,

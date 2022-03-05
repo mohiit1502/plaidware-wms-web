@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
 function UserAccessScreen() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(1);
   const usersData = useSelector(UsersSelectors.getUsersDetail);
   const rolesData = useSelector(RolesSelectors.getRolesDetail);
   const currentUser = useSelector(AuthSelectors.getUser);
@@ -89,15 +89,35 @@ function UserAccessScreen() {
   const navigate = useNavigate();
 
   const userHeadCells = [
-    { id: 'full_name', label: 'User Name', isEditAnchor: true, value: record => record.fullName },
-    { id: 'phone_number', label: 'Phone Number', value: record => record.phoneNumber },
-    { id: 'role_name', label: 'Roles', value: record => record.role_name },
-    { id: 'updated_by_at', label: 'Last Updated By & Date', value: record => `${record.updatedBy?.fullName ? record.updatedBy.fullName + ' | ': ''}${moment(record.updatedAt).format('D/M/YYYY h:m:s A')}` },
-    { id: 'created_by_at', label: 'Created By & Date', value: record => `${record.createdBy?.fullName ? record.createdBy.fullName + ' | ': ''}${moment(record.createdAt).format('D/M/YYYY h:m:s A')}` },
-    { id: 'last_login', label: 'Last Login', value: record => record.lastLogin },
+    { id: 'full_name', label: 'User Name', isEditAnchor: true, value: (record) => record.fullName },
+    { id: 'phone_number', label: 'Phone Number', value: (record) => record.phoneNumber },
+    { id: 'role_name', label: 'Roles', value: (record) => record.role_name },
     {
-      id: 'is_active', label: 'Access', value: record => record.isActive ? <span className={classes.statusActive}>Active</span>
-        : <span className={classes.statusInactive}>Inactive</span>
+      id: 'updated_by_at',
+      label: 'Last Updated By & Date',
+      value: (record) =>
+        `${record.updatedBy?.fullName ? record.updatedBy.fullName + ' | ' : ''}${moment(
+          record.updatedAt
+        ).format('D/M/YYYY h:m:s A')}`
+    },
+    {
+      id: 'created_by_at',
+      label: 'Created By & Date',
+      value: (record) =>
+        `${record.createdBy?.fullName ? record.createdBy.fullName + ' | ' : ''}${moment(
+          record.createdAt
+        ).format('D/M/YYYY h:m:s A')}`
+    },
+    { id: 'last_login', label: 'Last Login', value: (record) => record.lastLogin },
+    {
+      id: 'is_active',
+      label: 'Access',
+      value: (record) =>
+        record.isActive ? (
+          <span className={classes.statusActive}>Active</span>
+        ) : (
+          <span className={classes.statusInactive}>Inactive</span>
+        )
     }
   ];
 
@@ -106,7 +126,6 @@ function UserAccessScreen() {
     { id: 'permissions', label: 'Permissions' },
     { id: 'status', label: 'Status' }
   ];
-
 
   const usersHandler = () => {
     dispatch(
@@ -181,34 +200,51 @@ function UserAccessScreen() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title="Access Details"
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
-          { name: 'Users and Access', path: '/setup/users-access' }
+          { name: 'Users Access' }
         ]}
       />
-      <MDBox px={0} py={3}>
+      <MDBox px={5} py={3}>
         <Grid container spacing={1} className={classes.margin}>
-          <Grid item xs={12} sm={4} md={4} className='ps-2 pt-0'>
+          <Grid item xs={12} sm={4} md={4} className="ps-2 pt-0">
             <Tabs value={value} className={`p-0 h-100 ${classes.tabs}`} onChange={handleTabs}>
               <Tab label="Roles" onClick={() => rolesHandler()} />
               <Tab label="Users" onClick={() => usersHandler()} />
             </Tabs>
           </Grid>
-          <Grid item xs={12} sm={4} md={6} className='py-2' style={{ display: 'flex', alignItems: 'center' }}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            md={6}
+            className="py-2"
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
             <SearchBar />
           </Grid>
-          <Grid item xs={12} sm={4} md={2} className='py-2' style={{ display: 'flex', alignItems: 'center' }}>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            md={2}
+            className="py-2"
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
             <MDButton
               color="primary"
               size="medium"
-              onClick={() => navigate(`/setup/users-access/${value === 0 ? 'create-role' : 'create-user'}`)}
+              onClick={() =>
+                navigate(`/setup/users-access/${value === 0 ? 'create-role' : 'create-user'}`)
+              }
             >
               {value === 0 ? '+ CREATE ROLE' : '+ CREATE USER'}
             </MDButton>
           </Grid>
         </Grid>
-        <Grid px={2}>
+        <Grid>
           <TabPanel value={value} index={0} className={classes.radialBorder}>
             <BasicTable
               headCells={rolesHeadCells}
@@ -241,10 +277,11 @@ function UserAccessScreen() {
               backgroundColor="#007AFF"
               color="#fff"
             >
-              {userRecords && userRecords.length > 0
-                ? <TableBody>
-                  {rowRenders}
-                </TableBody> : 'No Records to Display'}
+              {userRecords && userRecords.length > 0 ? (
+                <TableBody>{rowRenders}</TableBody>
+              ) : (
+                'No Records to Display'
+              )}
             </BasicTable>
           </TabPanel>
         </Grid>

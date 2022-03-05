@@ -13,6 +13,8 @@ import PageLayout from 'layouts/PageLayout';
 // Material Dashboard 2 PRO React context
 import { useMaterialUIController } from 'context';
 
+import companyImage from 'assets/images/fsr-logo.png';
+
 function AuthLayout({ header, title, description, illustration, children }) {
   const [controller] = useMaterialUIController();
   const { darkMode } = controller;
@@ -34,12 +36,30 @@ function AuthLayout({ header, title, description, illustration, children }) {
             borderRadius="lg"
             ml={2}
             mt={2}
-            sx={{ backgroundImage: `url(${illustration})` }}
+            sx={{
+              backgroundImage: `url(${illustration})`,
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'center'
+            }}
           />
         </Grid>
         <Grid item xs={11} sm={8} md={6} lg={4} xl={3} sx={{ mx: 'auto' }}>
           <MDBox display="flex" flexDirection="column" justifyContent="center" height="100vh">
             <MDBox py={3} px={3} textAlign="center">
+              <MDBox
+                display={{ xs: 'none', lg: 'flex' }}
+                width="350px"
+                height="117px"
+                borderRadius="lg"
+                ml={2}
+                my={5}
+                sx={{
+                  backgroundImage: `url(${companyImage})`,
+                  backgroundRepeat: 'no-repeat',
+                  backgroundPosition: 'center'
+                }}
+              />
               {!header ? (
                 <>
                   <MDBox mb={1} textAlign="center">

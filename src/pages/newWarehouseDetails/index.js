@@ -80,6 +80,7 @@ function NewWarehouseDetails() {
       <DashboardLayout>
         <DashboardNavbar />
         <Breadcrumbs
+          title="Create A Warehouse"
           route={[
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
@@ -90,17 +91,6 @@ function NewWarehouseDetails() {
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
-              <Box
-                component="div"
-                sx={{
-                  fontSize: '22px',
-                  letterSpacing: '0.01em',
-                  color: '#000',
-                  marginBottom: '30px'
-                }}
-              >
-                Form to Input
-              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box component="div" sx={{ marginBottom: '15px' }}>

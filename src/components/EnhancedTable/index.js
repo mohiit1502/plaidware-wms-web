@@ -11,7 +11,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import TablePagination from 'components/TablePagination';
-import { Dialog, DialogActions, MenuItem, Select } from '@mui/material';
+import { Grid, MenuItem, Select } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,10 +41,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 Row.propTypes = {
   rowData: PropTypes.array,
   tHeads: PropTypes.array,
-  editHandler: PropTypes.any
+  editHandler: PropTypes.any,
+  deleteHandler: PropTypes.any
 };
 
-function Row({ tHeads, rowData, editHandler }) {
+function Row({ tHeads, rowData, editHandler, deleteHandler }) {
   return (
     <React.Fragment>
       <StyledTableRow sx={{ '&odd > *': { borderBottom: 'unset' } }}>
@@ -68,6 +69,25 @@ function Row({ tHeads, rowData, editHandler }) {
           >
             EDIT
           </MDButton>
+          <MDButton
+            size="small"
+            variant="contained"
+            color="error"
+            sx={{
+              textTransform: 'capitalize',
+              minWidth: '45px',
+              minHeight: '28px',
+              marginLeft: '10px',
+              boxShadow: 'none',
+              fontWeight: '500',
+              padding: '0'
+            }}
+            onClick={() => {
+              deleteHandler(rowData._id);
+            }}
+          >
+            DELETE
+          </MDButton>
         </StyledTableCell>
         {tHeads &&
           tHeads
@@ -87,15 +107,10 @@ function EnhancedTable({
   data,
   tHeads,
   editHandler,
+  deleteHandler,
   filtersControl,
   resetFilters
 }) {
-  const [filtersOpen, setFiltersOpen] = React.useState(false);
-
-  const handleFiltersClose = () => {
-    setFiltersOpen(false);
-  };
-
   return (
     <>
       <Box
@@ -106,7 +121,9 @@ function EnhancedTable({
           overflow: 'hidden'
         }}
       >
-        <Box
+        <Grid
+          container
+          fullWidth
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -114,41 +131,15 @@ function EnhancedTable({
             padding: '16px'
           }}
         >
-          <Box>{/* <SearchBar /> */}</Box>
-          <Box sx={{ display: 'flex', columnGap: '15px' }}>
-            <MDButton
-              size="small"
-              variant="outlined"
-              color="primary"
-              sx={{
-                textTransform: 'capitalize',
-                minWidth: '60px',
-                minHeight: '44px',
-                fontWeight: '500'
-              }}
-              onClick={() => {
-                setFiltersOpen(true);
-              }}
-            >
-              Filter
-            </MDButton>
+          {/* <Box><SearchBar /></Box> */}
+          <Grid container item xs={12} spacing={5}>
             {filtersControl ? (
-              <Dialog open={filtersOpen} onClose={handleFiltersClose}>
+              <>
                 {filtersControl}
-                <DialogActions>
+                <Grid item sx={4}>
                   <MDButton onClick={resetFilters}>Reset Filters</MDButton>
-                  <MDButton
-                    size="small"
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => {
-                      setFiltersOpen(false);
-                    }}
-                  >
-                    Close
-                  </MDButton>
-                </DialogActions>
-              </Dialog>
+                </Grid>
+              </>
             ) : null}
             {/* <MDButton
               id="fade-button"
@@ -183,8 +174,8 @@ function EnhancedTable({
               <MenuItem>My account</MenuItem>
               <MenuItem>Logout</MenuItem>
             </Menu> */}
-          </Box>
-        </Box>
+          </Grid>
+        </Grid>
         {/* Table-row- */}
         <TableContainer component={Paper} sx={{ borderRadius: '0 !important', boxShadow: 'none' }}>
           <Table aria-label="collapsible table" sx={{ minWidth: 700 }}>
@@ -202,6 +193,7 @@ function EnhancedTable({
                   <Row
                     key={rowData._id}
                     editHandler={editHandler}
+                    deleteHandler={deleteHandler}
                     rowData={rowData}
                     tHeads={tHeads}
                   />
@@ -334,6 +326,7 @@ EnhancedTable.propTypes = {
   data: PropTypes.array,
   tHeads: PropTypes.array,
   editHandler: PropTypes.any,
+  deleteHandler: PropTypes.any,
   filtersControl: PropTypes.any,
   resetFilters: PropTypes.any
 };

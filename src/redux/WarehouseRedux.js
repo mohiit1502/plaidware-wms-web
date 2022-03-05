@@ -15,7 +15,10 @@ const { Types, Creators } = createActions({
 
   editWarehouseAction: ['payload'],
   editWarehouseSuccess: ['data'],
-  editWarehouseFailure: ['error']
+  editWarehouseFailure: ['error'],
+
+  deleteWarehouseAction: ['payload'],
+  deleteWarehouseSuccess: ['data']
 });
 
 export const WarehouseTypes = Types;
@@ -96,6 +99,21 @@ export const onEditWarehouseSuccess = (state, { data }) =>
     ]
   });
 
+export const onDeleteWarehouseAction = (state, { payload }) =>
+  state.merge({
+    fetching: _.uniq([state.fetching, payload?.loader]),
+    error: getErrorValue(state?.error, payload?.loader)
+  });
+
+export const onDeleteWarehouseSuccess = (state, { data }) =>
+  state.merge({
+    fetching: getFetchingValue(state.fetching, data?.loader),
+    error: getErrorValue(state?.error, data?.loader),
+    warehouseDetail: data?.deletedWarehouseID
+      ? [...state.warehouseDetail.filter((x) => x._id !== data?.deletedWarehouseID)]
+      : state.warehouseDetail
+  });
+
 export const onEditWarehouseFailure = (state, { error }) =>
   state.merge({
     fetching: _.without(state.fetching, error?.loader),
@@ -113,5 +131,7 @@ export const warehouseReducer = createReducer(INITIAL_STATE, {
 
   [Types.EDIT_WAREHOUSE_ACTION]: onEditWarehouseAction,
   [Types.EDIT_WAREHOUSE_SUCCESS]: onEditWarehouseSuccess,
-  [Types.EDIT_WAREHOUSE_FAILURE]: onEditWarehouseFailure
+  [Types.EDIT_WAREHOUSE_FAILURE]: onEditWarehouseFailure,
+  [Types.DELETE_WAREHOUSE_ACTION]: onDeleteWarehouseAction,
+  [Types.DELETE_WAREHOUSE_SUCCESS]: onDeleteWarehouseSuccess
 });

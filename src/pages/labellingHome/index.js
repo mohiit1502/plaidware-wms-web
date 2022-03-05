@@ -23,6 +23,7 @@ function LabelingHome() {
     <DashboardLayout>
       <DashboardNavbar />
       <Breadcrumbs
+        title="Labeling"
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },

@@ -12,7 +12,9 @@ import {
   DialogTitle,
   DialogContent,
   TextField,
-  DialogActions
+  DialogActions,
+  Button,
+  DialogContentText
 } from '@mui/material';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
@@ -37,6 +39,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import { WarehouseSelectors } from 'redux/WarehouseRedux';
 import { InventorySelectors } from 'redux/InventoryRedux';
 import InventoryActions from 'redux/InventoryRedux';
+import { useNavigate } from 'react-router-dom';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -317,6 +320,10 @@ const WarehouseNestedDetails = () => {
 
 function EditWarehouseDetails() {
   const { warehouseId } = useParams();
+  const navigate = useNavigate();
+  const navigateTo = (to) => {
+    navigate(to);
+  };
   const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetailById(warehouseId));
 
   const inventoryTypes = useSelector(InventorySelectors.getInventoryDetail);
@@ -370,11 +377,20 @@ function EditWarehouseDetails() {
     }
   });
 
+  const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(null);
+  const handleDeleteAlertClose = () => {
+    setDeleteAlertOpen(false);
+  };
+  const handleDeleteAlertOpen = () => {
+    setDeleteAlertOpen(true);
+  };
+
   return (
     <>
       <DashboardLayout>
         <DashboardNavbar />
         <Breadcrumbs
+          title="Edit Warehouse Details"
           route={[
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
@@ -385,17 +401,6 @@ function EditWarehouseDetails() {
         <Box mx={3} my={3}>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ backgroundColor: '#fff', padding: '30px' }}>
-              <Box
-                component="div"
-                sx={{
-                  fontSize: '22px',
-                  letterSpacing: '0.01em',
-                  color: '#000',
-                  marginBottom: '30px'
-                }}
-              >
-                Form to Input
-              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6} md={6}>
                   <Box component="div" sx={{ marginBottom: '15px' }}>
@@ -524,7 +529,49 @@ function EditWarehouseDetails() {
                     />
                   </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} md={6}>
+                <Grid item sx={{ textAlign: 'end' }} xs={12} sm={6} md={6}>
+                  <MDButton
+                    size="large"
+                    color="error"
+                    variant="outlined"
+                    onClick={handleDeleteAlertOpen}
+                  >
+                    Delete Warehouse
+                  </MDButton>
+                  <Dialog
+                    open={deleteAlertOpen}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    onClose={handleDeleteAlertClose}
+                  >
+                    <DialogTitle id="alert-dialog-title">Confirm Warehouse Delete</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this warehouse?
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button autoFocus onClick={handleDeleteAlertClose}>
+                        No
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          dispatch(
+                            WarehouseActions.deleteWarehouseAction({
+                              loader: 'loading-request',
+                              slug: '/warehouse/',
+                              method: 'delete',
+                              warehouseId: warehouseData._id,
+                              navigateTo
+                            })
+                          );
+                          handleDeleteAlertClose();
+                        }}
+                      >
+                        Yes
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
                   <Box sx={{ marginTop: '30px' }}>
                     <ImageUploadSingle
                       heading="Upload Warehouse Image"
@@ -545,6 +592,16 @@ function EditWarehouseDetails() {
                   columnGap: '20px'
                 }}
               >
+                <MDButton
+                  size="medium"
+                  color="error"
+                  variant="outlined"
+                  onClick={() => {
+                    navigate('/setup/warehouse');
+                  }}
+                >
+                  CANCEL
+                </MDButton>
                 {/* ---edit-- */}
                 <MDButton size="large" color="primary" variant="outlined" type="submit">
                   SAVE

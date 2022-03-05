@@ -63,7 +63,9 @@ export function* onRequestAddInventoryData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
-    toast('New inventory added');
+    toast.success('New inventory added', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.addInventorySuccess({
         loader: payload?.loader,
@@ -72,7 +74,9 @@ export function* onRequestAddInventoryData({ payload }) {
     );
     payload.navigateTo();
   } else {
-    toast('Failed to add inventory');
+    toast.error('Failed to add inventory', {
+      theme: 'colored'
+    });
     payload.onFailedAddInventoryData(response.data.error);
     yield put(
       InventoryActions.addInventoryFailure({
@@ -91,16 +95,20 @@ export function* onRequestUpdateInventoryData({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
-    toast('Updated inventory successfully');
+    toast.success('Updated inventory successfully', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.updateInventorySuccess({
         loader: payload?.loader,
         updateInventory: response?.data?.data
       })
     );
-    payload.navigateTo();
+    // payload.navigateTo();
   } else {
-    toast('Failed to update inventory');
+    toast.error('Failed to update inventory', {
+      theme: 'colored'
+    });
     yield put(
       InventoryActions.updateInventoryFailure({
         loader: payload?.loader,
@@ -109,9 +117,37 @@ export function* onRequestUpdateInventoryData({ payload }) {
     );
   }
 }
+
+export function* onRequestDeleteInventoryData({ payload }) {
+  const response = yield call(ApiServices[payload?.method], AuthorizedAPI, payload?.slug);
+  if (response?.status === 200) {
+    toast.success('Deleted inventory successfully', {
+      theme: 'colored'
+    });
+    payload.navigateTo();
+    yield put(
+      InventoryActions.deleteInventorySuccess({
+        loader: payload?.loader,
+        deletedInventoryID: payload?.inventoryId
+      })
+    );
+  } else {
+    toast.error('Failed to delete inventory', {
+      theme: 'colored'
+    });
+    yield put(
+      InventoryActions.updateInventoryFailure({
+        loader: payload?.loader,
+        error: response?.data
+      })
+    );
+  }
+}
+
 export default [
   takeEvery(InventoryTypes.GET_INVENTORY_ACTION, onRequestGetInventoryData),
   takeEvery(InventoryTypes.ADD_INVENTORY_ACTION, onRequestAddInventoryData),
+  takeEvery(InventoryTypes.DELETE_INVENTORY_ACTION, onRequestDeleteInventoryData),
   takeEvery(InventoryTypes.UPDATE_INVENTORY_ACTION, onRequestUpdateInventoryData),
   takeEvery(InventoryTypes.GET_INVENTORY_TYPES_ACTION, onRequestGetInventoryTypesData)
 ];
