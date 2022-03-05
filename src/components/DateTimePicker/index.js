@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -6,11 +6,15 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 
-export default function DateTimeInput({ disabled }) {
-  const [value, setValue] = React.useState(new Date());
+export default function DateTimeInput({ disabled, value }) {
+  const [date, setDate] = useState(value || new Date());
+
+  useEffect(() => {
+    setDate(value);
+  }, [value]);
 
   const handleChange = (newValue) => {
-    setValue(newValue);
+    setDate(newValue);
   };
 
   return (
@@ -19,7 +23,7 @@ export default function DateTimeInput({ disabled }) {
         <DateTimePicker
           disabled={disabled}
           label=""
-          value={value}
+          value={date}
           renderInput={(params) => <TextField {...params} />}
           onChange={handleChange}
         />
@@ -29,5 +33,6 @@ export default function DateTimeInput({ disabled }) {
 }
 
 DateTimeInput.propTypes = {
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.object])
 };

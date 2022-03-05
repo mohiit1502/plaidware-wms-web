@@ -10,7 +10,7 @@
   "dependencies": {
     "@asseinfo/react-kanban": "2.2.0",
     "@emotion/cache": "11.4.0",
-    "@emotion/react": "11.4.1",
+    "@emotion/react": "^11.4.1",
     "@emotion/styled": "11.3.0",
     "@fullcalendar/daygrid": "5.9.0",
     "@fullcalendar/interaction": "5.9.0",

@@ -68,6 +68,8 @@ const schema = {
 
   createUser: Yup.object({
     fullName: Yup.string('Enter Full Name').required('User Name is required'),
+    email: Yup.string('Enter Email').required('Email is required'),
+    password: Yup.string('Enter Password').required('Password is required'),
     phoneNumber: Yup.string('Enter Phone Numbe').required('Phone Number is required'),
     roles: Yup.string('Please select at least one role').required('At least one role is required')
   })

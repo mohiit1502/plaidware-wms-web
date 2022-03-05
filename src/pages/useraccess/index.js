@@ -1,25 +1,28 @@
-import React, { useEffect, useMemo } from 'react';
+import moment from 'moment';
+import React, { useEffect, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import { Grid, TableBody, TableCell, TableRow, Tabs, Tab } from '@mui/material';
+import { makeStyles } from '@mui/styles';
 import MDBox from 'components/MDBox';
+import EditIcon from '@mui/icons-material/Edit';
+
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import { styled } from '@mui/material/styles';
-import { makeStyles } from '@mui/styles';
 import BasicTable from 'components/BasicTable';
-import { Grid, TableBody, TableCell, TableRow } from '@mui/material';
 import SearchBar from 'components/SearchBar';
-import EditIcon from '@mui/icons-material/Edit';
 import MDButton from 'components/Button';
-import { useState } from 'react';
-import { Tabs, Tab } from '@mui/material';
 import TabPanel from 'components/Tabs';
+import Breadcrumbs from 'components/Breadcrumbs';
+
+import WarehouseActions, { WarehouseSelectors } from 'redux/WarehouseRedux';
+import InventoryActions, { InventorySelectors } from 'redux/InventoryRedux';
+import PermissionsActions, { PermissionsSelectors } from 'redux/PermissionsRedux';
 import UsersActions, { UsersSelectors } from 'redux/UsersRedux';
 import RolesActions, { RolesSelectors } from 'redux/RolesRedux';
-import { AuthSelectors } from 'redux/AuthRedux';
+
 import { API } from 'constant';
-import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
-import Breadcrumbs from 'components/Breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   iconSize: {
@@ -33,6 +36,9 @@ const useStyles = makeStyles((theme) => ({
   },
   statusInactive: {
     color: 'red'
+  },
+  limitWidth: {
+    maxWidth: '20rem'
   },
   margin: {
     marginBottom: '20px',
@@ -52,6 +58,10 @@ const useStyles = makeStyles((theme) => ({
   radialBorder: {
     overflow: 'hidden',
     borderRadius: '0.5rem'
+  },
+  rightPlaced: {
+    position: 'absolute',
+    right: 0
   },
   tabs: {
     borderRadius: 0,
@@ -83,10 +93,21 @@ function UserAccessScreen() {
   const [value, setValue] = useState(1);
   const usersData = useSelector(UsersSelectors.getUsersDetail);
   const rolesData = useSelector(RolesSelectors.getRolesDetail);
-  const currentUser = useSelector(AuthSelectors.getUser);
+  const warehouses = useSelector(WarehouseSelectors.getWarehouseDetail);
+  const inventories = useSelector(InventorySelectors.getInventoryDetail);
+  const actions = useSelector(PermissionsSelectors.getActionsDetail);
+  const permissions = useSelector(PermissionsSelectors.getPermissionsDetail);
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (!warehouses || warehouses.length === 0) && dispatch(WarehouseActions.warehouseDataAction({loader: 'loading-request', slug: API.GET_WAREHOUSE_DATA,method: 'get'}));
+    (!inventories || inventories.length === 0) && dispatch(InventoryActions.getInventoryAction({loader: 'loading-request', slug: API.GET_INVENTORY,method: 'get'}));
+    (!rolesData || rolesData.length === 0) && dispatch(RolesActions.getRolesAction({loader: 'loading-request', slug: API.GET_ROLES_DATA, method: 'get'}));
+    (!permissions || permissions.length === 0) && dispatch(PermissionsActions.getPermissionsAction({loader: 'loading-request', slug: API.GET_PERMISSIONS_DATA, method: 'get'}));
+    (!actions || actions.length === 0) && dispatch(PermissionsActions.getActionsAction({loader: 'loading-request', slug: API.GET_ACTIONS_DATA, method: 'get'}));
+  }, []);
 
   const userHeadCells = [
     { id: 'full_name', label: 'User Name', isEditAnchor: true, value: (record) => record.fullName },
@@ -122,9 +143,13 @@ function UserAccessScreen() {
   ];
 
   const rolesHeadCells = [
-    { id: 'role', label: 'Role' },
-    { id: 'permissions', label: 'Permissions' },
-    { id: 'status', label: 'Status' }
+    { id: 'role', label: 'Role', isEditAnchor: true, placement: 'after', value: record => record.name },
+    { id: 'warehouse', label: 'Warehouse', limitWidth: true, value: record => warehouses && record.permissions?.warehouseScopes && record.permissions?.warehouseScopes?.length === warehouses?.length ? 'All' : record.permissions?.warehouseScopes ? record.permissions?.warehouseScopes.map(sc => sc.name).join(', ') : ''},
+    { id: 'inventory', label: 'Inventories', limitWidth: true, value: record => inventories && record.permissions?.inventoryScopes && record.permissions?.inventoryScopes?.length === inventories?.length ? 'All' : record.permissions?.inventoryScopes ? record.permissions?.inventoryScopes.map(sc => sc.name).join(', ') : ''},
+    { id: 'actions', label: 'Actions', limitWidth: true, value: record => actions && record.permissions?.actions && record.permissions?.actions?.length === actions?.length ? 'All' : record.permissions?.actions ? record.permissions?.actions.join(', ') : ''},
+    { id: 'visibilities', label: 'App Modules', limitWidth: true, value: record => permissions && record.permissions?.allowedUIModules && record.permissions?.allowedUIModules?.length === permissions?.length ? 'All' : record.permissions?.allowedUIModules ? record.permissions?.allowedUIModules.join(', ') : ''},
+    { id: 'status', label: 'Status', value: record => record.status === 'ACTIVE' ? <span className={classes.statusActive}>Active</span>
+      : <span className={classes.statusInactive}>Inactive</span> }
   ];
 
   const usersHandler = () => {
@@ -184,34 +209,32 @@ function UserAccessScreen() {
     }
   }));
 
-  const rowRenders =
-    userRecords &&
-    userRecords.map((record) => {
-      const canEdit = (columnConfig) =>
-        columnConfig.isEditAnchor && currentUser.email !== record.email;
-      return (
-        <StyledTableRow key={record.id}>
-          {userHeadCells.map((columnConfig, key) => (
-            <TableCell
-              key={key}
-              onClick={() =>
-                canEdit(columnConfig) &&
-                navigate('/setup/users-access/edit-user', { state: { user: record } })
-              }
-            >
-              {canEdit(columnConfig) ? (
-                <span className={classes.iconwrap}>
-                  <EditIcon className={classes.iconSize} />
+  const rowRenders = ({records, headers, navUrl, table}) => {
+    return records && records.map((record, keyouter) => {
+      return <StyledTableRow key={record.id + '-' + keyouter}>
+        {headers.map((columnConfig, key) => {
+          const canEdit = columnConfig.isEditAnchor;
+          const isAfter = columnConfig.placement && columnConfig.placement === 'after';
+          const limitWidth = columnConfig.limitWidth;
+          return <TableCell key={key} className={`${isAfter ? 'position-relative pe-5' : ''}${limitWidth ? ' overflow-auto ' + classes.limitWidth : ''}`}
+            onClick={() => canEdit && navigate(navUrl, {state: {[table]: record}})}>
+            {canEdit
+              ? isAfter
+                ? <span className={classes.iconwrap}>
+                  <EditIcon className={classes.iconSize + ' ' + classes.rightPlaced}/>
                   {columnConfig.value(record)}
                 </span>
-              ) : (
-                <span>{columnConfig.value(record)}</span>
-              )}
-            </TableCell>
-          ))}
-        </StyledTableRow>
-      );
+                : <span className={classes.iconwrap}>
+                  {columnConfig.value(record)}
+                  <EditIcon className={classes.iconSize}/>
+                </span>
+              : <span>{columnConfig.value(record)}</span>}
+          </TableCell>;
+        }
+        )}
+      </StyledTableRow>;
     });
+  };
 
   return (
     <DashboardLayout>
@@ -269,21 +292,10 @@ function UserAccessScreen() {
               backgroundColor="#007AFF"
               color="#fff"
             >
-              <TableBody>
-                {rolesRecords &&
-                  rolesRecords.map((item) => (
-                    <StyledTableRow key={item.id}>
-                      <TableCell>
-                        <div className={classes.iconwrap}>
-                          <EditIcon className={classes.iconSize} />
-                          {item.name}
-                        </div>
-                      </TableCell>
-                      <TableCell>{item.permissions}</TableCell>
-                      <TableCell>{item.status}</TableCell>
-                    </StyledTableRow>
-                  ))}
-              </TableBody>
+              {rolesRecords && rolesRecords.length > 0
+                ? <TableBody>
+                  {rowRenders({records: rolesRecords, headers: rolesHeadCells, navUrl: '/setup/users-access/edit-role', table: 'role'})}
+                </TableBody> : <p>No Records to Display</p>}
             </BasicTable>
           </TabPanel>
           <TabPanel value={value} index={1} className={classes.radialBorder}>
@@ -294,11 +306,10 @@ function UserAccessScreen() {
               backgroundColor="#007AFF"
               color="#fff"
             >
-              {userRecords && userRecords.length > 0 ? (
-                <TableBody>{rowRenders}</TableBody>
-              ) : (
-                'No Records to Display'
-              )}
+              {userRecords && userRecords.length > 0
+                ? <TableBody>
+                  {rowRenders({records: userRecords, headers: userHeadCells, navUrl: '/setup/users-access/edit-user', table: 'user'})}
+                </TableBody> : <p>No Records to Display</p>}
             </BasicTable>
           </TabPanel>
         </Grid>

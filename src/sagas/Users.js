@@ -34,7 +34,11 @@ export function* onCreateUserData({ payload }) {
     ApiServices[payload?.method],
     AuthorizedAPI,
     payload?.slug,
-    payload?.data
+    payload?.data,
+    {
+      processData: false,
+      contentType: false
+    }
   );
   if (response?.status === 200) {
     const data = response.data?.data;
@@ -48,8 +52,9 @@ export function* onCreateUserData({ payload }) {
       })
     );
   } else {
-    toast('Something went wrong!');
-    payload.onValidationFailed(response.data?.error);
+    const error = response?.originalError?.response?.data?.error;
+    toast(error && error.indexOf('E11000') > -1 ? 'Email already exists!' : 'Something went wrong!');
+    payload.onValidationFailed();
     yield put(
       UsersActions.createUserFailure({
         loader: payload?.loader,
