@@ -17,11 +17,15 @@ const useStyles = makeStyles(() => ({
     '& .MuiSwitch-root': {
       margin: '0'
     }
+  },
+  maxHeight: {
+    maxHeight: '20rem',
+    overflow: 'auto'
   }
 }));
 
 const Toggles = props => {
-  const {boxSx, inittoggles, md, onChange, title, toggles, typoComponent, typoSx, typoVariant, xs} = props;
+  const {boxSx, gridStyleOverride, inittoggles, md, onChange, title, toggles, typoComponent, typoSx, typoVariant, xs} = props;
   const [toggleState, updateToggleState] = useState({});
   const classes = useStyles();
 
@@ -49,19 +53,20 @@ const Toggles = props => {
     </MDBox>;
   });
 
-  return <Grid item id='c-Toggles' xs={xs || 12} md={md || 3} >
+  return <Grid item className='c-Toggles' xs={xs || 12} md={md || 6} sx={gridStyleOverride}>
     <MDBox sx={boxSx || {backgroundColor: '#fff', border: '1px solid #c2c2c2', borderTop: '7px solid #007aff', borderRadius: '4px'}}>
       <Typography gutterBottom variant={typoVariant || 'h6'} component={typoComponent || 'div'}
         sx={typoSx || {borderBottom: '1px solid #c2c2c2', padding: '10px 20px', marginBottom: '20px'}}>
         {title || 'Title'}
       </Typography>
-      <Box sx={{ padding: ' 0px 20px' }}>{toggles && switchRenders(toggles)}</Box>
+      <Box sx={{ padding: ' 0px 20px' }} className={classes.maxHeight}>{toggles && switchRenders(toggles)}</Box>
     </MDBox>
   </Grid>;
 };
 
 Toggles.propTypes = {
   boxSx: PropTypes.object,
+  gridStyleOverride: PropTypes.object,
   inittoggles: PropTypes.string,
   md: PropTypes.number,
   onChange: PropTypes.func,
