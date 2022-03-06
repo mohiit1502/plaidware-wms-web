@@ -36,6 +36,10 @@ const useStyles = makeStyles({
     '& .MuiCheckbox-root': {
       paddingLeft: '0px'
     }
+  },
+  maxHeight: {
+    maxHeight: '20rem',
+    overflow: 'auto'
   }
 });
 
@@ -106,7 +110,7 @@ export default function TransferList({list, initlist, matchProp, onChange}) {
   };
 
   const customList = items => (
-    <List component="div" role="list">
+    <List component="div" role="list" className={classes.maxHeight}>
       {items.map((item, key) => {
         const value = item.name;
         const labelId = `transfer-list-item-${value}-label`;
@@ -137,7 +141,7 @@ export default function TransferList({list, initlist, matchProp, onChange}) {
   );
 
   return (
-    <Grid container>
+    <Grid container className="flex-fill">
       <Grid item md={5} className={classes.boxStyling}>
         <Typography gutterBottom variant="caption" component="div">
           Unassigned

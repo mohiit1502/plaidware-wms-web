@@ -24,6 +24,7 @@ const AllocationManager = props => {
         padding: '12px',
         borderRadius: '4px'
       })}
+      className="h-100 d-flex flex-column"
     >
       <Typography gutterBottom variant={variant || 'h6'} component={component || 'div'}>
         {title}

@@ -474,9 +474,10 @@ function CreateEditUser(props) {
             onChange={(val) => formik.handleChange('inventories')(val)}
           />
         </Grid>
-        <Grid container spacing={2} sx={{ marginTop: '12px', paddingLeft: '2rem' }}>
+        <Grid container spacing={4} sx={{ marginTop: '12px'}}>
           <Toggles
             name="actions"
+            gridStyleOverride={{ paddingLeft: '4rem !important' }}
             title="Actions"
             toggles={actions}
             inittoggles={formik.values.actions}
@@ -484,6 +485,7 @@ function CreateEditUser(props) {
           />
           <Toggles
             name="visibilities"
+            gridStyleOverride={{ paddingRight: '2rem' }}
             title="Application"
             toggles={permissions}
             inittoggles={formik.values.visibilities}
