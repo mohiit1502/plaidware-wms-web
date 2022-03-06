@@ -251,7 +251,7 @@ function CreateEditUser(props) {
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
-          { name: 'Access', path: '/setup/users-access' },
+          { name: 'User Access', path: '/setup/users-access' },
           { name: 'User Details' }
         ]}
       />

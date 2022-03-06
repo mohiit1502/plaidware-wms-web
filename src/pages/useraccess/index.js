@@ -2,19 +2,16 @@ import moment from 'moment';
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
-import { Grid, TableBody, TableCell, TableRow, Tabs, Tab } from '@mui/material';
+import { Grid, Tabs, Tab } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import MDBox from 'components/MDBox';
-import EditIcon from '@mui/icons-material/Edit';
 
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
-import BasicTable from 'components/BasicTable';
 import SearchBar from 'components/SearchBar';
 import MDButton from 'components/Button';
-import TabPanel from 'components/Tabs';
 import Breadcrumbs from 'components/Breadcrumbs';
+import { PwTablePanel } from 'components';
 
 import WarehouseActions, { WarehouseSelectors } from 'redux/WarehouseRedux';
 import InventoryActions, { InventorySelectors } from 'redux/InventoryRedux';
@@ -90,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 function UserAccessScreen() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState(0);
   const usersData = useSelector(UsersSelectors.getUsersDetail);
   const rolesData = useSelector(RolesSelectors.getRolesDetail);
   const warehouses = useSelector(WarehouseSelectors.getWarehouseDetail);
@@ -99,6 +96,8 @@ function UserAccessScreen() {
   const permissions = useSelector(PermissionsSelectors.getPermissionsDetail);
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
+  const [originalUserRecords, setOriginalUserRecords] = useState([]);
+  const [originalRolesRecords, setOriginalRoleRecords] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -181,6 +180,7 @@ function UserAccessScreen() {
         item.role_name = item.roles.map((role) => role.name).join(',');
         return item;
       });
+      setOriginalUserRecords(users);
       setUserRecords(users);
     }
 
@@ -195,6 +195,7 @@ function UserAccessScreen() {
         item.status = item.status ? 'ACTIVE' : 'INACTIVE';
         return item;
       });
+      setOriginalRoleRecords(roles);
       setRoleRecords(roles);
     }
   }, [rolesData, usersData]);
@@ -203,37 +204,26 @@ function UserAccessScreen() {
     setValue(val);
   };
 
-  const StyledTableRow = styled(TableRow)(({ theme }) => ({
-    '&:nth-of-type(even)': {
-      backgroundColor: theme.palette.action.hover
-    }
-  }));
-
-  const rowRenders = ({records, headers, navUrl, table}) => {
-    return records && records.map((record, keyouter) => {
-      return <StyledTableRow key={record.id + '-' + keyouter}>
-        {headers.map((columnConfig, key) => {
-          const canEdit = columnConfig.isEditAnchor;
-          const isAfter = columnConfig.placement && columnConfig.placement === 'after';
-          const limitWidth = columnConfig.limitWidth;
-          return <TableCell key={key} className={`${isAfter ? 'position-relative pe-5' : ''}${limitWidth ? ' overflow-auto ' + classes.limitWidth : ''}`}
-            onClick={() => canEdit && navigate(navUrl, {state: {[table]: record}})}>
-            {canEdit
-              ? isAfter
-                ? <span className={classes.iconwrap}>
-                  <EditIcon className={classes.iconSize + ' ' + classes.rightPlaced}/>
-                  {columnConfig.value(record)}
-                </span>
-                : <span className={classes.iconwrap}>
-                  {columnConfig.value(record)}
-                  <EditIcon className={classes.iconSize}/>
-                </span>
-              : <span>{columnConfig.value(record)}</span>}
-          </TableCell>;
-        }
-        )}
-      </StyledTableRow>;
-    });
+  const handleSearch = (e, currentTab) => {
+    const value = e.target.value;
+    let records = currentTab === 0 ? originalUserRecords : originalRolesRecords;
+    records = JSON.parse(JSON.stringify(records));
+    records.forEach(record => record.status = record.status ? 'ACTIVE' : 'INACTIVE');
+    let searchList = currentTab === 0 ? ['fullName', 'phoneNumber', 'role_name', 'status'] : ['name', 'permissions', 'status']
+    const setter = currentTab === 0 ? setUserRecords : setRoleRecords;
+    searchList = searchList.concat(['createdBy.fullName', 'createdAt', 'updatedBy.fullName', 'updatedAt']);
+    const filteredRecords = records.filter(record => searchList.some(field => {
+      let recordInner = {...record};
+      if (field.indexOf('.') > -1) {
+        field = field.split('.');
+        recordInner = recordInner[field[0]];
+        field = field[1];
+      }
+      return recordInner && recordInner[field] !== undefined && typeof recordInner[field] === 'string'
+        && recordInner[field].toLowerCase().indexOf(value?.toLowerCase()) > -1
+    }));
+    records.forEach(record => record.status = record.status === 'ACTIVE');
+    setter(filteredRecords);
   };
 
   return (
@@ -244,15 +234,15 @@ function UserAccessScreen() {
         route={[
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
-          { name: 'Users Access' }
+          { name: 'User Access' }
         ]}
       />
       <MDBox px={5} py={3}>
-        <Grid container spacing={1} className={classes.margin}>
-          <Grid item xs={12} sm={4} md={4} className="ps-2 pt-0">
+        <Grid container spacing={1} className={classes.margin + " w-100 ms-0"}>
+          <Grid item xs={12} sm={4} md={4} className="ps-0 pt-0">
             <Tabs value={value} className={`p-0 h-100 ${classes.tabs}`} onChange={handleTabs}>
-              <Tab label="Roles" onClick={() => rolesHandler()} />
               <Tab label="Users" onClick={() => usersHandler()} />
+              <Tab label="Roles" onClick={() => rolesHandler()} />
             </Tabs>
           </Grid>
           <Grid
@@ -261,9 +251,9 @@ function UserAccessScreen() {
             sm={4}
             md={6}
             className="py-2"
-            style={{ display: 'flex', alignItems: 'center' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}
           >
-            <SearchBar />
+            <SearchBar onChange={e => handleSearch(e, value)} />
           </Grid>
           <Grid
             item
@@ -271,47 +261,24 @@ function UserAccessScreen() {
             sm={4}
             md={2}
             className="py-2"
-            style={{ display: 'flex', alignItems: 'center' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'end' }}
           >
             <MDButton
               color="primary"
               size="medium"
               onClick={() =>
-                navigate(`/setup/users-access/${value === 0 ? 'create-role' : 'create-user'}`)
+                navigate(`/setup/users-access/${value === 0 ? 'create-user' : 'create-role'}`)
               }
             >
-              {value === 0 ? '+ CREATE ROLE' : '+ CREATE USER'}
+              {value === 0 ? '+ CREATE USER' : '+ CREATE ROLE'}
             </MDButton>
           </Grid>
         </Grid>
         <Grid>
-          <TabPanel value={value} index={0} className={classes.radialBorder}>
-            <BasicTable
-              headCells={rolesHeadCells}
-              records={rolesRecords}
-              backgroundColor="#007AFF"
-              color="#fff"
-            >
-              {rolesRecords && rolesRecords.length > 0
-                ? <TableBody>
-                  {rowRenders({records: rolesRecords, headers: rolesHeadCells, navUrl: '/setup/users-access/edit-role', table: 'role'})}
-                </TableBody> : <p>No Records to Display</p>}
-            </BasicTable>
-          </TabPanel>
-          <TabPanel value={value} index={1} className={classes.radialBorder}>
-            <BasicTable
-              id="user-list"
-              headCells={userHeadCells}
-              records={userRecords}
-              backgroundColor="#007AFF"
-              color="#fff"
-            >
-              {userRecords && userRecords.length > 0
-                ? <TableBody>
-                  {rowRenders({records: userRecords, headers: userHeadCells, navUrl: '/setup/users-access/edit-user', table: 'user'})}
-                </TableBody> : <p>No Records to Display</p>}
-            </BasicTable>
-          </TabPanel>
+          <PwTablePanel classes={classes} headCells={userHeadCells} id="user-list" index={0}
+            records={userRecords} navUrl='/setup/users-access/edit-user' value={value} />
+          <PwTablePanel classes={classes} headCells={rolesHeadCells} id="role-list" index={1}
+            records={rolesRecords} navUrl='/setup/users-access/edit-role' value={value} />
         </Grid>
       </MDBox>
     </DashboardLayout>
