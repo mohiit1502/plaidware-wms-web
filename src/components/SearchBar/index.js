@@ -1,8 +1,11 @@
 import { TextField, InputAdornment, SvgIcon } from '@mui/material';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@mui/styles';
 import Search from 'assets/images/SearchIcon';
 
-function SearchBar() {
+function SearchBar(props) {
+
+  const {onChange} = props;
 
   const useStyles = makeStyles(() => ({
     textField: {
@@ -30,8 +33,13 @@ function SearchBar() {
         }}
         placeholder="Search"
         variant="outlined"
+        onChange={onChange}
       />
     </>
   );
+}
+
+SearchBar.propTypes = {
+  onChange: PropTypes.func
 }
 export default SearchBar;
