@@ -1,4 +1,5 @@
 import { AuthorizedAPI } from 'config';
+import { toast } from 'react-toastify';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import ApiServices from 'services/API/ApiServices';
 import WidgetActions, { WidgetTypes } from '../redux/WidgetRedux';
@@ -35,6 +36,12 @@ export function* onEditRequestWidget({ payload }) {
     payload?.data
   );
   if (response?.status === 200) {
+    toast.success(
+      `Successfully ${payload?.type !== 'delete' ? payload?.type : 'delet'}ed widget family`,
+      {
+        theme: 'colored'
+      }
+    );
     yield put(
       WidgetActions.editWidgetSuccess({
         loader: payload?.loader,
@@ -44,6 +51,12 @@ export function* onEditRequestWidget({ payload }) {
       })
     );
   } else {
+    toast.error(
+      payload?.type ? `Failed to ${payload?.type} widget family` : 'Failed to fulfill request',
+      {
+        theme: 'colored'
+      }
+    );
     yield put(
       WidgetActions.widgetFailure({
         loader: payload?.loader,

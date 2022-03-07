@@ -1,9 +1,11 @@
 /* eslint-disable indent */
 import {
   Box,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   TextField
@@ -116,6 +118,14 @@ function WidgetNestedDataTable({
   const dispatch = useDispatch();
   const widgetChildren = useSelector(WidgetSelectors.getWidgetsByParentId(data._id));
 
+  const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(null);
+  const handleDeleteAlertClose = () => {
+    setDeleteAlertOpen(false);
+  };
+  const handleDeleteAlertOpen = () => {
+    setDeleteAlertOpen(true);
+  };
+
   return (
     <>
       <Box
@@ -193,19 +203,45 @@ function WidgetNestedDataTable({
               }}
               onClick={() => {
                 setSelected(null);
-                dispatch(
-                  WidgetActions.editWidgetRequest({
-                    loader: 'location-request',
-                    slug: `${API.EDIT_WIDGET_FAMILY}${data._id}`,
-                    deletedId: data._id,
-                    method: 'delete',
-                    type: 'delete'
-                  })
-                );
+                handleDeleteAlertOpen();
               }}
             >
               DELETE
             </MDButton>
+            <Dialog
+              open={deleteAlertOpen}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+              onClose={handleDeleteAlertClose}
+            >
+              <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  Are you sure you want to delete this?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={handleDeleteAlertClose}>
+                  No
+                </Button>
+                <Button
+                  onClick={() => {
+                    dispatch(
+                      WidgetActions.editWidgetRequest({
+                        loader: 'location-request',
+                        slug: `${API.EDIT_WIDGET_FAMILY}${data._id}`,
+                        deletedId: data._id,
+                        method: 'delete',
+                        type: 'delete'
+                      })
+                    );
+                    handleDeleteAlertClose();
+                  }}
+                >
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Grid>
         </Grid>
         {open && widgetChildren ? (
