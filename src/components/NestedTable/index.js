@@ -1,10 +1,12 @@
 /* eslint-disable indent */
 import {
   Box,
+  Button,
   // Chip,
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Grid,
   MenuItem,
@@ -63,6 +65,14 @@ function NestedDataTable({ data, selected, setSelected, populateChildren }) {
   useEffect(() => {
     populateChildren(data.id, data.location);
   }, []);
+
+  const [deleteAlertOpen, setDeleteAlertOpen] = React.useState(null);
+  const handleDeleteAlertClose = () => {
+    setDeleteAlertOpen(false);
+  };
+  const handleDeleteAlertOpen = () => {
+    setDeleteAlertOpen(true);
+  };
 
   return (
     <>
@@ -154,18 +164,44 @@ function NestedDataTable({ data, selected, setSelected, populateChildren }) {
                   padding: '0 6'
                 }}
                 onClick={() => {
-                  dispatch(
-                    WarehouseLocationsActions.deleteLocationRequest({
-                      loader: 'location-request',
-                      slug: API.LOCATION_DELETE,
-                      method: 'post',
-                      data: { type: data.location, id: data.id }
-                    })
-                  );
+                  handleDeleteAlertOpen();
                 }}
               >
                 DELETE
               </MDButton>
+              <Dialog
+                open={deleteAlertOpen}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                onClose={handleDeleteAlertClose}
+              >
+                <DialogTitle id="alert-dialog-title">Confirm Delete</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    Are you sure you want to delete this?
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button autoFocus onClick={handleDeleteAlertClose}>
+                    No
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      dispatch(
+                        WarehouseLocationsActions.deleteLocationRequest({
+                          loader: 'location-request',
+                          slug: API.LOCATION_DELETE,
+                          method: 'post',
+                          data: { type: data.location, id: data.id }
+                        })
+                      );
+                      handleDeleteAlertClose();
+                    }}
+                  >
+                    Yes
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Grid>
           </Grid>
         </Grid>
