@@ -1,4 +1,5 @@
 import { AuthorizedAPI } from 'config';
+import { toast } from 'react-toastify';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import WarehouseLocationsActions from 'redux/WarehouseLocationsRedux';
 import { WarehouseLocationsTypes } from 'redux/WarehouseLocationsRedux';
@@ -42,6 +43,9 @@ export function* onAddRequestLocation({ payload }) {
   );
   LOGGER.log('add response', response.data);
   if (response?.status === 200) {
+    toast.success('Location created successfully', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationSuccess({
         loader: payload?.loader,
@@ -52,7 +56,9 @@ export function* onAddRequestLocation({ payload }) {
       })
     );
   } else {
-    payload.onFailedLocation(response.data.error);
+    toast.error('Failed to create warehouse location', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationFailure({
         loader: payload?.loader,
@@ -71,6 +77,9 @@ export function* onDeleteRequestLocation({ payload }) {
   );
   LOGGER.log('delete response', response.data);
   if (response?.status === 200) {
+    toast.success('Location deleted successfully', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationSuccess({
         loader: payload?.loader,
@@ -78,7 +87,9 @@ export function* onDeleteRequestLocation({ payload }) {
       })
     );
   } else {
-    payload.onFailedLocation(response.data.error);
+    toast.error('Failed to delete warehouse location', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationFailure({
         loader: payload?.loader,
@@ -97,6 +108,9 @@ export function* onEditRequestLocation({ payload }) {
   );
   LOGGER.log('edit response', response.data);
   if (response?.status === 200) {
+    toast.success('Location edited successfully', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationSuccess({
         loader: payload?.loader,
@@ -108,7 +122,9 @@ export function* onEditRequestLocation({ payload }) {
       })
     );
   } else {
-    payload.onFailedLocation(response.data.error);
+    toast.error('Failed to edit warehouse location', {
+      theme: 'colored'
+    });
     yield put(
       WarehouseLocationsActions.locationFailure({
         loader: payload?.loader,
