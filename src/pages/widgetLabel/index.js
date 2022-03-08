@@ -241,7 +241,15 @@ function WidgetLabel() {
               </MDButton>
             </Grid>
           </Grid>
-          <Box sx={{ marginTop: '24px', backgroundColor: '#FFFFFF' }}>
+          <Box
+            sx={{
+              marginTop: '24px',
+              backgroundColor: '#FFFFFF',
+              overflowX: 'auto',
+              overflowY: 'auto',
+              height: '60vh'
+            }}
+          >
             <BasicTable
               headCells={headCells}
               records={allProductData}
