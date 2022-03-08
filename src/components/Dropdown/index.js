@@ -14,22 +14,8 @@ const useStyles = makeStyles({
   }
 });
 
-export default function Dropdown({ dropdownData, label, dropdownChange = null }) {
+export default function Dropdown({ dropdownData, label, onChange, value }) {
   const classes = useStyles();
-  const [age, setAge] = useState('');
-
-  const handleChange = (event) => {
-    if (dropdownChange !== null) {
-      dropdownChange(event);
-    }
-    const {
-      target: { value }
-    } = event;
-    setAge(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
-  };
 
   return (
     <>
@@ -40,22 +26,16 @@ export default function Dropdown({ dropdownData, label, dropdownChange = null })
         <FormControl sx={{ width: '100%' }}>
           <Select
             displayEmpty
-            value={age}
-            renderValue={(selected) => {
-              if (selected.length === 0) {
-                return <span>{/* {dropDownValue?.placeholder} */}</span>;
-              }
-              return selected;
-            }}
+            value={value}
             inputProps={{ 'aria-label': 'Without label' }}
-            onChange={handleChange}
+            onChange={onChange}
           >
             <MenuItem disabled value="">
-              {/* <span>{dropDownValue?.label}</span> */}
+              None selected
             </MenuItem>
             {dropdownData &&
               dropdownData.map((data) => (
-                <MenuItem value={data.name} key={data._id}>
+                <MenuItem value={data._id} key={data._id}>
                   {data.name}
                 </MenuItem>
               ))}
@@ -66,7 +46,8 @@ export default function Dropdown({ dropdownData, label, dropdownChange = null })
   );
 }
 Dropdown.propTypes = {
-  dropdownData: PropTypes.object.isRequired,
-  dropdownChange: PropTypes.object,
-  label: PropTypes.string
+  dropdownData: PropTypes.array,
+  onChange: PropTypes.any,
+  label: PropTypes.string,
+  value: PropTypes.any
 };
