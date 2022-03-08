@@ -153,14 +153,14 @@ function LabelingScreen() {
     const id = event.target.value;
     const type = 'row';
     setRowId(id);
-    dispatch(
-      WarehouseLocationsActions.locationRequest({
-        loader: 'loading-request',
-        slug: API.GET_CHILDREN_FROM_PARENT,
-        method: 'post',
-        data: { id, type }
-      })
-    );
+    // dispatch(
+    //   WarehouseLocationsActions.locationRequest({
+    //     loader: 'loading-request',
+    //     slug: API.GET_CHILDREN_FROM_PARENT,
+    //     method: 'post',
+    //     data: { id, type }
+    //   })
+    // );
     dispatch(
       LabellingActions.getLabelAction({
         loader: 'labelling-request',
@@ -170,7 +170,7 @@ function LabelingScreen() {
           warehouse: warehouseId,
           zone: zoneId,
           area: areaId,
-          row: rowId
+          row: id
         }
       })
     );
