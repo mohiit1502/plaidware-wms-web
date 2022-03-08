@@ -174,7 +174,6 @@ function WidgetLabel() {
   };
 
   const filterHandler = () => {
-    setInventoryId('');
     setFilterClick(true);
     dispatch(
       ProductActions.getProductByIdAction({
