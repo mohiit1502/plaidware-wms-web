@@ -96,6 +96,8 @@ function UserAccessScreen() {
   const permissions = useSelector(PermissionsSelectors.getPermissionsDetail);
   const [userRecords, setUserRecords] = useState([]);
   const [rolesRecords, setRoleRecords] = useState([]);
+  const [userLoader, setUserLoader] = useState(false);
+  const [roleLoader, setRoleLoader] = useState(false);
   const [originalUserRecords, setOriginalUserRecords] = useState([]);
   const [originalRolesRecords, setOriginalRoleRecords] = useState([]);
   const navigate = useNavigate();
@@ -143,35 +145,54 @@ function UserAccessScreen() {
 
   const rolesHeadCells = [
     { id: 'role', label: 'Role', isEditAnchor: true, placement: 'after', value: record => record.name },
-    { id: 'warehouse', label: 'Warehouse', limitWidth: true, value: record => warehouses && record.permissions?.warehouseScopes && record.permissions?.warehouseScopes?.length === warehouses?.length ? 'All' : record.permissions?.warehouseScopes ? record.permissions?.warehouseScopes.map(sc => sc.name).join(', ') : ''},
-    { id: 'inventory', label: 'Inventories', limitWidth: true, value: record => inventories && record.permissions?.inventoryScopes && record.permissions?.inventoryScopes?.length === inventories?.length ? 'All' : record.permissions?.inventoryScopes ? record.permissions?.inventoryScopes.map(sc => sc.name).join(', ') : ''},
-    { id: 'actions', label: 'Actions', limitWidth: true, value: record => actions && record.permissions?.actions && record.permissions?.actions?.length === actions?.length ? 'All' : record.permissions?.actions ? record.permissions?.actions.join(', ') : ''},
-    { id: 'visibilities', label: 'App Modules', limitWidth: true, value: record => permissions && record.permissions?.allowedUIModules && record.permissions?.allowedUIModules?.length === permissions?.length ? 'All' : record.permissions?.allowedUIModules ? record.permissions?.allowedUIModules.join(', ') : ''},
+    { id: 'warehouse', label: 'Warehouse', limitWidth: true, value: record => {
+      const roleWh = record.permissions?.warehouseScopes;
+      return warehouses && roleWh && roleWh.length === warehouses.length ? 'All' : roleWh
+        ? warehouses.filter(wh => roleWh.findIndex(whCurr => whCurr.id === wh._id) > -1).map(wh => wh.name).join(', ') : '';
+    }
+    },
+    { id: 'inventory', label: 'Inventories', limitWidth: true, value: record => {
+      const roleIn = record.permissions?.inventoryScopes;
+      return inventories && roleIn && roleIn.length === inventories.length ? 'All' : roleIn
+        ? inventories.filter(inv => roleIn.findIndex(inCurr => inCurr.id === inv._id) > -1).map(inv => inv.name).join(', ') : '';
+    }
+    },
+    { id: 'actions', label: 'Actions', limitWidth: true, value: record => actions && record.permissions?.actions
+      && record.permissions?.actions?.length === actions?.length ? 'All' : record.permissions?.actions
+        ? record.permissions?.actions.join(', ') : ''},
+    { id: 'visibilities', label: 'App Modules', limitWidth: true, value: record => permissions && record.permissions?.allowedUIModules
+      && record.permissions?.allowedUIModules?.length === permissions?.length ? 'All' : record.permissions?.allowedUIModules
+        ? record.permissions?.allowedUIModules.join(', ') : ''},
     { id: 'status', label: 'Status', value: record => record.status === 'ACTIVE' ? <span className={classes.statusActive}>Active</span>
       : <span className={classes.statusInactive}>Inactive</span> }
   ];
 
   const usersHandler = () => {
+    setUserLoader(true);
     dispatch(
       UsersActions.getUsersAction({
         loader: 'loading-request',
         slug: API.GET_USERS_DATA,
-        method: 'get'
+        method: 'get',
+        callback: setUserLoader
       })
     );
   };
 
   const rolesHandler = () => {
+    setRoleLoader(true);
     dispatch(
       RolesActions.getRolesAction({
         loader: 'loading-request',
         slug: API.GET_ROLES_DATA,
-        method: 'get'
+        method: 'get',
+        callback: setRoleLoader
       })
     );
   };
 
   useMemo(() => rolesHandler(), []);
+  useMemo(() => usersHandler(), []);
 
   useEffect(() => {
     if (usersData.length) {
@@ -188,7 +209,7 @@ function UserAccessScreen() {
       let roles = JSON.parse(JSON.stringify(rolesData));
       roles = roles.map((item) => {
         item.name = item.name.split('-').join(' ').toUpperCase();
-        item.permissions = item.permissions?.allowedUIModules?.join(',');
+        // item.permissions = item.permissions?.allowedUIModules?.join(',');
         if (!item.permissions) {
           item.permissions = 'NA';
         }
@@ -209,7 +230,7 @@ function UserAccessScreen() {
     let records = currentTab === 0 ? originalUserRecords : originalRolesRecords;
     records = JSON.parse(JSON.stringify(records));
     records.forEach(record => record.status = record.status ? 'ACTIVE' : 'INACTIVE');
-    let searchList = currentTab === 0 ? ['fullName', 'phoneNumber', 'role_name', 'status'] : ['name', 'permissions', 'status']
+    let searchList = currentTab === 0 ? ['fullName', 'phoneNumber', 'role_name', 'status'] : ['name', 'permissions', 'status'];
     const setter = currentTab === 0 ? setUserRecords : setRoleRecords;
     searchList = searchList.concat(['createdBy.fullName', 'createdAt', 'updatedBy.fullName', 'updatedAt']);
     const filteredRecords = records.filter(record => searchList.some(field => {
@@ -220,7 +241,7 @@ function UserAccessScreen() {
         field = field[1];
       }
       return recordInner && recordInner[field] !== undefined && typeof recordInner[field] === 'string'
-        && recordInner[field].toLowerCase().indexOf(value?.toLowerCase()) > -1
+        && recordInner[field].toLowerCase().indexOf(value?.toLowerCase()) > -1;
     }));
     records.forEach(record => record.status = record.status === 'ACTIVE');
     setter(filteredRecords);
@@ -238,7 +259,7 @@ function UserAccessScreen() {
         ]}
       />
       <MDBox px={5} py={3}>
-        <Grid container spacing={1} className={classes.margin + " w-100 ms-0"}>
+        <Grid container spacing={1} className={classes.margin + ' w-100 ms-0'}>
           <Grid item xs={12} sm={4} md={4} className="ps-0 pt-0">
             <Tabs value={value} className={`p-0 h-100 ${classes.tabs}`} onChange={handleTabs}>
               <Tab label="Users" onClick={() => usersHandler()} />
@@ -275,10 +296,10 @@ function UserAccessScreen() {
           </Grid>
         </Grid>
         <Grid>
-          <PwTablePanel classes={classes} headCells={userHeadCells} id="user-list" index={0}
-            records={userRecords} navUrl='/setup/users-access/edit-user' value={value} />
-          <PwTablePanel classes={classes} headCells={rolesHeadCells} id="role-list" index={1}
-            records={rolesRecords} navUrl='/setup/users-access/edit-role' value={value} />
+          <PwTablePanel classes={classes} headCells={userHeadCells} id="user-list" index={0} loader={userLoader}
+            records={userRecords} navUrl='/setup/users-access/edit-user' table="user" value={value} />
+          <PwTablePanel classes={classes} headCells={rolesHeadCells} id="role-list" index={1} loader={roleLoader}
+            records={rolesRecords} navUrl='/setup/users-access/edit-role' table="role" value={value} />
         </Grid>
       </MDBox>
     </DashboardLayout>

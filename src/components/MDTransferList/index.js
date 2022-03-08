@@ -43,7 +43,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function TransferList({list, initlist, matchProp, onChange}) {
+export default function TransferList({allDisabled, list, allocatedList, matchProp, onChange}) {
   const classes = useStyles();
   const [checked, setChecked] = useState([]);
   const [left, setLeft] = useState(list || []);
@@ -53,14 +53,14 @@ export default function TransferList({list, initlist, matchProp, onChange}) {
   const rightChecked = intersection(checked, right);
 
   useEffect(() => {
-    if (initlist) {
-      const initlistClone = typeof initlist === 'object' ? initlist : initlist.split(',');
-      const left = notBy(matchProp, list, initlistClone);
-      const right = intersectionBy(matchProp, list, initlistClone);
+    if (typeof allocatedList === 'string') {
+      const allocatedListClone = typeof allocatedList === 'object' ? allocatedList : allocatedList.split(',');
+      const left = notBy(matchProp, list, allocatedListClone);
+      const right = intersectionBy(matchProp, list, allocatedListClone);
       setLeft(left);
       setRight(right);
     }
-  }, []);
+  }, [allocatedList]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -116,7 +116,7 @@ export default function TransferList({list, initlist, matchProp, onChange}) {
         const labelId = `transfer-list-item-${value}-label`;
 
         return (
-          <ListItem button key={value + '-' + key} role="listitem" onClick={handleToggle(item)}>
+          <ListItem button disabled={allDisabled} key={value + '-' + key} role="listitem" onClick={handleToggle(item)}>
             <ListItemIcon className={classes.unsetwidth}>
               <Checkbox
                 disableRipple
@@ -205,7 +205,8 @@ export default function TransferList({list, initlist, matchProp, onChange}) {
 }
 
 TransferList.propTypes = {
-  initlist: PropTypes.oneOfType([
+  allDisabled: PropTypes.bool,
+  allocatedList: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.array
   ]),
