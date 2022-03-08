@@ -90,7 +90,7 @@ function NestedDataTable({ data, selected, setSelected, populateChildren }) {
             selected?.id === data.id
               ? 'linear-gradient(135deg, ' +
                 getColorOfLocationType(data.location) +
-                ' 0%, #f9f9f9 20%)'
+                ' 0%, #f9f9f9 100%)'
               : '#f9f9f9'
         }}
       >
