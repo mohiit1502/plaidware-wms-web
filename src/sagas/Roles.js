@@ -1,5 +1,6 @@
 import { AuthorizedAPI } from 'config';
 import { takeLatest, call, put } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 import RolesActions, { RolesTypes } from '../redux/RolesRedux';
 import ApiServices from 'services/API/ApiServices';
 
@@ -10,6 +11,7 @@ export function* onRequestRolesData({ payload }) {
     payload?.slug,
     payload?.data
   );
+  payload?.callback && payload?.callback(false);
   if (response?.status === 200) {
     yield put(
       RolesActions.getRolesSuccess({
@@ -18,6 +20,7 @@ export function* onRequestRolesData({ payload }) {
       })
     );
   } else {
+    toast('Failed to fetch roles');
     payload.onFailedRolesData(response.data.error);
     yield put(
       RolesActions.getRolesFailure({

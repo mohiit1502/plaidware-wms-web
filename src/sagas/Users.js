@@ -11,6 +11,7 @@ export function* onRequestUsersData({ payload }) {
     payload?.slug,
     payload?.data
   );
+  payload?.callback && payload?.callback(false);
   if (response?.status === 200) {
     yield put(
       UsersActions.getUsersSuccess({
@@ -19,6 +20,7 @@ export function* onRequestUsersData({ payload }) {
       })
     );
   } else {
+    toast('Failed to fetch user list');
     payload.onFailedUsersData(response.data.error);
     yield put(
       UsersActions.getUsersFailure({
@@ -40,6 +42,7 @@ export function* onCreateUserData({ payload }) {
       contentType: false
     }
   );
+  payload?.callback && payload?.callback(false);
   if (response?.status === 200) {
     const data = response.data?.data;
     const msg = payload.toastMessage.replace('__placeholder__', data && data.fullName ? '"' + data.fullName + '" ' : '');
