@@ -105,9 +105,11 @@ const headCellsNew = [
 function WidgetLabel() {
   const classes = useStyles();
   const dispatch = useDispatch();
+
   const [labelData, setLabelData] = useState([]);
   const [inventoryId, setInventoryId] = useState('');
   const [familyId, setFamilyId] = useState('');
+  const [subFamilyId, setSubFamilyId] = useState('');
   const [allProductData, setAllProductData] = useState([]);
   const [filterClick, setFilterClick] = useState(false);
 
@@ -133,9 +135,10 @@ function WidgetLabel() {
   }, [productData, filterClick]);
 
   const inventoryChange = (event) => {
-    const filterData = inventoryData.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
-    setInventoryId(filterData[0]._id);
+    const id = event.target.value;
+    setInventoryId(id);
+    setFamilyId('');
+    setSubFamilyId('');
     dispatch(
       WidgetActions.widgetRequest({
         loader: 'loading-request',
@@ -146,9 +149,9 @@ function WidgetLabel() {
   };
 
   const familyChange = (event) => {
-    const filterData = familyData.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
-    setFamilyId(filterData[0]._id);
+    const id = event.target.value;
+    setFamilyId(id);
+    setSubFamilyId('');
     dispatch(
       WidgetActions.widgetRequest({
         loader: 'loading-request',
@@ -159,8 +162,8 @@ function WidgetLabel() {
   };
 
   const subFamilyChange = (event) => {
-    const filterData = subFamilyData.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
+    const id = event.target.value;
+    setSubFamilyId(id);
     dispatch(
       WidgetActions.widgetRequest({
         loader: 'loading-request',
@@ -169,6 +172,7 @@ function WidgetLabel() {
       })
     );
   };
+
   const filterHandler = () => {
     setInventoryId('');
     setFilterClick(true);
@@ -206,23 +210,26 @@ function WidgetLabel() {
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6} md={3}>
               <Dropdown
-                dropdownData={inventoryData}
-                dropdownChange={inventoryChange}
                 label="Select Inventory"
+                dropdownData={inventoryData}
+                value={inventoryId}
+                onChange={inventoryChange}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <Dropdown
-                dropdownData={familyData}
-                dropdownChange={familyChange}
                 label="Select Family"
+                dropdownData={familyData}
+                value={familyId}
+                onChange={familyChange}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <Dropdown
-                dropdownData={subFamilyData}
                 label="Select Sub Family"
-                dropdownChange={subFamilyChange}
+                value={subFamilyId}
+                dropdownData={subFamilyData}
+                onChange={subFamilyChange}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
