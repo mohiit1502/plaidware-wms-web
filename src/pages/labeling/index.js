@@ -151,29 +151,7 @@ function LabelingScreen() {
 
   const rowChange = (event) => {
     const id = event.target.value;
-    const type = 'row';
     setRowId(id);
-    // dispatch(
-    //   WarehouseLocationsActions.locationRequest({
-    //     loader: 'loading-request',
-    //     slug: API.GET_CHILDREN_FROM_PARENT,
-    //     method: 'post',
-    //     data: { id, type }
-    //   })
-    // );
-    dispatch(
-      LabellingActions.getLabelAction({
-        loader: 'labelling-request',
-        slug: API.GET_LABEL,
-        method: 'post',
-        data: {
-          warehouse: warehouseId,
-          zone: zoneId,
-          area: areaId,
-          row: id
-        }
-      })
-    );
   };
 
   const getTableItem = (e, item) => {
@@ -200,8 +178,8 @@ function LabelingScreen() {
         ]}
       />
       <MDBox px={5} py={5}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Grid container spacing={2} alignItems="end">
+          <Grid item xs={12} md={2.5}>
             <Dropdown
               dropdownData={warehouseData}
               value={warehouseId}
@@ -209,14 +187,44 @@ function LabelingScreen() {
               onChange={warehouseChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={2.5}>
             <Dropdown dropdownData={zonedata} label="Select Zone" onChange={zoneChange} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={2.5}>
             <Dropdown dropdownData={areadata} label="Select Area" onChange={areaChange} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={2.5}>
             <Dropdown dropdownData={rowdata} label="Select Row" onChange={rowChange} />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <MDButton
+              fullWidth
+              color="primary"
+              sx={{
+                height: '45px'
+              }}
+              onClick={() => {
+                warehouseId &&
+                  zoneId &&
+                  areaId &&
+                  rowId &&
+                  dispatch(
+                    LabellingActions.getLabelAction({
+                      loader: 'labelling-request',
+                      slug: API.GET_LABEL,
+                      method: 'post',
+                      data: {
+                        warehouse: warehouseId,
+                        zone: zoneId,
+                        area: areaId,
+                        row: rowId
+                      }
+                    })
+                  );
+              }}
+            >
+              Filter
+            </MDButton>
           </Grid>
         </Grid>
         <br />
@@ -251,13 +259,13 @@ function LabelingScreen() {
           </TableBody>
         </BasicTable>
         <Grid container spacing={2} py={5}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={3}>
             <Box sx={{ backgroundColor: '#FFBC26', padding: '3px 12px' }}>Bay Totem Labels</Box>
             <Box sx={{ border: '1px solid black', padding: '3px 12px', height: '300px' }}>
               {totemLabelData && totemLabelData.map((item, index) => <div key={index}>{item}</div>)}
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={3}>
             <Box sx={{ backgroundColor: '#FFBC26', padding: '3px 12px' }}>Bin Location Labels</Box>
             <Box sx={{ border: '1px solid black', padding: '3px 12px', height: '300px' }}>
               {locationLabelData &&
