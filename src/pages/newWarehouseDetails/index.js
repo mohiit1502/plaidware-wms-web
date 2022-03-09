@@ -15,6 +15,7 @@ import Breadcrumbs from 'components/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import { InventorySelectors } from 'redux/InventoryRedux';
 import InventoryActions from 'redux/InventoryRedux';
+import schema from 'services/ValidationServices';
 
 function NewWarehouseDetails() {
   const dispatch = useDispatch();
@@ -54,7 +55,7 @@ function NewWarehouseDetails() {
       specs: '',
       image: []
     },
-    // validationSchema: schema.warehouseForm,
+    validationSchema: schema.warehouseForm,
     onSubmit: (values) => {
       dispatch(
         WarehouseActions.createWarehouseAction({
@@ -112,7 +113,12 @@ function NewWarehouseDetails() {
                       name="warehousename"
                       value={formik.values.warehousename}
                       error={formik.touched.warehousename && Boolean(formik.errors.warehousename)}
-                      helperText={formik.touched.warehousename && formik.errors.warehousename}
+                      helperText={
+                        formik.touched.warehousename &&
+                        formik.errors.warehousename && (
+                          <div style={{ color: 'red' }}>{formik.errors.warehousename}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -135,7 +141,12 @@ function NewWarehouseDetails() {
                       name="address"
                       value={formik.values.address}
                       error={formik.touched.address && Boolean(formik.errors.address)}
-                      helperText={formik.touched.address && formik.errors.address}
+                      helperText={
+                        formik.touched.address &&
+                        formik.errors.address && (
+                          <div style={{ color: 'red' }}>{formik.errors.address}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>

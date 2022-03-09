@@ -32,17 +32,17 @@ const schema = {
   addNewItem: Yup.object({
     commonName: Yup.string('Enter details').required(),
     formalName: Yup.string('Enter details').required(),
-    description: Yup.string('Enter details').required(),
-    manufacturer: Yup.string('Enter details').required(),
-    size: Yup.string('Enter details').required(),
-    color: Yup.string('Enter details').required(),
-    type: Yup.string('Enter details').required(),
-    unitOfMaterial: Yup.string('Enter details').required(),
+    description: Yup.string('Enter details'),
+    manufacturer: Yup.string('Enter details'),
+    size: Yup.string('Enter details'),
+    color: Yup.string('Enter details'),
+    type: Yup.string('Enter details'),
+    unitOfMaterial: Yup.string('Enter details'),
     unitCost: Yup.number().test((val) => val >= 0),
     packageCount: Yup.number().test((val) => val >= 0),
     countPerPallet: Yup.number().test((val) => val >= 0),
     countPerPalletPackage: Yup.number().test((val) => val >= 0),
-    primaryWidgetFamilyId: Yup.string('Enter details').required(),
+    primaryWidgetFamilyId: Yup.string('Enter details'),
     secondaryWidgetFamilyId: Yup.string('Enter details'),
     policiesMetadata: Yup.object({
       underStockLevelCount: Yup.number().test((val) => val >= 0),
@@ -54,8 +54,8 @@ const schema = {
   }),
 
   addInventory: Yup.object({
-    name: Yup.string('Enter Widget Name').required('Widget Name is required'),
-    widgetName: Yup.string('Enter Inventory name').required('Inventory name is required'),
+    name: Yup.string('Enter Inventory Name').required('Inventory Name is required'),
+    widgetName: Yup.string('Enter Widget name').required('Widget Name is required'),
     policies: Yup.object({
       orderTracking: Yup.boolean(),
       alerting: Yup.boolean(),

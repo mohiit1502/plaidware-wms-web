@@ -44,7 +44,7 @@ const tHeads = [
 
 function ItemListing() {
   const dispatch = useDispatch();
-  const { widgetName, inventoryId } = useParams();
+  const { inventoryName, widgetName, inventoryId } = useParams();
   const [page, setPage] = React.useState(1);
   const [perPage, setPerPage] = React.useState(10);
   LOGGER.log({ widgetName, inventoryId });
@@ -162,7 +162,9 @@ function ItemListing() {
           perPage={perPage}
           setPerPage={setPerPage}
           editHandler={(id) => {
-            navigateTo(`/setup/inventory/browse/${widgetName}/${inventoryId}/edit/${id}`);
+            navigateTo(
+              `/setup/inventory/browse/${inventoryName}/${widgetName}/${inventoryId}/edit/${id}`
+            );
           }}
           deleteHandler={(id) => {
             handleDeleteAlertOpen(id);
