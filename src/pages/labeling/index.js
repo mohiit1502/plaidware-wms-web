@@ -42,51 +42,54 @@ const useStyles = makeStyles({
   }
 });
 
+const headCells = [
+  {
+    id: 'warehouse',
+    label: 'Warehouse'
+  },
+  {
+    id: 'zone',
+    label: 'Zone'
+  },
+  {
+    id: 'area',
+    label: 'Area'
+  },
+  {
+    id: 'row',
+    label: 'Row'
+  },
+  {
+    id: 'bay',
+    label: 'Bay'
+  }
+];
+
 function LabelingScreen() {
   const classes = useStyles();
   const dispatch = useDispatch();
+
+  const [warehouseId, setWarehouseId] = useState('');
   const [zoneId, setZoneId] = useState('');
   const [areaId, setAreaId] = useState('');
   const [rowId, setRowId] = useState('');
-  const [bayId, setBayId] = useState('');
+
+  const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetail);
+  const zonedata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(warehouseId));
+  const areadata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(zoneId));
+  const rowdata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(areaId));
+
   const [allLabelData, setAllLabelData] = useState([]);
   const [totemLabelData, setTotemLabelData] = useState([]);
   const [locationLabelData, setLocationLabelData] = useState([]);
 
-  const warehouseData = useSelector(WarehouseSelectors.getWarehouseDetail);
-  const zonedata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(zoneId));
-  const areadata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(areaId));
-  const rowdata = useSelector(WarehouseLocationsSelectors.getChildrenOfParent(rowId));
   const labelData = useSelector(LabellingSelectors.getLabelDetail);
 
   React.useEffect(() => {
-    if (labelData && zoneId && areaId && rowId && bayId) {
+    if (labelData && warehouseId && zoneId && areaId && rowId) {
       setAllLabelData(labelData);
     }
-  }, [labelData, zoneId, areaId, rowId]);
-
-  const headCells = [
-    {
-      id: 'warehouse',
-      label: 'Warehouse'
-    },
-    {
-      id: 'zone',
-      label: 'Zone'
-    },
-    {
-      id: 'area',
-      label: 'Area'
-    },
-    {
-      id: 'row',
-      label: 'Row'
-    },
-    {
-      id: 'bay',
-      label: 'Bay'
-    }
-  ];
+  }, [labelData, warehouseId, zoneId, areaId]);
 
   useEffect(() => {
     dispatch(
@@ -99,10 +102,12 @@ function LabelingScreen() {
   }, []);
 
   const warehouseChange = (event) => {
-    const filterData = warehouseData.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
+    const id = event.target.value;
     const type = 'warehouse';
-    setZoneId(id);
+    setWarehouseId(id);
+    setZoneId('');
+    setAreaId('');
+    setRowId('');
     dispatch(
       WarehouseLocationsActions.locationRequest({
         loader: 'loading-request',
@@ -114,10 +119,11 @@ function LabelingScreen() {
   };
 
   const zoneChange = (event) => {
-    const filterData = zonedata.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
-    const type = filterData[0].location;
-    setAreaId(id);
+    const id = event.target.value;
+    const type = 'zone';
+    setZoneId(id);
+    setAreaId('');
+    setRowId('');
     dispatch(
       WarehouseLocationsActions.locationRequest({
         loader: 'loading-request',
@@ -129,10 +135,10 @@ function LabelingScreen() {
   };
 
   const areaChange = (event) => {
-    const filterData = areadata.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
-    const type = filterData[0].location;
-    setRowId(id);
+    const id = event.target.value;
+    const type = 'area';
+    setAreaId(id);
+    setRowId('');
     dispatch(
       WarehouseLocationsActions.locationRequest({
         loader: 'loading-request',
@@ -144,31 +150,8 @@ function LabelingScreen() {
   };
 
   const rowChange = (event) => {
-    const filterData = rowdata.filter((item) => item.name === event.target.value);
-    const id = filterData[0]._id;
-    const type = filterData[0].location;
-    setBayId(id);
-    dispatch(
-      WarehouseLocationsActions.locationRequest({
-        loader: 'loading-request',
-        slug: API.GET_CHILDREN_FROM_PARENT,
-        method: 'post',
-        data: { id, type }
-      })
-    );
-    dispatch(
-      LabellingActions.getLabelAction({
-        loader: 'labelling-request',
-        slug: API.GET_LABEL,
-        method: 'post',
-        data: {
-          warehouse: zoneId,
-          zone: areaId,
-          area: rowId,
-          row: bayId
-        }
-      })
-    );
+    const id = event.target.value;
+    setRowId(id);
   };
 
   const getTableItem = (e, item) => {
@@ -195,22 +178,53 @@ function LabelingScreen() {
         ]}
       />
       <MDBox px={5} py={5}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Grid container spacing={2} alignItems="end">
+          <Grid item xs={12} md={2.5}>
             <Dropdown
               dropdownData={warehouseData}
-              dropdownChange={warehouseChange}
+              value={warehouseId}
               label="Select warehouse"
+              onChange={warehouseChange}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Dropdown dropdownData={zonedata} dropdownChange={zoneChange} label="Select Zone" />
+          <Grid item xs={12} md={2.5}>
+            <Dropdown dropdownData={zonedata} label="Select Zone" onChange={zoneChange} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Dropdown dropdownData={areadata} dropdownChange={areaChange} label="Select Area" />
+          <Grid item xs={12} md={2.5}>
+            <Dropdown dropdownData={areadata} label="Select Area" onChange={areaChange} />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Dropdown dropdownData={rowdata} dropdownChange={rowChange} label="Select Row" />
+          <Grid item xs={12} md={2.5}>
+            <Dropdown dropdownData={rowdata} label="Select Row" onChange={rowChange} />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <MDButton
+              fullWidth
+              color="primary"
+              sx={{
+                height: '45px'
+              }}
+              onClick={() => {
+                warehouseId &&
+                  zoneId &&
+                  areaId &&
+                  rowId &&
+                  dispatch(
+                    LabellingActions.getLabelAction({
+                      loader: 'labelling-request',
+                      slug: API.GET_LABEL,
+                      method: 'post',
+                      data: {
+                        warehouse: warehouseId,
+                        zone: zoneId,
+                        area: areaId,
+                        row: rowId
+                      }
+                    })
+                  );
+              }}
+            >
+              Filter
+            </MDButton>
           </Grid>
         </Grid>
         <br />
@@ -221,7 +235,7 @@ function LabelingScreen() {
           color="#8D8D8D"
         >
           <TableBody>
-            {bayId ? (
+            {rowId ? (
               allLabelData &&
               allLabelData.map((item) => (
                 <TableRow key={item._id}>
@@ -245,13 +259,13 @@ function LabelingScreen() {
           </TableBody>
         </BasicTable>
         <Grid container spacing={2} py={5}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={3}>
             <Box sx={{ backgroundColor: '#FFBC26', padding: '3px 12px' }}>Bay Totem Labels</Box>
             <Box sx={{ border: '1px solid black', padding: '3px 12px', height: '300px' }}>
               {totemLabelData && totemLabelData.map((item, index) => <div key={index}>{item}</div>)}
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} md={3}>
             <Box sx={{ backgroundColor: '#FFBC26', padding: '3px 12px' }}>Bin Location Labels</Box>
             <Box sx={{ border: '1px solid black', padding: '3px 12px', height: '300px' }}>
               {locationLabelData &&
