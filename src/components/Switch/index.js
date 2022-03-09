@@ -56,12 +56,13 @@ const IOSSwitch = styled((props) => (
   }
 }));
 
-export default function Switch({ checked, onChange, name }) {
-  return <IOSSwitch checked={checked} sx={{ m: 1 }} name={name} onChange={onChange} />;
+export default function Switch({ disabled, checked, onChange, name }) {
+  return <IOSSwitch disabled={disabled} checked={checked} sx={{ m: 1 }} name={name} onChange={onChange} />;
 }
 
 Switch.propTypes = {
   checked: PropTypes.any,
+  disabled: PropTypes.bool,
   name: PropTypes.any,
   onChange: PropTypes.any
 };

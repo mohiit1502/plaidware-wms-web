@@ -187,11 +187,18 @@ const protectedRoutes = [
         component: <CreateEditUser context='new' />
       },
       {
-        name: 'Edot User',
+        name: 'Edit User',
         key: 'edit-user',
         route: '/setup/users-access/edit-user',
         hide: true,
         component: <CreateEditUser context='edit' />
+      },
+      {
+        name: 'Edit Role',
+        key: 'edit-role',
+        route: '/setup/users-access/edit-role',
+        hide: true,
+        component: <CreateEditUserRole context='edit' />
       }
     ]
   }

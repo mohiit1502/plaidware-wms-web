@@ -25,22 +25,22 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Toggles = props => {
-  const {boxSx, gridStyleOverride, inittoggles, md, onChange, title, toggles, typoComponent, typoSx, typoVariant, xs} = props;
+  const {allDisabled, boxSx, gridStyleOverride, selectedToggles, md, onChange, title, toggles, typoComponent, typoSx, typoVariant, xs} = props;
   const [toggleState, updateToggleState] = useState({});
   const classes = useStyles();
 
   useEffect(() => {
-    if (inittoggles && typeof inittoggles === 'string') {
-      const initToggleState = {};
-      inittoggles.split(',').forEach(iToggle => initToggleState[iToggle] = true);
-      updateToggleState(initToggleState);
+    if (typeof selectedToggles === 'string') {
+      const selectedToggleState = {};
+      selectedToggles.split(',').forEach(iToggle => selectedToggleState[iToggle] = true);
+      updateToggleState(selectedToggleState);
     }
-  }, []);
+  }, [selectedToggles]);
 
   const handleToggle = (e, toggle) => {
     const toggleStateClone = {...toggleState, [toggle]: e.target.checked};
     updateToggleState(toggleStateClone);
-    onChange && onChange(Object.keys(toggleStateClone).join(','));
+    onChange && onChange(toggleStateClone);
   };
 
   const switchRenders = toggles => toggles && toggles.map((toggle, key) => {
@@ -49,7 +49,7 @@ const Toggles = props => {
     return <MDBox key={key} display='flex' justifyContent='space-between' alignItems='center' lineHeight={1} className={classes.switchSpacer}
       sx={{ marginBottom: '20px  !important' }}>
       <MDTypography variant='body2'>{toggle}</MDTypography>
-      <Switch id={id} checked={toggleState[toggle] === undefined ? false : toggleState[toggle]} onChange={e => handleToggle(e, toggle)} />
+      <Switch disabled={allDisabled} id={id} checked={toggleState[toggle] === undefined ? false : toggleState[toggle]} onChange={e => handleToggle(e, toggle)} />
     </MDBox>;
   });
 
@@ -65,9 +65,10 @@ const Toggles = props => {
 };
 
 Toggles.propTypes = {
+  allDisabled: PropTypes.bool,
   boxSx: PropTypes.object,
   gridStyleOverride: PropTypes.object,
-  inittoggles: PropTypes.string,
+  selectedToggles: PropTypes.string,
   md: PropTypes.number,
   onChange: PropTypes.func,
   title: PropTypes.string,

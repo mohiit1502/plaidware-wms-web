@@ -14,7 +14,7 @@ import WarehouseActions, { WarehouseSelectors } from 'redux/WarehouseRedux';
 import InventoryActions, { InventorySelectors } from 'redux/InventoryRedux';
 import RolesActions, { RolesSelectors } from 'redux/RolesRedux';
 import PermissionsActions, { PermissionsSelectors } from 'redux/PermissionsRedux';
-import { AuthSelectors } from 'redux/AuthRedux';
+// import { AuthSelectors } from 'redux/AuthRedux';
 import UsersActions from 'redux/UsersRedux';
 
 import schema from 'services/ValidationServices';
@@ -73,12 +73,13 @@ function CreateEditUser(props) {
   const warehouses = useSelector(WarehouseSelectors.getWarehouseDetail);
   const inventories = useSelector(InventorySelectors.getInventoryDetail);
   const actions = useSelector(PermissionsSelectors.getActionsDetail);
-  const permissions = useSelector(PermissionsSelectors.getPermissionsDetail);
-  const currentUser = useSelector(AuthSelectors.getUser);
+  const visibilities = useSelector(PermissionsSelectors.getPermissionsDetail);
+  // const currentUser = useSelector(AuthSelectors.getUser);
   const location = useLocation();
   const [editedUser, setEditedUser] = useState(location?.state?.user);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [uploadedImg, setUploadedImg] = useState();
+  // const [selectedPermissions, setSelectedPermissions] = useState({});
 
   useEffect(() => {
     if (context === 'edit') {
@@ -118,7 +119,7 @@ function CreateEditUser(props) {
           method: 'get'
         })
       );
-    (!permissions || permissions.length === 0) &&
+    (!visibilities || visibilities.length === 0) &&
       dispatch(
         PermissionsActions.getPermissionsAction({
           loader: 'loading-request',
@@ -149,10 +150,10 @@ function CreateEditUser(props) {
       visibilities: '',
       isActive: true,
       image: '',
-      createdBy: currentUser ? currentUser.fullName : '',
-      createdAt: new Date(),
-      updatedBy: currentUser ? currentUser.fullName : '',
-      updatedAt: new Date()
+      createdBy: '',
+      createdAt: '',
+      updatedBy: '',
+      updatedAt: ''
     } : {
       fullName: editedUser ? editedUser.fullName : '',
       phoneNumber: editedUser ? editedUser.phoneNumber : '',
@@ -233,7 +234,29 @@ function CreateEditUser(props) {
       }
     });
     formik.handleChange('roles')(uniqueRoles.map((role) => role.name).join());
+    aggregatePermissions(uniqueRoles);
     setSelectedRoles(uniqueRoles);
+  };
+
+  const aggregatePermissions = roles => {
+    const actions = [], visibilities = [], warehouses = [], inventories = [];
+    roles.forEach(role => {
+      if (role.permissions) {
+        const currActions = role.permissions.actions;
+        const currVisibilities = role.permissions.allowedUIModules;
+        const currWarehouseScopes = role.permissions.warehouseScopes;
+        const currInventoryScopes = role.permissions.inventoryScopes;
+        currActions.forEach(ac => actions.indexOf(ac) === -1 && actions.push(ac));
+        currVisibilities.forEach(vi => visibilities.indexOf(vi) === -1 && visibilities.push(vi));
+        currWarehouseScopes.forEach(currWh => warehouses.findIndex(wh => wh.id === currWh.id) === -1 && warehouses.push(currWh));
+        currInventoryScopes.forEach(currInv => inventories.findIndex(inv => inv.id === currInv.id) === -1 && inventories.push(currInv));
+        // setSelectedPermissions({...selectedPermissions, actions});
+      }
+    });
+    formik.handleChange('actions')(actions.join(','));
+    formik.handleChange('visibilities')(visibilities.join(','));
+    formik.handleChange('warehouses')(warehouses.map(wh => wh.id).join(','));
+    formik.handleChange('inventories')(inventories.map(inv => inv.id).join(','));
   };
 
   const handleFileChange = e => {
@@ -456,40 +479,60 @@ function CreateEditUser(props) {
         </MDBox>
         <Grid container spacing={4} sx={{ marginTop: '-6px' }}>
           <AllocationManager
+            allDisabled={selectedRoles?.length > 0}
             name="warehouses"
             gridStyleOverride={{ paddingLeft: '4rem !important' }}
-            initlist={formik.values.warehouses}
+            allocatedList={formik.values.warehouses}
             list={warehouses}
             matchProp={{ a: '_id' }}
             title="Warehouse"
-            onChange={(val) => formik.handleChange('warehouses')(val)}
+            onChange={val => {
+              val = val?.map(obj => obj._id).join(',');
+              // setSelectedPermissions({...selectedPermissions, warehouses: val});
+              formik.handleChange('warehouses')(val);
+            }}
           />
           <AllocationManager
+            allDisabled={selectedRoles?.length > 0}
             name="inventories"
             gridStyleOverride={{ paddingRight: '2rem' }}
-            initlist={formik.values.inventories}
+            allocatedList={formik.values.inventories}
             list={inventories}
             matchProp={{ a: '_id' }}
             title="Inventory"
-            onChange={(val) => formik.handleChange('inventories')(val)}
+            onChange={val => {
+              val = val?.map(obj => obj._id).join(',');
+              // setSelectedPermissions({...selectedPermissions, inventories: val});
+              formik.handleChange('inventories')(val);
+            }}
           />
         </Grid>
         <Grid container spacing={4} sx={{ marginTop: '12px'}}>
           <Toggles
+            allDisabled={selectedRoles?.length > 0}
             name="actions"
             gridStyleOverride={{ paddingLeft: '4rem !important' }}
             title="Actions"
             toggles={actions}
-            inittoggles={formik.values.actions}
-            onChange={(val) => formik.handleChange('actions')(val)}
+            selectedToggles={formik.values.actions}
+            onChange={val => {
+              val = Object.keys(val).join(',');
+              // setSelectedPermissions({...selectedPermissions, actions: val});
+              formik.handleChange('actions')(val);
+            }}
           />
           <Toggles
+            allDisabled={selectedRoles?.length > 0}
             name="visibilities"
             gridStyleOverride={{ paddingRight: '2rem' }}
             title="Application"
-            toggles={permissions}
-            inittoggles={formik.values.visibilities}
-            onChange={(val) => formik.handleChange('visibilities')(val)}
+            toggles={visibilities}
+            selectedToggles={formik.values.visibilities}
+            onChange={val => {
+              val = Object.keys(val).join(',');
+              // setSelectedPermissions({...selectedPermissions, visibilities: val});
+              formik.handleChange('visibilities')(val);
+            }}
           />
         </Grid>
         <MDBox
