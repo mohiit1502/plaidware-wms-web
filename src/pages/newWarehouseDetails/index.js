@@ -197,7 +197,7 @@ function NewWarehouseDetails() {
                         );
                       }}
                     >
-                      <MenuItem key={''} value={''}>
+                      <MenuItem disabled key={'none'} value={''}>
                         None Selected
                       </MenuItem>
                       {inventoryTypes &&
