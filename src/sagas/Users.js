@@ -11,7 +11,7 @@ export function* onRequestUsersData({ payload }) {
     payload?.slug,
     payload?.data
   );
-  payload?.callback && payload?.callback(false);
+  payload?.callback && payload?.callback();
   if (response?.status === 200) {
     yield put(
       UsersActions.getUsersSuccess({

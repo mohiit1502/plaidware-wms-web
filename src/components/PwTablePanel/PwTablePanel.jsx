@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import './PwTablePanel.component.scss';
 
 const PwTablePanel = props => {
-  const { backgroundColor, classes, color, headCells, id, loader, index, navUrl, records, table, value } = props;
+  const { backgroundColor, classes, color, dataFetched, headCells, id, loader, index, navUrl, records, table, value } = props;
   const navigate = useNavigate();
 
   const StyledTableRow = styled(TableRow)(({ theme }) => ({
@@ -56,7 +56,7 @@ const PwTablePanel = props => {
         {rowRenders({ records, headers: headCells, navUrl, table })}
       </TableBody>}
     </BasicTable>
-    {(!records || records.length === 0)
+    {(dataFetched && (!records || records.length === 0))
       && <p className='mx-3 my-5 d-flex justify-content-center align-items-center h4'>No Records to Display</p>}
   </TabPanel>;
 };
@@ -65,6 +65,7 @@ PwTablePanel.propTypes = {
   backgroundColor: PropTypes.string,
   classes: PropTypes.string,
   color: PropTypes.string,
+  dataFetched: PropTypes.bool,
   headCells: PropTypes.array,
   id: PropTypes.string,
   index: PropTypes.number,

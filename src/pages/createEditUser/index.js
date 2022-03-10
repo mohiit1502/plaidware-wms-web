@@ -29,7 +29,7 @@ import DateTimeInput from 'components/DateTimePicker';
 import MDInput from 'components/MDInput';
 
 import { API } from 'constant';
-import UserIcon from 'assets/images/userIcon.png';
+import BlankImage from 'assets/images/blank-profile-picture.webp';
 import EditIcon from 'assets/images/edit-icon.png';
 import Breadcrumbs from 'components/Breadcrumbs';
 
@@ -79,6 +79,7 @@ function CreateEditUser(props) {
   const [editedUser, setEditedUser] = useState(location?.state?.user);
   const [selectedRoles, setSelectedRoles] = useState([]);
   const [uploadedImg, setUploadedImg] = useState();
+  const [loader, setLoader] = useState();
   // const [selectedPermissions, setSelectedPermissions] = useState({});
 
   useEffect(() => {
@@ -174,9 +175,11 @@ function CreateEditUser(props) {
     validationSchema: schema.createUser,
     onSubmit: (values, { setSubmitting }) => {
       const onValidationFailed = () => {
+        setLoader(false);
         setSubmitting(false);
       };
       const onSuccessfulSubmission = () => {
+        setLoader(false);
         navigate('/setup/users-access');
       };
       const adaptPayload = (values) => {
@@ -200,7 +203,8 @@ function CreateEditUser(props) {
         valuesClone.roles = selectedRoles && selectedRoles.length > 0 ? selectedRoles.map(role => role._id) : [];
         const formData = new FormData();
         Object.keys(valuesClone).forEach(key => formData.append(key, valuesClone[key]));
-        uploadedImg && formData.append('image', uploadedImg); 
+        uploadedImg && formData.append('image', uploadedImg);
+        setLoader(true);
         return formData;
       };
       dispatch(
@@ -278,7 +282,7 @@ function CreateEditUser(props) {
           { name: 'User Details' }
         ]}
       />
-      <MDBox component="form" role="form" px={2} onSubmit={formik.handleSubmit}>
+      <MDBox component="form" role="form" px={2} className={loader ? " loader" : ""} onSubmit={formik.handleSubmit}>
         <MDBox
           mx={4}
           sx={{
@@ -290,7 +294,8 @@ function CreateEditUser(props) {
         >
           <MDBox sx={{ width: '50%', margin: 'auto' }}>
             <MDBox sx={{ width: '120px', margin: 'auto', position: 'relative' }}>
-              <img src={uploadedImg ? typeof uploadedImg === 'string' ? uploadedImg : URL.createObjectURL(uploadedImg) : UserIcon} alt='img' width='120' height='120' style={{borderRadius: '50%'}} />
+              <img src={uploadedImg ? typeof uploadedImg === 'string' ? uploadedImg : URL.createObjectURL(uploadedImg) : BlankImage}
+                alt='img' width='120' height='120' style={{borderRadius: '50%'}}  onError={() => setUploadedImg(BlankImage)} />
               <MDBox sx={{ position: 'absolute', bottom: '0', right: '0' }}>
                 <label htmlFor="image" style={{ cursor: 'pointer' }}>
                   <img src={EditIcon} />

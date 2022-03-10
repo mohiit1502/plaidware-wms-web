@@ -98,6 +98,8 @@ function UserAccessScreen() {
   const [rolesRecords, setRoleRecords] = useState([]);
   const [userLoader, setUserLoader] = useState(false);
   const [roleLoader, setRoleLoader] = useState(false);
+  const [roleApiCompleted, setRoleApiCompleted] = useState(false);
+  const [userApiCompleted, setUserApiCompleted] = useState(false);
   const [originalUserRecords, setOriginalUserRecords] = useState([]);
   const [originalRolesRecords, setOriginalRoleRecords] = useState([]);
   const navigate = useNavigate();
@@ -144,7 +146,7 @@ function UserAccessScreen() {
   ];
 
   const rolesHeadCells = [
-    { id: 'role', label: 'Role', isEditAnchor: true, placement: 'after', value: record => record.name },
+    { id: 'role', label: 'Role', isEditAnchor: true, value: record => record.name },
     { id: 'warehouse', label: 'Warehouse', limitWidth: true, value: record => {
       const roleWh = record.permissions?.warehouseScopes;
       return warehouses && roleWh && roleWh.length === warehouses.length ? 'All' : roleWh
@@ -174,7 +176,10 @@ function UserAccessScreen() {
         loader: 'loading-request',
         slug: API.GET_USERS_DATA,
         method: 'get',
-        callback: setUserLoader
+        callback: () => {
+          setUserLoader(false);
+          setUserApiCompleted(true);
+        }
       })
     );
   };
@@ -186,7 +191,10 @@ function UserAccessScreen() {
         loader: 'loading-request',
         slug: API.GET_ROLES_DATA,
         method: 'get',
-        callback: setRoleLoader
+        callback: () => {
+          setRoleLoader(false);
+          setRoleApiCompleted(true);
+        }
       })
     );
   };
@@ -296,9 +304,9 @@ function UserAccessScreen() {
           </Grid>
         </Grid>
         <Grid>
-          <PwTablePanel classes={classes} headCells={userHeadCells} id="user-list" index={0} loader={userLoader}
+          <PwTablePanel classes={classes} headCells={userHeadCells} id="user-list" index={0} loader={userLoader} dataFetched={userApiCompleted}
             records={userRecords} navUrl='/setup/users-access/edit-user' table="user" value={value} />
-          <PwTablePanel classes={classes} headCells={rolesHeadCells} id="role-list" index={1} loader={roleLoader}
+          <PwTablePanel classes={classes} headCells={rolesHeadCells} id="role-list" index={1} loader={roleLoader} dataFetched={roleApiCompleted}
             records={rolesRecords} navUrl='/setup/users-access/edit-role' table="role" value={value} />
         </Grid>
       </MDBox>
