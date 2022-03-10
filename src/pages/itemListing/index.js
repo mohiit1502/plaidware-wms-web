@@ -103,6 +103,7 @@ function ItemListing() {
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
           { name: 'Inventory', path: '/setup/inventory' },
+          { name: inventoryName || 'Inventory' },
           { name: `${widgetName}s List` }
         ]}
       />
