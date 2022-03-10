@@ -103,6 +103,7 @@ function ItemListing() {
           { name: 'Home', path: '/home' },
           { name: 'Setup', path: '/setup' },
           { name: 'Inventory', path: '/setup/inventory' },
+          { name: inventoryName || 'Inventory' },
           { name: `${widgetName}s List` }
         ]}
       />
@@ -177,8 +178,7 @@ function ItemListing() {
             <>
               <Grid item sx={4}>
                 <Select
-                  select
-                  variant="outlined"
+                  displayEmpty
                   value={pFam}
                   inputProps={{ 'aria-label': 'Without label' }}
                   sx={{
@@ -189,7 +189,7 @@ function ItemListing() {
                     setPFam(e.target.value);
                   }}
                 >
-                  <MenuItem key={'none'} value={''}>
+                  <MenuItem disabled key={'none'} value={''}>
                     Widget family L1
                   </MenuItem>
                   {primaryFamilies &&
@@ -202,8 +202,7 @@ function ItemListing() {
               </Grid>
               <Grid item sx={4}>
                 <Select
-                  select
-                  fullWidth
+                  displayEmpty
                   variant="outlined"
                   value={sFam}
                   inputProps={{ 'aria-label': 'Without label' }}
@@ -214,7 +213,7 @@ function ItemListing() {
                     setSFam(e.target.value);
                   }}
                 >
-                  <MenuItem key={'none'} value={''}>
+                  <MenuItem disabled key={'none'} value={''}>
                     Widget family L2
                   </MenuItem>
                   {secondaryFamilies &&
