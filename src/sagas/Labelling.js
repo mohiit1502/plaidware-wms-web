@@ -1,5 +1,5 @@
 import { AuthorizedAPI } from 'config';
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import LabellingActions from 'redux/LabellingRedux';
 import { LabellingTypes } from 'redux/LabellingRedux';
 import ApiServices from 'services/API/ApiServices';
@@ -28,4 +28,4 @@ export function* onRequestGetLabelData({ payload }) {
     );
   }
 }
-export default [takeLatest(LabellingTypes.GET_LABEL_ACTION, onRequestGetLabelData)];
+export default [takeEvery(LabellingTypes.GET_LABEL_ACTION, onRequestGetLabelData)];

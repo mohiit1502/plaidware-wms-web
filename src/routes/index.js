@@ -114,22 +114,21 @@ const protectedRoutes = [
         name: 'Add New Item',
         key: 'add-new-item',
         hide: true,
-        route: '/setup/inventory/new-item/:widgetName/:inventoryId',
+        route: '/setup/inventory/new-item/:inventoryName/:widgetName/:inventoryId',
         component: <AddNewItem />
       },
       {
         name: 'Update Item',
         key: 'udpate-item',
         hide: true,
-        route: '/setup/inventory/browse/:widgetName/:inventoryId/edit/:itemId',
+        route: '/setup/inventory/browse/:inventoryName/:widgetName/:inventoryId/edit/:itemId',
         component: <AddNewItem />
       },
-      // /setup/inventory/browse/${payload?.widgetName}/${payload?.inventoryId}/edit/${payload?.id}
       {
         name: 'View Items',
         key: 'view-items',
         hide: true,
-        route: '/setup/inventory/browse/:widgetName/:inventoryId',
+        route: '/setup/inventory/browse/:inventoryName/:widgetName/:inventoryId',
         component: <ItemListing />
       },
       {
@@ -184,7 +183,7 @@ const protectedRoutes = [
         key: 'create-user',
         route: '/setup/users-access/create-user',
         hide: true,
-        component: <CreateEditUser context='new' />
+        component: <CreateEditUser context="new" />
       },
       {
         name: 'Edit User',

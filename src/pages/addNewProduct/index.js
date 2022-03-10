@@ -51,7 +51,7 @@ const useStyles = makeStyles({
 
 function AddNewItem() {
   const classes = useStyles();
-  const { widgetName, inventoryId, itemId } = useParams();
+  const { widgetName, inventoryName, inventoryId, itemId } = useParams();
   const getInitialFormValues = (data) => {
     return data && data._id === itemId
       ? {
@@ -228,8 +228,8 @@ function AddNewItem() {
             { name: 'Home', path: '/home' },
             { name: 'Setup', path: '/setup' },
             { name: 'Inventory', path: '/setup/inventory' },
-            { name: `${widgetName || 'Item'}` },
-            { name: `Add New ${widgetName || 'Item'}` }
+            { name: `${inventoryName || 'Inventory'}` },
+            { name: `${itemId ? 'Edit' : 'Add'} ${widgetName || 'Item'}` }
           ]}
         />
         <Box mx={3} my={3}>
@@ -248,7 +248,12 @@ function AddNewItem() {
                       variant="outlined"
                       value={formik.values.commonName}
                       error={formik.touched.commonName && Boolean(formik.errors.commonName)}
-                      helperText={formik.touched.commonName && formik.errors.commonName}
+                      helperText={
+                        formik.touched.commonName &&
+                        formik.errors.commonName && (
+                          <div style={{ color: 'red' }}>{formik.errors.commonName}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -343,7 +348,12 @@ function AddNewItem() {
                       variant="outlined"
                       value={formik.values.formalName}
                       error={formik.touched.formalName && Boolean(formik.errors.formalName)}
-                      helperText={formik.touched.formalName && formik.errors.formalName}
+                      helperText={
+                        formik.touched.formalName &&
+                        formik.errors.formalName && (
+                          <div style={{ color: 'red' }}>{formik.errors.formalName}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>

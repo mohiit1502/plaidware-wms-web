@@ -9,6 +9,7 @@ export const GetIconFromSlug = (slug) => {
     case 'fleet':
       return <FleetIcon />;
     case 'rawmaterial':
+      return <RawMaterialIcon />;
     default:
       return <RawMaterialIcon />;
   }

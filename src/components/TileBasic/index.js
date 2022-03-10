@@ -67,7 +67,7 @@ export default function TileBasic({ tiles }) {
         <Grid container spacing={2}>
           {tiles &&
             tiles.map((item) => (
-              <Grid item key={item.name} xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
+              <Grid item key={item._id} xs={12} sm={6} md={tiles.length > 4 ? 4 : 6}>
                 {item.disabled ? (
                   <MDBox
                     key={item.name + item.path}

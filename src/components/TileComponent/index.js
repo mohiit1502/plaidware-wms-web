@@ -39,7 +39,7 @@ export default function Tile({ data, children }) {
             Update {data.name} <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to={`/setup/inventory/new-item/${data.widgetname}/${data.id}`}>
+        <Link to={`/setup/inventory/new-item/${data.name}/${data.widgetname}/${data.id}`}>
           <Box className={`${classes.box} ${classes.boxEven}`}>
             Add New {data.widgetname} <ArrowRightIcon />
           </Box>
@@ -49,7 +49,7 @@ export default function Tile({ data, children }) {
             Cycle Count <ArrowRightIcon />
           </Box>
         </Link>
-        <Link to={`/setup/inventory/browse/${data.widgetname}/${data.id}`}>
+        <Link to={`/setup/inventory/browse/${data.name}/${data.widgetname}/${data.id}`}>
           <Box className={`${classes.box} ${classes.boxEven}`}>
             {data.widgetname} List <ArrowRightIcon />
           </Box>

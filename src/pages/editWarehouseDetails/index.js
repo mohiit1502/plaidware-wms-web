@@ -40,6 +40,7 @@ import { WarehouseSelectors } from 'redux/WarehouseRedux';
 import { InventorySelectors } from 'redux/InventoryRedux';
 import InventoryActions from 'redux/InventoryRedux';
 import { useNavigate } from 'react-router-dom';
+import schema from 'services/ValidationServices';
 
 const bottomButtonStyling = {
   width: '100%',
@@ -354,11 +355,11 @@ function EditWarehouseDetails() {
     initialValues: {
       warehousename: warehouseData.name,
       address: warehouseData.address || '',
-      preferredInventories: warehouseData.preferredInventories || [],
+      preferredInventories: [...warehouseData.preferredInventories] || [],
       specs: warehouseData.specs || '',
       image: warehouseData.image_url ? [{ src: warehouseData.image_url }] : []
     },
-    // validationSchema: schema.warehouseForm,
+    validationSchema: schema.warehouseForm,
     onSubmit: (values) => {
       dispatch(
         WarehouseActions.editWarehouseAction({
@@ -422,7 +423,12 @@ function EditWarehouseDetails() {
                       variant="outlined"
                       value={formik.values.warehousename}
                       error={formik.touched.warehousename && Boolean(formik.errors.warehousename)}
-                      helperText={formik.touched.warehousename && formik.errors.warehousename}
+                      helperText={
+                        formik.touched.warehousename &&
+                        formik.errors.warehousename && (
+                          <div style={{ color: 'red' }}>{formik.errors.warehousename}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -445,7 +451,12 @@ function EditWarehouseDetails() {
                       variant="outlined"
                       value={formik.values.address}
                       error={formik.touched.address && Boolean(formik.errors.address)}
-                      helperText={formik.touched.address && formik.errors.address}
+                      helperText={
+                        formik.touched.address &&
+                        formik.errors.address && (
+                          <div style={{ color: 'red' }}>{formik.errors.address}</div>
+                        )
+                      }
                       onChange={formik.handleChange}
                     />
                   </Box>
@@ -464,7 +475,6 @@ function EditWarehouseDetails() {
                     <Select
                       multiple
                       select
-                      disabled
                       fullWidth
                       variant="outlined"
                       name="preferredInventories"
@@ -497,6 +507,9 @@ function EditWarehouseDetails() {
                         );
                       }}
                     >
+                      <MenuItem disabled key={'none'} value={''}>
+                        None Selected
+                      </MenuItem>
                       {inventoryTypes &&
                         inventoryTypes.map((inventory) => (
                           <MenuItem key={inventory._id} value={inventory._id}>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import DashboardNavbar from 'components/DashboardNavbar';
 import DashboardLayout from 'layouts/DashboardLayout';
@@ -37,6 +37,7 @@ import { useNavigate } from 'react-router-dom';
 import WidgetNestedDataTable from 'components/WidgetNestedDataTable';
 import { GetIconFromSlug } from 'utils/inventorySlugTools';
 import { iconSlugs } from 'utils/inventorySlugTools';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 const customStyles = {
   labelSize: {
@@ -120,18 +121,16 @@ function InventoryScreen() {
   };
 
   const currentInventoryData = useSelector(InventorySelectors.getInventoryDetailById(inventoryId));
-  // LOGGER.log({ currentInventoryData });
-  // const [inventoryAllData, setInventoryAllData] = useState([]);
-  // const initialInventoryName='';
+  const [iconSelect, setIconSelect] = React.useState('');
 
-  // useEffect(() => {
-  //     const filterData = inventoryData.filter((item) => item._id === inventoryId);
-  //     console.log('filterData', filterData);
-  //     setInitialInventoryName(filterData[0].name)
-  //     setInventoryAllData(filterData[0].widgetName);
-  // }, []);
-
-  // LOGGER.log('initialInventoryName', initialInventoryName);
+  useEffect(() => {
+    if (inventoryId) {
+      const iconFilter = iconSlugs.filter(
+        (iconSlug) => iconSlug === currentInventoryData.icon_slug
+      );
+      setIconSelect(GetIconFromSlug(iconFilter[0]));
+    }
+  }, [inventoryId]);
 
   /* eslint-disable indent */
   const formik = useFormik({
@@ -199,6 +198,19 @@ function InventoryScreen() {
     setDeleteAlertOpen(true);
   };
 
+  const [iconSlugOpen, setIconSlugOpen] = React.useState(null);
+  const handleIconSlugClose = () => {
+    setIconSlugOpen(false);
+  };
+  const handleIconSlugOpen = () => {
+    setIconSlugOpen(true);
+  };
+
+  const handleIconSlug = (value) => {
+    const iconFilter = iconSlugs.filter((iconSlug) => iconSlug === value);
+    setIconSelect(GetIconFromSlug(iconFilter[0]));
+    setIconSlugOpen(false);
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -236,7 +248,10 @@ function InventoryScreen() {
                     variant="outlined"
                     value={formik.values.name}
                     error={formik.touched.name && Boolean(formik.errors.name)}
-                    helpertText={formik.touched.name && formik.errors.name}
+                    helperText={
+                      formik.touched.name &&
+                      formik.errors.name && <div style={{ color: 'red' }}>{formik.errors.name}</div>
+                    }
                     onChange={formik.handleChange}
                   />
                 </Box>
@@ -252,7 +267,12 @@ function InventoryScreen() {
                     variant="outlined"
                     value={formik.values.widgetName}
                     error={formik.touched.widgetName && Boolean(formik.errors.widgetName)}
-                    helpertext={formik.touched.widgetName && formik.errors.widgetName}
+                    helperText={
+                      formik.touched.widgetName &&
+                      formik.errors.widgetName && (
+                        <div style={{ color: 'red' }}>{formik.errors.widgetName}</div>
+                      )
+                    }
                     onChange={formik.handleChange}
                   />
                 </Grid>
@@ -367,25 +387,46 @@ function InventoryScreen() {
                       Choose the icon to represent the inventory
                     </MDTypography>
                   </MDBox>
-                  <RadioGroup
-                    row
-                    sx={{
-                      marginTop: '15px'
-                    }}
-                    aria-labelledby="demo-error-radios"
-                    name="icon_slug"
-                    value={formik.values.icon_slug}
-                    onChange={formik.handleChange}
+
+                  <AddCircleIcon fontSize="large" onClick={handleIconSlugOpen} />
+                  {iconSelect}
+                  <Dialog
+                    open={iconSlugOpen}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    onClose={handleIconSlugClose}
                   >
-                    {iconSlugs.map((iconSlug) => (
-                      <MyFormControlLabel
-                        key={iconSlug}
-                        value={iconSlug}
-                        control={<Radio style={{ display: 'none' }} />}
-                        label={GetIconFromSlug(iconSlug)}
-                      />
-                    ))}
-                  </RadioGroup>
+                    <DialogTitle id="alert-dialog-title">Select Icon</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText id="alert-dialog-description">
+                        <RadioGroup
+                          row
+                          sx={{
+                            marginTop: '15px'
+                          }}
+                          aria-labelledby="demo-error-radios"
+                          name="icon_slug"
+                          value={formik.values.icon_slug}
+                          onChange={formik.handleChange}
+                        >
+                          {iconSlugs.map((iconSlug) => (
+                            <MyFormControlLabel
+                              key={iconSlug}
+                              value={iconSlug}
+                              control={<Radio style={{ display: 'none' }} />}
+                              label={GetIconFromSlug(iconSlug)}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                      <Button autoFocus onClick={handleIconSlugClose}>
+                        No
+                      </Button>
+                      <Button onClick={() => handleIconSlug(formik.values.icon_slug)}>Yes</Button>
+                    </DialogActions>
+                  </Dialog>
                 </Box>
               </Grid>
               <MDBox sx={{ ml: 'auto', mr: 'auto', mt: 3 }}>

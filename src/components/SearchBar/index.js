@@ -4,8 +4,7 @@ import { makeStyles } from '@mui/styles';
 import Search from 'assets/images/SearchIcon';
 
 function SearchBar(props) {
-
-  const {onChange} = props;
+  const { onChange } = props;
 
   const useStyles = makeStyles(() => ({
     textField: {
@@ -41,5 +40,5 @@ function SearchBar(props) {
 
 SearchBar.propTypes = {
   onChange: PropTypes.func
-}
+};
 export default SearchBar;
